@@ -1,0 +1,35 @@
+{
+    "name": "lav45/yii2-activity-logger",
+    "description": "Tools to store user activity log for Yii2",
+    "keywords": ["yii2", "extension", "log", "logger", "activity logger"],
+    "homepage": "https://github.com/LAV45/yii2-activity-logger",
+    "type": "yii2-extension",
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Alexey Loban",
+            "email": "lav451@gmail.com"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.0",
+        "yiisoft/yii2": "^2.0",
+        "chrisboulton/php-diff": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "lav45\\activityLogger\\": "src"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
+}
