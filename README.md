@@ -1,9 +1,12 @@
 # yii2-activity-logger
 
+Tools to store user activity log for Yii2
+
 
 ## Install
 
 ```bash
+~$ composer require --prefer-dist lav45/yii2-activity-logger
 ~$ yii migrate --migration-path=vendor/lav45/yii2-activity-logger/migrates
 ```
 
@@ -30,6 +33,18 @@ return [
     ]
 ];
 ```
+
+
+### Create link to activity logger module
+
+```php
+// This page display activity logs for all entity "news"
+Url::toRoute(['/logger/default/index', 'entityName' => 'news']);
+
+// This page display activity logs for entity "news" and "id" => 1
+Url::toRoute(['/logger/default/index', 'entityName' => 'news', 'entityId' => 1]);
+```
+
 
 ## Example usage to ActiveRecord model
 
