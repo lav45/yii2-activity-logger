@@ -19,8 +19,7 @@
     ],
     "require": {
         "php": ">=5.5.0",
-        "yiisoft/yii2": "^2.0",
-        "chrisboulton/php-diff": "^1.0"
+        "yiisoft/yii2": "^2.0"
     },
     "autoload": {
         "psr-4": {
