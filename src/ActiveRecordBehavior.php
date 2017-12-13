@@ -153,6 +153,10 @@ class ActiveRecordBehavior extends Behavior
      */
     public function events()
     {
+        if ($this->getLogger()->enabled === false) {
+            return [];
+        }
+
         return [
             ActiveRecord::EVENT_BEFORE_INSERT => 'beforeSave',
             ActiveRecord::EVENT_BEFORE_UPDATE => 'beforeSave',

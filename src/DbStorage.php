@@ -33,7 +33,6 @@ class DbStorage extends BaseObject implements StorageInterface
     /**
      * @param LogMessage $message
      * @return int
-     * @throws \yii\db\Exception
      */
     public function save($message)
     {
@@ -54,7 +53,6 @@ class DbStorage extends BaseObject implements StorageInterface
     /**
      * @param int $date
      * @return int
-     * @throws \yii\db\Exception
      */
     public function clean($date)
     {
@@ -65,7 +63,6 @@ class DbStorage extends BaseObject implements StorageInterface
      * @param string $entityName
      * @param string|null $entityId
      * @return int
-     * @throws \yii\db\Exception
      */
     public function delete($entityName, $entityId)
     {
@@ -78,7 +75,6 @@ class DbStorage extends BaseObject implements StorageInterface
     /**
      * @param array $condition
      * @return int
-     * @throws \yii\db\Exception
      */
     private function deleteByCondition($condition)
     {

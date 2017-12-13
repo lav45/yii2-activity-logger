@@ -14,14 +14,17 @@ use lav45\activityLogger\modules\models\ActivityLogViewModel;
  */
 class DefaultController extends Controller
 {
-    public function actionIndex($entityName, $entityId = null)
+    public function actionIndex($entityName = null, $entityId = null, $userId = null)
     {
         ActivityLogViewModel::setModule($this->module);
 
         $query = ActivityLogViewModel::find()
-            ->where(['entity_name' => $entityName])
-            ->andFilterWhere(['entity_id' => $entityId])
-            ->orderBy(['created_at' => SORT_DESC]);
+            ->orderBy(['created_at' => SORT_DESC])
+            ->filterWhere([
+                'entity_name' => $entityName,
+                'entity_id' => $entityId,
+                'user_id' => $userId,
+            ]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

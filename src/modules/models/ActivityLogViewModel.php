@@ -20,7 +20,7 @@ class ActivityLogViewModel extends ActivityLog
     /**
      * @param Module $module
      */
-    public static function setModule(Module $module)
+    public static function setModule($module)
     {
         static::$module = $module;
     }
@@ -31,16 +31,8 @@ class ActivityLogViewModel extends ActivityLog
     public function getUserName()
     {
         $user_name = Html::encode($this->user_name);
-
-        if (self::$module->createUserUrl === null) {
-            return Html::tag('span', $user_name);
-        }
-
-        $url = call_user_func(self::$module->createUserUrl, $this->user_id);
-        return Html::a($user_name, $url, [
-            'target' => '_blank',
-            'data-pjax' => 0
-        ]);
+        $url = ['index', 'userId' => $this->user_id];
+        return Html::a($user_name, $url);
     }
 
     /**
@@ -49,7 +41,7 @@ class ActivityLogViewModel extends ActivityLog
      */
     public function getData()
     {
-        foreach ((array)parent::getData() as $attribute => $values) {
+        foreach (parent::getData() as $attribute => $values) {
             if (is_int($attribute)) {
                 yield $attribute => Html::encode(Yii::t('app', $values));
             } else {

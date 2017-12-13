@@ -44,10 +44,10 @@ class ActivityLog extends ActiveRecord
     }
 
     /**
-     * @return array|string
+     * @return array
      */
     public function getData()
     {
-        return json_decode($this->data, true);
+        return (array)json_decode($this->data, true);
     }
 }

@@ -1,9 +1,20 @@
 # yii2-activity-logger
 
-Tools to store user activity log for Yii2
+<table>
+    <tr>
+        <td width="200">
+            <img src="https://user-images.githubusercontent.com/675367/33967884-6dc55ca8-e076-11e7-88c5-4ba5d7d69012.png" alt="yii2-activity-logger" />
+        </td>
+        <td>
+            Эта утилита поможет вам отслеживать пользовательской активности на сайте.
+            Когда в админке над контентом работает больше двух человек, не всегда понятно кто и зачем сделал изменения в посте, убрал статью из публикации, добавил непонятного пользователя, удалил организацию.
+            Для того чтобы была возможность поблагодарить автора за усердную работу и был разработан этот модуль.
+        </td>
+    </tr>
+</table>
 
 
-## Install
+## Установка
 
 ```bash
 ~$ composer require --prefer-dist lav45/yii2-activity-logger
@@ -11,42 +22,64 @@ Tools to store user activity log for Yii2
 ```
 
 
-## Settings
+## Подключение
+Необходимо добавить в конфигурационный файл
 
 ```php
 return [
     'modules' => [
+        /**
+         * Модуль будет использоваться для просмотра логов
+         */
         'logger' => [
             'class' => 'lav45\activityLogger\modules\Module',
-            'createUserUrl' => function($id) {
-                  return \yii\helpers\Url::toRoute(['/user/default/view', 'id' => $id]);
-            },
             'entityMap' => [
                 'news' => 'common\models\News',
             ]
         ]
     ],
     'components' => [
+        /**
+         * Компонент принимает и управляет логами
+         */
         'activityLogger' => [
             'class' => 'lav45\activityLogger\Manager',
+
+            // Логирование можно включить только для PROD версии
+            // 'enabled' => YII_ENV_PROD,
+
+            // при вызове метода `clean()` будут удалены все данные добавленные 365 дней назад
+            // 'deleteOldThanDays' => 365,
+
+            // string|array идентификатор компонента `\yii\web\User`
+            // 'user' => 'user',
+
+            // Поле для отображения имени из модели пользователя
+            // 'userNameAttribute' => 'username',
         ]
     ]
 ];
 ```
 
 
-### Create link to activity logger module
+### Создаем ссылки для просмотра записанных логов
 
 ```php
-// This page display activity logs for all entity "news"
+// На этой странице можно просмотреть все логи
+Url::toRoute(['/logger/default/index']);
+
+// На этой странице можно просмотреть журналы действий конкретного пользователя по го `$id`
+Url::toRoute(['/logger/default/index', 'userId' => 1]);
+
+// На этой странице можно просмотреть журналы действий для всех объектов "news"
 Url::toRoute(['/logger/default/index', 'entityName' => 'news']);
 
-// This page display activity logs for entity "news" and "id" => 1
+// На этой странице можно просмотреть журналы действий для всех объектов "news" с "id" => 1
 Url::toRoute(['/logger/default/index', 'entityName' => 'news', 'entityId' => 1]);
 ```
 
 
-## Example usage to ActiveRecord model
+## Пример использования для ActiveRecord модели
 
 ```php
 /**
@@ -54,12 +87,12 @@ Url::toRoute(['/logger/default/index', 'entityName' => 'news', 'entityId' => 1])
  */
 class News extends ActiveRecord
 {
-    // Recommended
+    // Рекомендуется использовать
     public function rules()
     {
         return [
-            // If a field value is not required use `default` validator.
-            // If a field is not filled, it will set its value to NULL.
+            // Если значение поля не обязательное, тогда используйте валидатор `default`
+            // тогда если поле не будет заполнено, ему будет присвоено значение NULL.
 
             [['parent_id'], 'integer'],
             [['parent_id'], 'default'],
@@ -69,7 +102,7 @@ class News extends ActiveRecord
         ];
     }
 
-    // Recommended
+    // Рекомендуется использовать
     public function transactions()
     {
         return [
@@ -80,17 +113,26 @@ class News extends ActiveRecord
     public function behaviors()
     {
         return [
-            ['class' => 'yii\behaviors\AttributeTypecastBehavior'], // Recommended
+            // Рекомендуется использовать для корректной работы поиска измененных полей
+            ['class' => 'yii\behaviors\AttributeTypecastBehavior'],
             [
                 'class' => 'lav45\activityLogger\ActiveRecordBehavior',
+                // Список полей за изменением которых будет производиться слежение
                 'attributes' => [
+                    // Простые поля ( string|int|bool )
                     'name',
+
+                    // Поля значение которого можно найти в списке.
+                    // в данном случае `$model->getStatusList()[$model->status]`
                     'status' => [
-                        'list' => 'statusList'
+                        'list' => 'statusList',
                     ],
+
+                    // Поле значение которого является `id` связи с другой моделью
                     'template_id' => [
                         'relation' => 'template',
-                        'attribute' => 'name'
+                        // Поле из связанной таблицы которое будет использовано в качестве отображаемого значения
+                        'attribute' => 'name',
                     ],
                 ]
             ]
@@ -100,19 +142,66 @@ class News extends ActiveRecord
 ```
 
 
-## Manual usage
+## Добавим консольный контроллер для очистки логов
+
+Это не обязательное расширение. Если вы не планируете удалять устаревшие логи, можете пропустить этот пункт.
+
+```php
+return [
+    'controllerMap' => [
+        'logger' => [
+            'class' => 'lav45\activityLogger\console\DefaultController'
+        ]
+    ],
+];
+```
+
+Теперь можно периодически чистить устаревшие логи выполняя команду из консоли
+
+```bash
+~$ yii logger/clean
+Deleted 5 record(s) from the activity log.
+```
+
+
+## Ручное использование компонента
+
+### Добавление логов
+
+Пригодится в тех случаях когда в процессе работы приложения не используются ActiveRecord модели.
+Например при отправке отчетов, скачивании файлов, работа с внешним API, и т.д
 
 ```php
     /**
-     * @param string $entityName
-     * @param string $messageText
-     * @param null|string $action
+     * @param string $entityName имя сущности
+     * @param string $messageText текст который хотите сохранить
+     * @param null|string $action какое действие выполнялось
      * @param null|string $entityId
      * @return bool
      */
-    public function log($entityName, $messageText, $action = null, $entityId = null);
+    Yii::$app->activityLogger->log($entityName, $messageText, $action = null, $entityId = null);
 
-    Yii::$app->activityLogger->log($model->getEntityName(), 'export data');
-    Yii::$app->activityLogger->log($model->getEntityName(), 'export data', 'download');
-    Yii::$app->activityLogger->log($model->getEntityName(), 'export data', 'send mail', $model->getEntityId());
+    $logger = Yii::$app->activityLogger;
+
+    $logger->log($model->getEntityName(), 'export data');
+
+    $logger->log($model->getEntityName(), 'export data', 'download');
+
+    $logger->log($model->getEntityName(), 'export data', 'send mail', $model->getEntityId());
+    // или можно использовать полнофункциональный вариант
+    $logger
+        ->createMessage($model->getEntityName(), [
+            'entityId' => $model->getEntityId(),
+            'data' => 'export data',
+            'action' => 'send mail',
+        ])
+        ->save();
+```
+
+### Удаление устаревших данных
+
+Будут удалены все логи старше `Yii::$app->activityLogger->deleteOldThanDays = 365;` одного года
+
+```php
+Yii::$app->activityLogger->clean();
 ```

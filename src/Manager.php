@@ -3,7 +3,6 @@
 namespace lav45\activityLogger;
 
 use Yii;
-use yii\web\User;
 use yii\di\Instance;
 use yii\base\BaseObject;
 use yii\base\InvalidConfigException;
@@ -23,7 +22,7 @@ class Manager extends BaseObject
      */
     public $deleteOldThanDays = 365;
     /**
-     * @var User|array|string|null
+     * @var string|null
      */
     public $user = 'user';
     /**
@@ -57,17 +56,17 @@ class Manager extends BaseObject
 
     protected function initMessageOptions()
     {
-        if (empty($this->user)) {
+        if ($this->user === null) {
             return;
         }
-
-        $this->user = Instance::ensure($this->user, User::class);
-        $identity = $this->user->identity;
-
-        $this->messageClass = array_merge($this->messageClass, [
-            'userId' => $identity->getId(),
-            'userName' => $identity->{$this->userNameAttribute}
-        ]);
+        if ($this->user = Yii::$app->get($this->user, false)) {
+            /** @var \yii\web\IdentityInterface $identity */
+            $identity = $this->user->identity;
+            $this->messageClass = array_merge($this->messageClass, [
+                'userId' => $identity->getId(),
+                'userName' => $identity->{$this->userNameAttribute}
+            ]);
+        }
     }
 
     /**

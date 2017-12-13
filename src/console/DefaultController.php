@@ -10,7 +10,7 @@ class DefaultController extends Controller
     use ManagerTrait;
 
     /**
-     * Clean activity log storage
+     * Clean storage activity log
      */
     public function actionClean()
     {

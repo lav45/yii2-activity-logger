@@ -8,32 +8,28 @@ use yii\base\Model;
 class Module extends \yii\base\Module
 {
     /**
-     * @var \Closure
-     * Example:
-     *
-     * function($id) {
-     *      return Url::toRoute(['/user/default/view', 'id' => $id]);
-     * }
-     */
-    public $createUserUrl;
-    /**
-     * @var string[]|Model[] [ entityName => \namespace\to\Model\EntityClass ]
+     * @var array Список моделей которые логировались
+     * [ entityName => \namespace\to\Model\EntityClass ]
+     * Эта информация используется для корректного отображения имен полей, записанных данных
+     * Если `entityName` не будет найдена в списке то имена полей будут выводится без преобразования
+     * @see Model::getAttributeLabel()
      */
     public $entityMap = [];
 
     /**
      * @param string $id
      * @return null|Model
-     * @throws \yii\base\InvalidConfigException
      */
     public function getEntityObject($id)
     {
         if (!isset($this->entityMap[$id])) {
             return null;
         }
-        if (!is_object($this->entityMap[$id])) {
-            $this->entityMap[$id] = Yii::createObject($this->entityMap[$id]);
+        /** @var Model $class */
+        $class =& $this->entityMap[$id];
+        if (!is_object($class)) {
+            $class = Yii::createObject($class);
         }
-        return $this->entityMap[$id];
+        return $class;
     }
 }
