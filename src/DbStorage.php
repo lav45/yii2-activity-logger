@@ -6,8 +6,6 @@ use yii\db\Query;
 use yii\db\Connection;
 use yii\di\Instance;
 use yii\base\BaseObject;
-use lav45\activityLogger\contracts\MessageInterface;
-use lav45\activityLogger\contracts\StorageInterface;
 
 /**
  * Class DbStorage
@@ -33,11 +31,11 @@ class DbStorage extends BaseObject implements StorageInterface
     }
 
     /**
-     * @param MessageInterface $message
+     * @param LogMessage $message
      * @return int
      * @throws \yii\db\Exception
      */
-    public function save(MessageInterface $message)
+    public function save($message)
     {
         return (new Query)
             ->createCommand($this->db)

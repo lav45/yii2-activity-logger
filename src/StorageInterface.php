@@ -1,14 +1,14 @@
 <?php
 
-namespace lav45\activityLogger\contracts;
+namespace lav45\activityLogger;
 
 interface StorageInterface
 {
     /**
-     * @param MessageInterface $message
+     * @param LogMessage $message
      * @return int
      */
-    public function save(MessageInterface $message);
+    public function save($message);
 
     /**
      * @param int $date

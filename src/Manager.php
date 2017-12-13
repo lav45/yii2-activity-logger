@@ -7,15 +7,12 @@ use yii\web\User;
 use yii\di\Instance;
 use yii\base\BaseObject;
 use yii\base\InvalidConfigException;
-use lav45\activityLogger\contracts\StorageInterface;
-use lav45\activityLogger\contracts\ManagerInterface;
-use lav45\activityLogger\contracts\MessageInterface;
 
 /**
  * Class Manager
  * @package lav45\activityLogger
  */
-class Manager extends BaseObject implements ManagerInterface
+class Manager extends BaseObject
 {
     /**
      * @var bool
@@ -44,7 +41,7 @@ class Manager extends BaseObject implements ManagerInterface
         'class' => LogMessage::class
     ];
     /**
-     * @var MessageInterface
+     * @var LogMessage
      */
     private $message;
 
@@ -115,15 +112,7 @@ class Manager extends BaseObject implements ManagerInterface
         }
 
         $options = array_merge($this->messageClass, $options);
-
-        $model = Yii::createObject($options, [$entityName]);
-
-        if ($model instanceof MessageInterface) {
-            $this->message = $model;
-        } else {
-            throw new InvalidConfigException('Failed to instantiate class "' . MessageInterface::class . '".');
-        }
-
+        $this->message = Yii::createObject($options, [$entityName]);
         return $this;
     }
 

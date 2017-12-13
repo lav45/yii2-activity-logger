@@ -4,7 +4,6 @@ namespace lav45\activityLogger;
 
 use yii\helpers\Json;
 use yii\base\BaseObject;
-use lav45\activityLogger\contracts\MessageInterface;
 
 /**
  * Class LogMessage
@@ -17,7 +16,7 @@ use lav45\activityLogger\contracts\MessageInterface;
  * @property string $action
  * @property string $data
  */
-class LogMessage extends BaseObject implements MessageInterface
+class LogMessage extends BaseObject
 {
     /**
      * @var \Closure
