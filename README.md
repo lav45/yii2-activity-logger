@@ -18,7 +18,7 @@
 
 ```bash
 ~$ composer require --prefer-dist lav45/yii2-activity-logger
-~$ yii migrate --migration-path=vendor/lav45/yii2-activity-logger/migrates
+~$ yii migrate --migration-path=vendor/lav45/yii2-activity-logger/migrations
 ```
 
 
