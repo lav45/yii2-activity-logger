@@ -49,8 +49,7 @@ class Manager extends BaseObject
     public function init()
     {
         $this->initMessageOptions();
-
-        $this->storage = Instance::ensure($this->storage, StorageInterface::class);
+        $this->initStorage();
     }
 
     protected function initMessageOptions()
@@ -66,6 +65,11 @@ class Manager extends BaseObject
                 'userName' => $identity->{$this->userNameAttribute}
             ]);
         }
+    }
+
+    protected function initStorage()
+    {
+        $this->storage = Instance::ensure($this->storage, StorageInterface::class);
     }
 
     /**

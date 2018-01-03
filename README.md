@@ -45,17 +45,26 @@ return [
         'activityLogger' => [
             'class' => 'lav45\activityLogger\Manager',
 
-            // Логирование можно включить только для PROD версии
-            // 'enabled' => YII_ENV_PROD,
+// ================ Значения используемые по умолчанию ================
+
+            // Включаем логирование для PROD версии
+            'enabled' => YII_ENV_PROD,
 
             // при вызове метода `clean()` будут удалены все данные добавленные 365 дней назад
-            // 'deleteOldThanDays' => 365,
+            'deleteOldThanDays' => 365,
 
-            // string|array идентификатор компонента `\yii\web\User`
-            // 'user' => 'user',
+            // string|null идентификатор компонента `\yii\web\User`
+            'user' => 'user',
 
             // Поле для отображения имени из модели пользователя
-            // 'userNameAttribute' => 'username',
+            'userNameAttribute' => 'username',
+
+            // Настройки для хранилища
+            'storage' => [
+                'class' => 'lav45\activityLogger\DbStorage',
+                'tableName' => '{{%activity_log}}',
+                'db' => 'db',
+            ],
         ]
     ]
 ];
@@ -172,27 +181,25 @@ Deleted 5 record(s) from the activity log.
 Например при отправке отчетов, скачивании файлов, работа с внешним API, и т.д
 
 ```php
-    /**
-     * @param string $entityName имя сущности
-     * @param string $messageText текст который хотите сохранить
-     * @param null|string $action какое действие выполнялось
-     * @param null|string $entityId
-     * @return bool
-     */
-    Yii::$app->activityLogger->log($entityName, $messageText, $action = null, $entityId = null);
+    // имя сущности
+    $entityName = 'user';
+    // id сущности с которой производится действие
+    $entityId = 10;
+    // текст с описанием действия
+    $messageText = 'export data';
 
     $logger = Yii::$app->activityLogger;
 
-    $logger->log($model->getEntityName(), 'export data');
+    $logger->log($entityName, $messageText);
 
-    $logger->log($model->getEntityName(), 'export data', 'download');
+    $logger->log($entityName, $messageText, 'download');
 
-    $logger->log($model->getEntityName(), 'export data', 'send mail', $model->getEntityId());
+    $logger->log($entityName, $messageText, 'send mail', $entityId);
     // или можно использовать полнофункциональный вариант
     $logger
-        ->createMessage($model->getEntityName(), [
-            'entityId' => $model->getEntityId(),
-            'data' => 'export data',
+        ->createMessage($entityName, [
+            'entityId' => $entityId,
+            'data' => [$messageText],
             'action' => 'send mail',
         ])
         ->save();
@@ -200,7 +207,7 @@ Deleted 5 record(s) from the activity log.
 
 ### Удаление устаревших данных
 
-Будут удалены все логи старше `Yii::$app->activityLogger->deleteOldThanDays = 365;` одного года
+Будут удалены все логи старше одного года. Этот параметр можно изменить в настройках компонента, указав свое значение для параметра `deleteOldThanDays`
 
 ```php
 Yii::$app->activityLogger->clean();
