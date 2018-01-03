@@ -33,9 +33,14 @@ return [
          */
         'logger' => [
             'class' => 'lav45\activityLogger\modules\Module',
+
+            // Список моделей которые логировались
             'entityMap' => [
                 'news' => 'common\models\News',
             ]
+
+            // id компонента хранилища логов `\lav45\activityLogger\DbStorage`
+            'storage' => 'activityLoggerStorage'
         ]
     ],
     'components' => [
@@ -45,27 +50,34 @@ return [
         'activityLogger' => [
             'class' => 'lav45\activityLogger\Manager',
 
-// ================ Значения используемые по умолчанию ================
-
             // Включаем логирование для PROD версии
             'enabled' => YII_ENV_PROD,
 
             // при вызове метода `clean()` будут удалены все данные добавленные 365 дней назад
             'deleteOldThanDays' => 365,
 
-            // string|null идентификатор компонента `\yii\web\User`
+            // идентификатор компонента `\yii\web\User`
             'user' => 'user',
 
             // Поле для отображения имени из модели пользователя
             'userNameAttribute' => 'username',
 
-            // Настройки для хранилища
-            'storage' => [
-                'class' => 'lav45\activityLogger\DbStorage',
-                'tableName' => '{{%activity_log}}',
-                'db' => 'db',
-            ],
-        ]
+            // идентификатор компонента хранилища логов `\lav45\activityLogger\StorageInterface`
+            'storage' => 'activityLoggerStorage',
+        ],
+
+        /**
+         * Компонент принимает и управляет логами
+         */
+        'activityLoggerStorage' => [
+            'class' => 'lav45\activityLogger\DbStorage',
+
+            // Имя таблицы в которой будут хранится логи
+            'tableName' => '{{%activity_log}}',
+
+            // идентификатор компонента `\yii\db\Connection`
+            'db' => 'db',
+        ],
     ]
 ];
 ```

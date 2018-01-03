@@ -20,11 +20,30 @@ use yii\db\ActiveRecord;
 class ActivityLog extends ActiveRecord
 {
     /**
+     * @return \lav45\activityLogger\DbStorage
+     */
+    protected static function getStorage()
+    {
+        /** @var \lav45\activityLogger\DbStorage $storage */
+        $storage = Yii::$app->get('activityLoggerStorage');
+
+        return $storage;
+    }
+
+    /**
      * @return string the table name
      */
     public static function tableName()
     {
-        return '{{%activity_log}}';
+        return self::getStorage()->tableName;
+    }
+
+    /**
+     * @return \yii\db\Connection
+     */
+    public static function getDb()
+    {
+        return self::getStorage()->db;
     }
 
     /**

@@ -5,6 +5,10 @@ namespace lav45\activityLogger\modules;
 use Yii;
 use yii\base\Model;
 
+/**
+ * Class Module
+ * @package lav45\activityLogger\modules
+ */
 class Module extends \yii\base\Module
 {
     /**
@@ -23,6 +27,11 @@ class Module extends \yii\base\Module
     {
         parent::init();
 
+        $this->initTranslations();
+    }
+
+    protected function initTranslations()
+    {
         Yii::$app->i18n->translations['lav45/logger'] = [
             'class' => 'yii\i18n\PhpMessageSource',
             'basePath' => __DIR__ . '/messages',

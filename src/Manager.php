@@ -3,7 +3,6 @@
 namespace lav45\activityLogger;
 
 use Yii;
-use yii\di\Instance;
 use yii\base\BaseObject;
 
 /**
@@ -12,6 +11,8 @@ use yii\base\BaseObject;
  */
 class Manager extends BaseObject
 {
+    use StorageTrait;
+
     /**
      * @var bool
      */
@@ -29,10 +30,6 @@ class Manager extends BaseObject
      */
     public $userNameAttribute = 'username';
     /**
-     * @var string|array|StorageInterface
-     */
-    public $storage = DbStorage::class;
-    /**
      * @var array
      */
     public $messageClass = [
@@ -49,7 +46,6 @@ class Manager extends BaseObject
     public function init()
     {
         $this->initMessageOptions();
-        $this->initStorage();
     }
 
     protected function initMessageOptions()
@@ -65,11 +61,6 @@ class Manager extends BaseObject
                 'userName' => $identity->{$this->userNameAttribute}
             ]);
         }
-    }
-
-    protected function initStorage()
-    {
-        $this->storage = Instance::ensure($this->storage, StorageInterface::class);
     }
 
     /**
@@ -130,7 +121,7 @@ class Manager extends BaseObject
         $this->message = null;
 
         try {
-            $result = $this->storage->save($message);
+            $result = $this->getStorage()->save($message);
         } catch (\Exception $e) {
             if (YII_DEBUG) {
                 throw $e;
@@ -149,7 +140,7 @@ class Manager extends BaseObject
      */
     public function delete($entityName, $entityId = null)
     {
-        return $this->storage->delete($entityName, $entityId) > 0;
+        return $this->getStorage()->delete($entityName, $entityId) > 0;
     }
 
     /**
@@ -162,7 +153,7 @@ class Manager extends BaseObject
         }
 
         $cutOffDate = time() - $this->deleteOldThanDays * 86400;
-        $amountDeleted = $this->storage->clean($cutOffDate);
+        $amountDeleted = $this->getStorage()->clean($cutOffDate);
 
         return $amountDeleted;
     }
