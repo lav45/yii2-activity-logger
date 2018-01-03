@@ -14,15 +14,41 @@
 </table>
 
 
-## Установка
+## Установаем расширение
 
 ```bash
 ~$ composer require --prefer-dist lav45/yii2-activity-logger
-~$ yii migrate --migration-path=vendor/lav45/yii2-activity-logger/migrations
+```
+
+
+## Миграции
+
+Для начала нам необхадимо настроить `MigrateController`, таким образом чтобы он получал миграции из нескольких источников.
+В настройках консольного окружения необхадимо добавить следущий код:
+
+```php
+return [
+    'controllerMap' => [
+        'migrate' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'migrationPath' => [
+                '@app/migrations',
+                '@vendor/lav45/yii2-activity-logger/migrations',
+            ],
+        ],
+    ],
+];
+```
+
+Запускаем миграции
+
+```bash
+~$ yii migrate
 ```
 
 
 ## Подключение
+
 Необходимо добавить в конфигурационный файл
 
 ```php
@@ -37,11 +63,8 @@ return [
             // Список моделей которые логировались
             'entityMap' => [
                 'news' => 'common\models\News',
-            ]
-
-            // id компонента хранилища логов `\lav45\activityLogger\DbStorage`
-            'storage' => 'activityLoggerStorage'
-        ]
+            ],
+        ]
     ],
     'components' => [
         /**
@@ -64,6 +87,21 @@ return [
 
             // идентификатор компонента хранилища логов `\lav45\activityLogger\StorageInterface`
             'storage' => 'activityLoggerStorage',
+
+            'messageClass' => [
+                'class' => '\lav45\activityLogger\LogMessage',
+
+                // При использовании компанета когда пользователь ещё не авторизировался его действия
+                // можно записывать от имени "Неизвесный пользователь", к примеру.
+                'userId' => 'cron',
+                'userName' => 'Неизвесный пользователь',
+
+                // Так же можно указать значение по умолчанию и для других параметров
+                // 'entityId' => '...',
+                // 'createdAt' => time(),
+                // 'action' => '...',
+                // 'data' => '[" ... "]',
+            ],
         ],
 
         /**
