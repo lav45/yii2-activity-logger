@@ -64,7 +64,7 @@ class ActivityLogViewModel extends ActivityLog
     {
         foreach (parent::getData() as $attribute => $values) {
             if (is_int($attribute)) {
-                yield $attribute => Html::encode(Yii::t('app', $values));
+                yield $attribute => Html::encode(Yii::t('lav45/logger', $values));
             } else {
                 if ($entityModel = self::$module->getEntityObject($this->entity_name)) {
                     $attribute = $entityModel->getAttributeLabel($attribute);

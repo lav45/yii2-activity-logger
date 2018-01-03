@@ -16,6 +16,16 @@ class Module extends \yii\base\Module
      */
     public $entityMap = [];
 
+    public function init()
+    {
+        parent::init();
+
+        Yii::$app->i18n->translations['lav45/logger'] = [
+            'class' => 'yii\i18n\PhpMessageSource',
+            'basePath' => __DIR__ . '/messages',
+        ];
+    }
+
     /**
      * @param string $id
      * @return null|Model

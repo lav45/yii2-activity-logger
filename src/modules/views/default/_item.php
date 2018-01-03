@@ -13,7 +13,7 @@ $formatter = Yii::$app->formatter;
 <h4>
     <?= $model->getEntityName() ?>
 
-    <?= $model->getUserName() . ' ' . Yii::t('app', $model->action) ?>
+    <?= $model->getUserName() . ' ' . Yii::t('lav45/logger', $model->action) ?>
 
     <span title="<?= $formatter->asDatetime($model->created_at) ?>">
         <?= $formatter->asRelativeTime($model->created_at) ?>
@@ -25,12 +25,12 @@ $formatter = Yii::$app->formatter;
             <li><?= $values; ?></li>
         <?php else: ?>
             <li>
-                <?= Yii::t('app', '<strong>{attribute}</strong> has ben changed', ['attribute' => $attribute]) ?>
+                <?= Yii::t('lav45/logger', '<strong>{attribute}</strong> has been changed', ['attribute' => $attribute]) ?>
 
-                <?= Yii::t('app', 'from'); ?>
+                <?= Yii::t('lav45/logger', 'from'); ?>
                 <strong><i><?= $values->getOldValue(); ?></i></strong>
 
-                <?= Yii::t('app', 'to'); ?>
+                <?= Yii::t('lav45/logger', 'to'); ?>
                 <strong><i><?= $values->getNewValue(); ?></i></strong>
             </li>
         <?php endif; ?>

@@ -8,7 +8,7 @@ use yii\helpers\Html;
 use yii\widgets\ListView;
 use yii\widgets\Pjax;
 
-$this->title = 'Activity log';
+$this->title = Yii::t('lav45/logger', 'Activity log');
 $this->params['breadcrumbs'][] = $this->title;
 
 $this->registerCss(<<<CSS

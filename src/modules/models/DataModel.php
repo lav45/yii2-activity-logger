@@ -70,7 +70,7 @@ class DataModel
     protected function formattedValue($values)
     {
         if (is_string($values)) {
-            return Html::encode(Yii::t('app', $values));
+            return Html::encode(Yii::t('lav45/logger', $values));
         }
         if (is_null($values)) {
             return $this->getFormatter()->nullDisplay;
