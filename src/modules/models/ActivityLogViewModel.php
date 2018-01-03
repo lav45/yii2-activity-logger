@@ -27,6 +27,17 @@ class ActivityLogViewModel extends ActivityLog
     }
 
     /**
+     * @return array
+     */
+    public function attributeLabels()
+    {
+        return array_merge(parent::attributeLabels(), [
+            'entityName' => Yii::t('app', 'Entity name'),
+            'userName' => Yii::t('app', 'User name'),
+        ]);
+    }
+
+    /**
      * @return string
      */
     public function getEntityName()
@@ -64,7 +75,7 @@ class ActivityLogViewModel extends ActivityLog
     {
         foreach (parent::getData() as $attribute => $values) {
             if (is_int($attribute)) {
-                yield $attribute => Html::encode(Yii::t('lav45/logger', $values));
+                yield $attribute => Html::encode(Yii::t('app', $values));
             } else {
                 if ($entityModel = self::$module->getEntityObject($this->entity_name)) {
                     $attribute = $entityModel->getAttributeLabel($attribute);
