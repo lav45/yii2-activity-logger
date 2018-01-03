@@ -34,7 +34,6 @@ class DataModel
 
     /**
      * @return Formatter
-     * @throws \yii\base\InvalidConfigException
      */
     protected function getFormatter()
     {
@@ -46,7 +45,6 @@ class DataModel
 
     /**
      * @return null|string
-     * @throws \yii\base\InvalidConfigException
      */
     public function getOldValue()
     {
@@ -57,7 +55,6 @@ class DataModel
 
     /**
      * @return null|string
-     * @throws \yii\base\InvalidConfigException
      */
     public function getNewValue()
     {
@@ -69,7 +66,6 @@ class DataModel
     /**
      * @param mixed $values
      * @return string
-     * @throws \yii\base\InvalidConfigException
      */
     protected function formattedValue($values)
     {

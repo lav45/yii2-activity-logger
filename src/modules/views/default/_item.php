@@ -11,6 +11,8 @@ $formatter = Yii::$app->formatter;
 
 ?>
 <h4>
+    <?= $model->getEntityName() ?>
+
     <?= $model->getUserName() . ' ' . Yii::t('app', $model->action) ?>
 
     <span title="<?= $formatter->asDatetime($model->created_at) ?>">
@@ -23,7 +25,7 @@ $formatter = Yii::$app->formatter;
             <li><?= $values; ?></li>
         <?php else: ?>
             <li>
-                <?= Yii::t('app', 'The setting <strong>{attribute}</strong> has ben changed', ['attribute' => $attribute]) ?>
+                <?= Yii::t('app', '<strong>{attribute}</strong> has ben changed', ['attribute' => $attribute]) ?>
 
                 <?= Yii::t('app', 'from'); ?>
                 <strong><i><?= $values->getOldValue(); ?></i></strong>

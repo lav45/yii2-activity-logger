@@ -5,7 +5,6 @@ namespace lav45\activityLogger;
 use Yii;
 use yii\di\Instance;
 use yii\base\BaseObject;
-use yii\base\InvalidConfigException;
 
 /**
  * Class Manager
@@ -75,18 +74,15 @@ class Manager extends BaseObject
      * @param null|string $action
      * @param null|string $entityId
      * @return bool
-     * @throws InvalidConfigException
-     * @throws \Exception
      */
     public function log($entityName, $messageText, $action = null, $entityId = null)
     {
         if (empty($entityName) || empty($messageText)) {
             return false;
         }
-
         return $this->createMessage($entityName, [
             'entityId' => $entityId,
-            'data' => $messageText,
+            'data' => [$messageText],
             'action' => $action,
         ])->save();
     }
@@ -102,14 +98,12 @@ class Manager extends BaseObject
      *  - data
      *
      * @return $this
-     * @throws InvalidConfigException
      */
     public function createMessage($entityName, array $options)
     {
         if (empty($entityName) || empty($options)) {
             return $this;
         }
-
         $options = array_merge($this->messageClass, $options);
         $this->message = Yii::createObject($options, [$entityName]);
         return $this;

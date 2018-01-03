@@ -3,6 +3,7 @@
 namespace lav45\activityLogger\modules\models;
 
 use Yii;
+use yii\helpers\Url;
 use yii\helpers\Html;
 use lav45\activityLogger\modules\Module;
 
@@ -28,15 +29,35 @@ class ActivityLogViewModel extends ActivityLog
     /**
      * @return string
      */
-    public function getUserName()
+    public function getEntityName()
     {
-        $user_name = Html::encode($this->user_name);
-        $url = ['index', 'userId' => $this->user_id];
-        return Html::a($user_name, $url);
+        $name = $this->entity_name;
+        if ($this->entity_id) {
+            $name .= ':' . $this->entity_id;
+        }
+        $url = Url::current([
+            'entityName' => $this->entity_name,
+            'entityId' => $this->entity_id,
+            'page' => null
+        ]);
+        return '[' . Html::a($name , $url) . ']';
     }
 
     /**
-     * @return \Generator|DataModel[]
+     * @return string
+     */
+    public function getUserName()
+    {
+        $name = Html::encode($this->user_name);
+        $url = Url::current([
+            'userId' => $this->user_id,
+            'page' => null
+        ]);
+        return Html::a($name, $url);
+    }
+
+    /**
+     * @return \Generator|DataModel[]|array
      * @throws \yii\base\InvalidConfigException
      */
     public function getData()

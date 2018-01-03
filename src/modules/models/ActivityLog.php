@@ -48,6 +48,6 @@ class ActivityLog extends ActiveRecord
      */
     public function getData()
     {
-        return (array)json_decode($this->data, true);
+        return json_decode($this->data, true);
     }
 }
