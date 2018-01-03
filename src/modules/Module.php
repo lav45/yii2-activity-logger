@@ -16,6 +16,9 @@ class Module extends \yii\base\Module
      */
     public $entityMap = [];
 
+    /**
+     * Initializes the module.
+     */
     public function init()
     {
         parent::init();
@@ -36,10 +39,7 @@ class Module extends \yii\base\Module
             return null;
         }
         /** @var Model $class */
-        $class =& $this->entityMap[$id];
-        if (!is_object($class)) {
-            $class = Yii::createObject($class);
-        }
-        return $class;
+        $class = $this->entityMap[$id];
+        return $class::instance();
     }
 }
