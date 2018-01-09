@@ -4,6 +4,7 @@ namespace lav45\activityLogger;
 
 use Yii;
 use yii\base\BaseObject;
+use yii\di\Instance;
 
 /**
  * Class Manager
@@ -11,8 +12,6 @@ use yii\base\BaseObject;
  */
 class Manager extends BaseObject
 {
-    use StorageTrait;
-
     /**
      * @var bool
      */
@@ -39,6 +38,10 @@ class Manager extends BaseObject
      * @var LogMessage
      */
     private $message;
+    /**
+     * @var string|StorageInterface
+     */
+    private $storage = 'activityLoggerStorage';
 
     /**
      * Initializes the object.
@@ -61,6 +64,25 @@ class Manager extends BaseObject
                 'userName' => $identity->{$this->userNameAttribute}
             ]);
         }
+    }
+
+    /**
+     * @return StorageInterface
+     */
+    public function getStorage()
+    {
+        if (!$this->storage instanceof StorageInterface) {
+            $this->storage = Instance::ensure($this->storage, StorageInterface::class);
+        }
+        return $this->storage;
+    }
+
+    /**
+     * @param string|StorageInterface $storage
+     */
+    public function setStorage($storage)
+    {
+        $this->storage = $storage;
     }
 
     /**
