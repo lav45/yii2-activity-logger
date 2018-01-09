@@ -2,7 +2,7 @@
 
 return [
     // string, required, root directory of all source files
-    'sourcePath' => __DIR__ . DIRECTORY_SEPARATOR . '../src',
+    'sourcePath' => __DIR__ . DIRECTORY_SEPARATOR . '../..',
     // array, required, list of language codes that the extracted messages
     // should be translated to. For example, ['zh-CN', 'de'].
     'languages' => ['ru'],
@@ -20,7 +20,7 @@ return [
     'removeUnused' => false,
     // boolean, whether to mark messages that no longer appear in the source code.
     // Defaults to true, which means each of these messages will be enclosed with a pair of '@@' marks.
-    'markUnused' => true,
+    'markUnused' => false,
     // array, list of patterns that specify which files (not directories) should be processed.
     // If empty or not set, all files will be processed.
     // See helpers/FileHelper::findFiles() for pattern matching rules.
@@ -30,9 +30,7 @@ return [
     // If empty or not set, all files/directories will be processed.
     // See helpers/FileHelper::findFiles() for pattern matching rules.
     // If a file/directory matches both a pattern in "only" and "except", it will NOT be processed.
-    'except' => [
-        'modules/models'
-    ],
+    'except' => [],
 
     // 'php' output format is for saving messages to php files.
     'format' => 'php',

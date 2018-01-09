@@ -52,13 +52,13 @@ class ActivityLog extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'entity_name' => Yii::t('app', 'Entity name'),
-            'entity_id' => Yii::t('app', 'Entity'),
-            'user_id' => Yii::t('app', 'User'),
-            'user_name' => Yii::t('app', 'User name'),
-            'created_at' => Yii::t('app', 'Created'),
-            'action' => Yii::t('app', 'Action'),
-            'data' => Yii::t('app', 'Data'),
+            'entity_name' => Yii::t('lav45/logger', 'Entity name'),
+            'entity_id' => Yii::t('lav45/logger', 'Entity'),
+            'user_id' => Yii::t('lav45/logger', 'User'),
+            'user_name' => Yii::t('lav45/logger', 'User name'),
+            'created_at' => Yii::t('lav45/logger', 'Created'),
+            'action' => Yii::t('lav45/logger', 'Action'),
+            'data' => Yii::t('lav45/logger', 'Data'),
         ];
     }
 
