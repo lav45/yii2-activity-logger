@@ -9,12 +9,13 @@ use yii\base\BaseObject;
  * Class LogMessage
  * @package lav45\activityLogger
  *
- * @property string $entityId
- * @property string $createdAt
- * @property string $userId
- * @property string $userName
- * @property string $action
- * @property string $data
+ * @property string $entityId id target object
+ * @property string $createdAt creation date of the action
+ * @property string $userId id user who performed the action
+ * @property string $userName user name who performed the action
+ * @property string $action action which was made with the object
+ * @property string $env environment from which produces action
+ * @property string $data json data that was modified or relate to the subject
  */
 class LogMessage extends BaseObject
 {
@@ -46,6 +47,11 @@ class LogMessage extends BaseObject
      * @var string|null
      */
     private $action;
+    /**
+     * @var string|null
+     */
+    private $env;
+
     /**
      * @var mixed|null
      */
@@ -148,6 +154,22 @@ class LogMessage extends BaseObject
     public function setAction($action)
     {
         $this->action = $action;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getEnv()
+    {
+        return $this->env;
+    }
+
+    /**
+     * @param null|string $env
+     */
+    public function setEnv($env)
+    {
+        $this->env = $env;
     }
 
     /**

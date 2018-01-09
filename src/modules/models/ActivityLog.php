@@ -15,6 +15,7 @@ use yii\db\ActiveRecord;
  * @property string $user_name
  * @property integer $created_at
  * @property string $action
+ * @property string $env
  * @property string $data
  */
 class ActivityLog extends ActiveRecord
@@ -58,6 +59,7 @@ class ActivityLog extends ActiveRecord
             'user_name' => Yii::t('lav45/logger', 'User name'),
             'created_at' => Yii::t('lav45/logger', 'Created'),
             'action' => Yii::t('lav45/logger', 'Action'),
+            'env' => Yii::t('lav45/logger', 'Environment'),
             'data' => Yii::t('lav45/logger', 'Data'),
         ];
     }

@@ -17,9 +17,6 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
-    'created' => 'создал',
-    'removed' => 'удалил',
-    'updated' => 'обновил',
     '<strong>{attribute}</strong> has been changed' => '<strong>{attribute}</strong> был изменен',
     'Action' => 'Действие',
     'Activity log' => 'Журнал активности',
@@ -27,8 +24,12 @@ return [
     'Data' => 'Данные',
     'Entity' => 'Сущность',
     'Entity name' => 'Имя объекта',
+    'Environment' => 'Окружение',
     'User' => 'Пользователь',
     'User name' => 'Имя пользователя',
+    'created' => 'создал',
     'from' => 'с',
+    'removed' => 'удалил',
     'to' => 'на',
+    'updated' => 'обновил',
 ];

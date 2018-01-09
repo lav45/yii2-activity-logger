@@ -45,6 +45,7 @@ class DbStorage extends BaseObject implements StorageInterface
                 'user_id' => $message->getUserId(),
                 'user_name' => $message->getUserName(),
                 'action' => $message->getAction(),
+                'env' => $message->getEnv(),
                 'data' => $message->getData(),
             ])
             ->execute();

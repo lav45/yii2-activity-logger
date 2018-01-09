@@ -107,12 +107,13 @@ class Manager extends BaseObject
     /**
      * @param string $entityName
      * @param array $options
-     *  - entityId
-     *  - createdAt
-     *  - userId
-     *  - userName
-     *  - action
-     *  - data
+     *  - entityId :string
+     *  - createdAt :int unix timestamp
+     *  - userId :string
+     *  - userName :string
+     *  - action :string
+     *  - env :string
+     *  - data :json
      *
      * @return $this
      */

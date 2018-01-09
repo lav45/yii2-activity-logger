@@ -18,6 +18,10 @@ $formatter = Yii::$app->formatter;
     <span title="<?= $formatter->asDatetime($model->created_at) ?>">
         <?= $formatter->asRelativeTime($model->created_at) ?>
     </span>
+
+    <?php if ($model->env): ?>
+        <small class="pull-right"><?= $model->env ?></small>
+    <?php endif; ?>
 </h4>
 <ul class="details">
     <?php foreach ($model->getData() as $attribute => $values): ?>
