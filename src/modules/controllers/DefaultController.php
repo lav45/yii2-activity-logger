@@ -19,7 +19,7 @@ class DefaultController extends Controller
         ActivityLogViewModel::setModule($this->module);
 
         $query = ActivityLogViewModel::find()
-            ->orderBy(['created_at' => SORT_DESC])
+            ->orderBy(['id' => SORT_DESC])
             ->filterWhere([
                 'entity_name' => $entityName,
                 'entity_id' => $entityId,
