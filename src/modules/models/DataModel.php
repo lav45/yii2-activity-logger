@@ -19,28 +19,37 @@ class DataModel
      */
     private $data;
     /**
+     * @var string|\Closure|null
+     */
+    private $format;
+    /**
      * @var string|array|Formatter
      */
     public $formatter = 'formatter';
 
-    /**
-     * DataModel constructor.
-     * @param array $data
-     */
-    public function __construct(array $data)
+    public function __construct()
     {
-        $this->data = $data;
+        $this->formatter = Instance::ensure($this->formatter, Formatter::class);
     }
 
     /**
-     * @return Formatter
+     * @param array $value
+     * @return $this
      */
-    protected function getFormatter()
+    public function setData(array $value)
     {
-        if (!$this->formatter instanceof Formatter) {
-            $this->formatter = Instance::ensure($this->formatter, Formatter::class);
-        }
-        return $this->formatter;
+        $this->data = $value;
+        return $this;
+    }
+
+    /**
+     * @param string|\Closure|null $value
+     * @return $this
+     */
+    public function setFormat($value)
+    {
+        $this->format = $value;
+        return $this;
     }
 
     /**
@@ -64,21 +73,35 @@ class DataModel
     }
 
     /**
-     * @param mixed $values
+     * @param mixed $value
      * @return string
      */
-    protected function formattedValue($values)
+    protected function formattedValue($value)
     {
-        if (is_string($values)) {
-            return Html::encode(Yii::t('lav45/logger', $values));
+        if (is_string($this->format)) {
+            $format = 'as' . ucfirst($this->format);
+            return $this->formatter->{$format}($value);
         }
-        if (is_null($values)) {
-            return $this->getFormatter()->nullDisplay;
+        if (is_callable($this->format)) {
+            $result = call_user_func($this->format, $value);
+            return null === $result ? $this->formatter->nullDisplay : $result;
         }
-        if (is_bool($values)) {
-            return $this->getFormatter()->asBoolean($values);
+        if (is_numeric($value)) {
+            return $value;
         }
-        return $values;
+        if (filter_var($value, FILTER_VALIDATE_URL)) {
+            return Html::a($value, $value, ['target' => '_blank']);
+        }
+        if (is_string($value)) {
+            return Html::encode(Yii::t('lav45/logger', $value));
+        }
+        if (null === $value) {
+            return $this->formatter->nullDisplay;
+        }
+        if (is_bool($value)) {
+            return $this->formatter->asBoolean($value);
+        }
+        return $value;
     }
 
     /**

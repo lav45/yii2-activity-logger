@@ -8,59 +8,60 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 use yii\base\InvalidParamException;
-use yii\base\InvalidConfigException;
 
 /**
  * Class ActivityLogBehavior
  * @package lav45\activityLogger\entity
  *
  * ======================= Example usage ======================
-
-    // Recommended
-    public function rules()
-    {
-        return [
-            // If a field value is not required use `default` validator.
-            // If a field is not filled, it will set its value to NULL.
-
-            [['parent_id'], 'integer'],
-            [['parent_id'], 'default'],
-
-            [['comment'], 'string'],
-            [['comment'], 'default'],
-        ];
-    }
-
-    // Recommended
-    public function transactions()
-    {
-        return [
-            ActiveRecord::SCENARIO_DEFAULT => ActiveRecord::OP_ALL,
-        ];
-    }
-
-    public function behaviors()
-    {
-        return [
-            ['class' => 'yii\behaviors\AttributeTypecastBehavior'], // Recommended
-            [
-                'class' => 'lav45\activityLogger\ActiveRecordBehavior',
-                'attributes' => [
-                    'name',
-                    'status' => [
-                        // the value of the attribute is a item in the list
-                        // => $this->getStatusList()
-                        'list' => 'statusList'
-                    ],
-                    // the attribute value is the [id] of the relation model
-                    'owner_id' => [
-                        'relation' => 'user',
-                        'attribute' => 'username'
-                    ]
-                ]
-            ]
-        ];
-    }
+ *  // Recommended
+ *  public function rules()
+ *  {
+ *      return [
+ *          // If a field value is not required use `default` validator.
+ *          // If a field is not filled, it will set its value to NULL.
+ *
+ *          [['parent_id'], 'integer'],
+ *          [['parent_id'], 'default'],
+ *
+ *          [['comment'], 'string'],
+ *          [['comment'], 'default'],
+ *      ];
+ *  }
+ *
+ *  // Recommended
+ *  public function transactions()
+ *  {
+ *      return [
+ *          ActiveRecord::SCENARIO_DEFAULT => ActiveRecord::OP_ALL,
+ *      ];
+ *  }
+ *
+ *  public function behaviors()
+ *  {
+ *      return [
+ *          ['class' => 'yii\behaviors\AttributeTypecastBehavior'], // Recommended
+ *          [
+ *              'class' => 'lav45\activityLogger\ActiveRecordBehavior',
+ *              'attributes' => [
+ *                  // simple attribute
+ *                  'title',
+ *
+ *                  // the value of the attribute is a item in the list
+ *                  'status' => [
+ *                      // => $this->getStatusList()
+ *                      'list' => 'statusList'
+ *                  ],
+ *
+ *                  // the attribute value is the [id] of the relation model
+ *                  'owner_id' => [
+ *                      'relation' => 'owner',
+ *                      'attribute' => 'username',
+ *                  ],
+ *              ]
+ *          ]
+ *      ];
+ *  }
  * ============================================================
  *
  * @property ActiveRecord $owner
@@ -88,7 +89,7 @@ class ActiveRecordBehavior extends Behavior
      *  // simple attribute
      *  'title',
      *
-     *  // boolean attribute
+     *  // simple boolean attribute
      *  'is_publish',
      *
      *  // the value of the attribute is a item in the list
@@ -211,7 +212,6 @@ class ActiveRecordBehavior extends Behavior
 
     /**
      * @return array
-     * @throws InvalidConfigException
      */
     private function prepareChangedAttributes()
     {
@@ -224,8 +224,7 @@ class ActiveRecordBehavior extends Behavior
             $old = $this->owner->getOldAttribute($attribute);
             $new = $this->owner->getAttribute($attribute);
 
-            $_result = $this->formattingStoreValues($old, $new, $options);
-            $result[$attribute] = $this->filterStoreValues($_result);
+            $result[$attribute] = $this->resolveStoreValues($old, $new, $options);
         }
         return $result;
     }
@@ -247,20 +246,17 @@ class ActiveRecordBehavior extends Behavior
      * @param string|int $new_id
      * @param array $options
      * @return array
-     * @throws InvalidConfigException
      */
-    protected function formattingStoreValues($old_id, $new_id, $options)
+    protected function resolveStoreValues($old_id, $new_id, $options)
     {
-        if (empty($options)) {
-            return $this->resolveSimpleValues($old_id, $new_id);
-        }
         if (isset($options['list'])) {
-            return $this->resolveListValues($old_id, $new_id, $options['list']);
+            $value = $this->resolveListValues($old_id, $new_id, $options['list']);
+        } elseif (isset($options['relation'], $options['attribute'])) {
+            $value = $this->resolveRelationValues($old_id, $new_id, $options['relation'], $options['attribute']);
+        } else {
+            $value = $this->resolveSimpleValues($old_id, $new_id);
         }
-        if (isset($options['relation'], $options['attribute'])) {
-            return $this->resolveRelationValues($old_id, $new_id, $options['relation'], $options['attribute']);
-        }
-        throw new InvalidConfigException('Incorrect configuration attribute');
+        return $this->filterStoreValues($value);
     }
 
     /**
@@ -311,15 +307,16 @@ class ActiveRecordBehavior extends Behavior
         $relationQuery = clone $this->owner->getRelation($relation);
         $relationQuery->primaryModel = null;
         $idAttribute = array_keys($relationQuery->link)[0];
+        $targetId = array_filter([$old_id, $new_id]);
 
         $relationModels = $relationQuery
-            ->select([$attribute, $idAttribute])
-            ->where([$idAttribute => array_filter([$old_id, $new_id])])
+            ->where([$idAttribute => $targetId])
             ->indexBy($idAttribute)
-            ->column();
+            ->limit(count($targetId))
+            ->all();
 
-        $old['value'] = ArrayHelper::getValue($relationModels, $old_id);
-        $new['value'] = ArrayHelper::getValue($relationModels, $new_id);
+        $old['value'] = ArrayHelper::getValue($relationModels, [$old_id, $attribute]);
+        $new['value'] = ArrayHelper::getValue($relationModels, [$new_id, $attribute]);
 
         return [
             'old' => $old,

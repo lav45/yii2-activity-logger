@@ -14,6 +14,10 @@ use lav45\activityLogger\modules\Module;
 class ActivityLogViewModel extends ActivityLog
 {
     /**
+     * @var string|array
+     */
+    public $dataModel = DataModel::class;
+    /**
      * @var Module
      */
     private static $module;
@@ -24,6 +28,14 @@ class ActivityLogViewModel extends ActivityLog
     public static function setModule($module)
     {
         static::$module = $module;
+    }
+
+    /**
+     * @return null|\yii\base\Model
+     */
+    protected function getEntityModel()
+    {
+        return self::$module->getEntityObject($this->entity_name);
     }
 
     /**
@@ -68,8 +80,7 @@ class ActivityLogViewModel extends ActivityLog
     }
 
     /**
-     * @return \Generator|DataModel[]|array
-     * @throws \yii\base\InvalidConfigException
+     * @return \Generator|DataModel[]
      */
     public function getData()
     {
@@ -77,11 +88,57 @@ class ActivityLogViewModel extends ActivityLog
             if (is_int($attribute)) {
                 yield $attribute => Html::encode(Yii::t('lav45/logger', $values));
             } else {
-                if ($entityModel = self::$module->getEntityObject($this->entity_name)) {
-                    $attribute = $entityModel->getAttributeLabel($attribute);
-                }
-                yield $attribute => Yii::createObject(DataModel::class, [$values]);
+                $dataModel = $this->getDataModel()
+                    ->setFormat($this->getAttributeFormat($attribute))
+                    ->setData($values);
+
+                yield $this->getEntityAttributeLabel($attribute) => $dataModel;
             }
         }
+    }
+
+    /**
+     * @return DataModel
+     */
+    protected function getDataModel()
+    {
+        if (!is_object($this->dataModel)) {
+            $this->dataModel = Yii::createObject($this->dataModel);
+        }
+        return $this->dataModel;
+    }
+
+    /**
+     * @param string $attribute
+     * @return string
+     */
+    protected function getEntityAttributeLabel($attribute)
+    {
+        if ($entityModel = $this->getEntityModel()) {
+            return $entityModel->getAttributeLabel($attribute);
+        }
+        return $this->generateAttributeLabel($attribute);
+    }
+
+    /**
+     * @return array
+     */
+    protected function getEntityAttributeFormats()
+    {
+        $entityModel = $this->getEntityModel();
+        if (method_exists($entityModel, 'attributeFormats')) {
+            return $entityModel->attributeFormats();
+        }
+        return [];
+    }
+
+    /**
+     * @param string $attribute
+     * @return string|null
+     */
+    protected function getAttributeFormat($attribute)
+    {
+        $formats = $this->getEntityAttributeFormats();
+        return isset($formats[$attribute]) ? $formats[$attribute] : null;
     }
 }

@@ -89,7 +89,7 @@ return [
             'storage' => 'activityLoggerStorage',
 
             'messageClass' => [
-                'class' => '\lav45\activityLogger\LogMessage',
+                'class' => 'lav45\activityLogger\LogMessage',
 
                 // При использовании компанета когда пользователь ещё не авторизировался его действия
                 // можно записывать от имени "Неизвесный пользователь", к примеру.
@@ -198,6 +198,27 @@ class News extends ActiveRecord
                     ],
                 ]
             ]
+        ];
+    }
+
+    // Если необхадимо форматировать данные для отображения
+    // Можно использовать любой поддерживаемый формат компонентом `Yii::$app->formatter` или произвольную функцию
+    public function attributeFormats()
+    {
+        return [
+            'published_at' => 'datetime',
+
+            // 'is_published' => 'boolean',
+            'is_published' => function($value) {
+                return Yii::$app->formatter->asBoolean($value);
+            },
+
+            'image' => function($value) {
+                if (empty($value)) { return null; }
+
+                $url = "https://cdn.site.com/img/{$value}";
+                return Html::a($value, $url, ['target' => '_blank']);
+            }
         ];
     }
 }
