@@ -79,8 +79,7 @@ class DataModel
     protected function formattedValue($value)
     {
         if (is_string($this->format)) {
-            $format = 'as' . ucfirst($this->format);
-            return $this->formatter->{$format}($value);
+            return $this->formatter->format($value, $this->format);
         }
         if (is_callable($this->format)) {
             $value = call_user_func($this->format, $value);
