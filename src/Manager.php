@@ -35,35 +35,24 @@ class Manager extends BaseObject
         'class' => LogMessage::class
     ];
     /**
-     * @var LogMessage
-     */
-    private $message;
-    /**
      * @var string|StorageInterface
      */
-    private $storage = 'activityLoggerStorage';
+    public $storage = 'activityLoggerStorage';
 
     /**
-     * Initializes the object.
+     * @return array
      */
-    public function init()
+    protected function getUserOptions()
     {
-        $this->initMessageOptions();
-    }
-
-    protected function initMessageOptions()
-    {
-        if ($this->user === null) {
-            return;
-        }
-        if ($this->user = Yii::$app->get($this->user, false)) {
+        if ($user = Yii::$app->get($this->user, false)) {
             /** @var \yii\web\IdentityInterface $identity */
-            $identity = $this->user->identity;
-            $this->messageClass = array_merge($this->messageClass, [
+            $identity = $user->identity;
+            return [
                 'userId' => $identity->getId(),
                 'userName' => $identity->{$this->userNameAttribute}
-            ]);
+            ];
         }
+        return [];
     }
 
     /**
@@ -75,14 +64,6 @@ class Manager extends BaseObject
             $this->storage = Instance::ensure($this->storage, StorageInterface::class);
         }
         return $this->storage;
-    }
-
-    /**
-     * @param string|StorageInterface $storage
-     */
-    public function setStorage($storage)
-    {
-        $this->storage = $storage;
     }
 
     /**
@@ -100,16 +81,17 @@ class Manager extends BaseObject
         if (is_string($message)) {
             $message = [$message];
         }
-        return $this->createMessage($entityName, [
+        return $this->saveMessage([
+            'entityName' => $entityName,
             'entityId' => $entityId,
             'data' => $message,
             'action' => $action,
-        ])->save();
+        ]);
     }
 
     /**
-     * @param string $entityName
      * @param array $options
+     *  - entityName :string
      *  - entityId :string
      *  - createdAt :int unix timestamp
      *  - userId :string
@@ -118,33 +100,25 @@ class Manager extends BaseObject
      *  - env :string
      *  - data :array
      *
-     * @return $this
-     */
-    public function createMessage($entityName, array $options)
-    {
-        if (empty($entityName) || empty($options)) {
-            return $this;
-        }
-        $options = array_merge($this->messageClass, $options);
-        $this->message = Yii::createObject($options, [$entityName]);
-        return $this;
-    }
-
-    /**
      * @return bool
-     * @throws \Exception
      */
-    public function save()
+    private function saveMessage(array $options)
     {
         if ($this->enabled === false) {
             return false;
         }
-        if ($this->message === null) {
+
+        $options = array_filter($options);
+        if (empty($options)) {
             return false;
         }
 
-        $message = $this->message;
-        $this->message = null;
+        /** @var LogMessage $message */
+        $message = Yii::createObject(array_merge(
+            $this->messageClass,
+            $this->getUserOptions(),
+            $options
+        ));
 
         try {
             $result = $this->getStorage()->save($message);
@@ -166,21 +140,59 @@ class Manager extends BaseObject
      */
     public function delete($entityName, $entityId = null)
     {
-        return $this->getStorage()->delete($entityName, $entityId) > 0;
+        return $this->deleteMessage([
+            'entityName' => $entityName,
+            'entityId' => $entityId,
+        ]);
     }
 
     /**
-     * @return int|bool the number of deleted rows or false if clear range not set
+     * @param array $options
+     *  - entityName :string
+     *  - entityId :string
+     *  - userId :string
+     *  - action :string
+     *  - env :string
+     *
+     * @return int|bool the count of deleted rows or false if clear range not set
      */
-    public function clean()
+    public function clean(array $options = [])
     {
         if ($this->deleteOldThanDays === false) {
             return false;
         }
 
-        $cutOffDate = time() - $this->deleteOldThanDays * 86400;
-        $amountDeleted = $this->getStorage()->clean($cutOffDate);
+        $options['createdAt'] = time() - $this->deleteOldThanDays * 86400;
 
-        return $amountDeleted;
+        return $this->deleteMessage($options);
+    }
+
+    /**
+     * @param array $options
+     *  - entityName :string
+     *  - entityId :string
+     *  - createdAt :int unix timestamp
+     *  - userId :string
+     *  - action :string
+     *  - env :string
+     *
+     * @return int|bool the count of deleted rows or false if clear range not set
+     */
+    private function deleteMessage(array $options)
+    {
+        $options['class'] = $this->messageClass['class'];
+
+        /** @var LogMessage $message */
+        $message = Yii::createObject($options);
+
+        try {
+            return $this->getStorage()->delete($message);
+        } catch (\Exception $e) {
+            if (YII_DEBUG) {
+                throw $e;
+            } else {
+                return false;
+            }
+        }
     }
 }

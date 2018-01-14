@@ -246,6 +246,27 @@ return [
 Deleted 5 record(s) from the activity log.
 ```
 
+### Используя параметры командной строки
+
+* `--entity-id`: string. Идентификатор целевого объекта
+
+* `--entity-name`: string. Псевдоним имени целевого объекта
+
+* `--user-id`: string. Идентификатор пользователя, который выполнил действие
+
+* `--log-action`: string. Действие, которое было произведено над объектом
+
+* `--env`: string. Среда, из которой производилось действие
+
+
+В следующем примере показано, как можно использовать эти параметры.
+
+Например если вы хотите удалить старые запись из логов для консольного окружения, для этого вы можете использовать следующую команду:
+
+```
+yii logger/clean --env=console
+```
+
 
 ## Ручное использование компонента
 
@@ -260,23 +281,18 @@ Deleted 5 record(s) from the activity log.
     // id сущности с которой производится действие
     $entityId = 10;
     // текст с описанием действия
-    $messageText = 'export data';
+    $message = 'export data';
 
     $logger = Yii::$app->activityLogger;
 
-    $logger->log($entityName, $messageText);
+    // Сохранение текстового сообщения слязанного с $entityName
+    $logger->log($entityName, $message);
 
-    $logger->log($entityName, $messageText, 'download');
+    // Сохранение текстового сообщения слязанного с $entityName при выполнении действия "download"
+    $logger->log($entityName, $message, 'download');
 
-    $logger->log($entityName, $messageText, 'send mail', $entityId);
-    // или можно использовать полнофункциональный вариант
-    $logger
-        ->createMessage($entityName, [
-            'entityId' => $entityId,
-            'data' => [$messageText],
-            'action' => 'send mail',
-        ])
-        ->save();
+    // Сохранение текстового сообщения слязанного с $entityName и $entityId при выполнении действия "send mail"
+    $logger->log($entityName, $message, 'send mail', $entityId);
 ```
 
 ### Удаление устаревших данных

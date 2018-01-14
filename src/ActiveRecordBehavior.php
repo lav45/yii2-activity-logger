@@ -170,9 +170,7 @@ class ActiveRecordBehavior extends Behavior
     public function beforeSave()
     {
         $this->changedAttributes = $this->prepareChangedAttributes();
-
-        $action = $this->owner->getIsNewRecord() ? 'create' : 'update';
-        $this->actionName = $this->getActionLabel($action);
+        $this->actionName = $this->getActionLabel($this->owner->getIsNewRecord() ? 'create' : 'update');
     }
 
     public function afterSave()
@@ -181,10 +179,7 @@ class ActiveRecordBehavior extends Behavior
             return;
         }
 
-        $this->saveMessage([
-            'action' => $this->actionName,
-            'data' => $this->changedAttributes
-        ]);
+        $this->saveMessage($this->actionName, $this->changedAttributes);
     }
 
     public function beforeDelete()
@@ -195,10 +190,7 @@ class ActiveRecordBehavior extends Behavior
 
         $this->resetOwnerAttribute();
 
-        $this->saveMessage([
-            'action' => $this->getActionLabel('delete'),
-            'data' => $this->prepareChangedAttributes(),
-        ]);
+        $this->saveMessage($this->getActionLabel('delete'), $this->prepareChangedAttributes());
     }
 
     /**
@@ -325,15 +317,12 @@ class ActiveRecordBehavior extends Behavior
     }
 
     /**
-     * @param array $options
+     * @param string $action
+     * @param array $data
      */
-    protected function saveMessage(array $options)
+    protected function saveMessage($action, array $data)
     {
-        $options['entityId'] = $this->getEntityId();
-
-        $this->getLogger()
-            ->createMessage($this->getEntityName(), $options)
-            ->save();
+        $this->getLogger()->log($this->getEntityName(), $data, $action, $this->getEntityId());
     }
 
     private function resetOwnerAttribute()

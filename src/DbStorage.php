@@ -36,49 +36,41 @@ class DbStorage extends BaseObject implements StorageInterface
      */
     public function save($message)
     {
+        $options = array_filter([
+            'entity_name' => $message->getEntityName(),
+            'entity_id' => $message->getEntityId(),
+            'created_at' => $message->getCreatedAt(),
+            'user_id' => $message->getUserId(),
+            'user_name' => $message->getUserName(),
+            'action' => $message->getAction(),
+            'env' => $message->getEnv(),
+            'data' => $message->getData(),
+        ]);
+
         return (new Query)
             ->createCommand($this->db)
-            ->insert($this->tableName, [
-                'entity_name' => $message->getEntityName(),
-                'entity_id' => $message->getEntityId(),
-                'created_at' => $message->getCreatedAt(),
-                'user_id' => $message->getUserId(),
-                'user_name' => $message->getUserName(),
-                'action' => $message->getAction(),
-                'env' => $message->getEnv(),
-                'data' => $message->getData(),
-            ])
+            ->insert($this->tableName, $options)
             ->execute();
     }
 
     /**
-     * @param int $date
+     * @param LogMessage $message
      * @return int
      */
-    public function clean($date)
+    public function delete($message)
     {
-        return $this->deleteByCondition(['<', 'created_at', $date]);
-    }
-
-    /**
-     * @param string $entityName
-     * @param string|null $entityId
-     * @return int
-     */
-    public function delete($entityName, $entityId)
-    {
-        return $this->deleteByCondition([
-            'entity_name' => $entityName,
-            'entity_id' => $entityId,
+        $condition = array_filter([
+            'entity_name' => $message->getEntityName(),
+            'entity_id' => $message->getEntityId(),
+            'user_id' => $message->getUserId(),
+            'action' => $message->getAction(),
+            'env' => $message->getEnv(),
         ]);
-    }
 
-    /**
-     * @param array $condition
-     * @return int
-     */
-    private function deleteByCondition($condition)
-    {
+        if ($date = $message->getCreatedAt()) {
+            $condition = ['and', $condition, ['<=', 'created_at', $date]];
+        }
+
         return (new Query)
             ->createCommand($this->db)
             ->delete($this->tableName, $condition)

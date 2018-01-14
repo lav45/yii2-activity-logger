@@ -11,15 +11,8 @@ interface StorageInterface
     public function save($message);
 
     /**
-     * @param int $date
+     * @param LogMessage $message
      * @return int
      */
-    public function clean($date);
-
-    /**
-     * @param string $entityName
-     * @param string|null $entityId
-     * @return int
-     */
-    public function delete($entityName, $entityId);
+    public function delete($message);
 }

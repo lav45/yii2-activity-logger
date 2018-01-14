@@ -6,21 +6,22 @@ use yii\helpers\Json;
 use yii\base\BaseObject;
 
 /**
- * Class LogMessage
+ * Class LogMessage this is a data transfer object
  * @package lav45\activityLogger
  *
+ * @property string $entityName alias name target object
  * @property string $entityId id target object
  * @property string $createdAt creation date of the action
  * @property string $userId id user who performed the action
  * @property string $userName user name who performed the action
- * @property string $action action which was made with the object
- * @property string $env environment from which produces action
+ * @property string $action the action performed on the object
+ * @property string $env environment, which produced the effect
  * @property string $data json data that was modified or relate to the subject
  */
 class LogMessage extends BaseObject
 {
     /**
-     * @var \Closure
+     * @var \Closure custom function for the encode `$data`
      */
     public $encode;
     /**
@@ -36,36 +37,25 @@ class LogMessage extends BaseObject
      */
     private $createdAt;
     /**
-     * @var string|null
+     * @var string
      */
     private $userId;
     /**
-     * @var string|null
+     * @var string
      */
     private $userName;
     /**
-     * @var string|null
+     * @var string
      */
     private $action;
     /**
-     * @var string|null
+     * @var string
      */
     private $env;
     /**
-     * @var mixed|null
+     * @var mixed
      */
     private $data;
-
-    /**
-     * LogMessage constructor.
-     * @param string $entityName
-     * @param array $config
-     */
-    public function __construct($entityName, $config = [])
-    {
-        $this->entityName = $entityName;
-        parent::__construct($config);
-    }
 
     /**
      * @return string
@@ -73,6 +63,14 @@ class LogMessage extends BaseObject
     public function getEntityName()
     {
         return $this->entityName;
+    }
+
+    /**
+     * @param string $entityName
+     */
+    public function setEntityName($entityName)
+    {
+        $this->entityName = $entityName;
     }
 
     /**
