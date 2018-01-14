@@ -51,7 +51,6 @@ class LogMessage extends BaseObject
      * @var string|null
      */
     private $env;
-
     /**
      * @var mixed|null
      */
@@ -192,7 +191,7 @@ class LogMessage extends BaseObject
     }
 
     /**
-     * @param $data
+     * @param mixed $data
      * @return string
      */
     private function encode($data)

@@ -87,19 +87,22 @@ class Manager extends BaseObject
 
     /**
      * @param string $entityName
-     * @param string $messageText
+     * @param string|array $message
      * @param null|string $action
      * @param null|string $entityId
      * @return bool
      */
-    public function log($entityName, $messageText, $action = null, $entityId = null)
+    public function log($entityName, $message, $action = null, $entityId = null)
     {
-        if (empty($entityName) || empty($messageText)) {
+        if (empty($entityName) || empty($message)) {
             return false;
+        }
+        if (is_string($message)) {
+            $message = [$message];
         }
         return $this->createMessage($entityName, [
             'entityId' => $entityId,
-            'data' => [$messageText],
+            'data' => $message,
             'action' => $action,
         ])->save();
     }
@@ -113,7 +116,7 @@ class Manager extends BaseObject
      *  - userName :string
      *  - action :string
      *  - env :string
-     *  - data :json
+     *  - data :array
      *
      * @return $this
      */
