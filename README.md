@@ -6,12 +6,17 @@
             <img src="https://user-images.githubusercontent.com/675367/33967884-6dc55ca8-e076-11e7-88c5-4ba5d7d69012.png" alt="yii2-activity-logger" />
         </td>
         <td>
-            Эта утилита поможет вам отслеживать пользовательской активности на сайте.
-            Когда в админке над контентом работает больше двух человек, не всегда понятно кто и зачем сделал изменения в посте, убрал статью из публикации, добавил непонятного пользователя, удалил организацию.
+            Это расширение поможет вам отслеживать пользовательскую активность на сайте.
+            Когда в админке над контентом работает больше двух человек, не всегда понятно кто, когда и зачем сделал изменения в описание статьи, убрал статью из публикации, добавил непонятного пользователя, удалил организацию.
             Для того чтобы была возможность поблагодарить автора за усердную работу и был разработан этот модуль.
         </td>
     </tr>
 </table>
+
+
+[![Latest Stable Version](https://poser.pugx.org/lav45/yii2-activity-logger/v/stable)](https://packagist.org/packages/lav45/yii2-activity-logger)
+[![License](https://poser.pugx.org/lav45/yii2-activity-logger/license)](https://github.com/lav45/yii2-activity-logger/blob/master/LICENSE.md)
+[![Total Downloads](https://poser.pugx.org/lav45/yii2-activity-logger/downloads)](https://packagist.org/packages/lav45/yii2-activity-logger)
 
 
 ## Установаем расширение
@@ -103,7 +108,7 @@ return [
                 // 'entityId' => '...',
                 // 'createdAt' => time(),
                 // 'action' => '...',
-                // 'data' => '[" ... "]',
+                // 'data' => [" ... "],
             ],
         ],
 
@@ -264,7 +269,7 @@ Deleted 5 record(s) from the activity log.
 Например если вы хотите удалить старые запись из логов для консольного окружения, для этого вы можете использовать следующую команду:
 
 ```
-yii logger/clean --env=console
+~$ yii logger/clean --env=console
 ```
 
 
