@@ -26,16 +26,16 @@ $formatter = Yii::$app->formatter;
 <ul class="details">
     <?php foreach ($model->getData() as $attribute => $values): ?>
         <?php if (is_int($attribute)): ?>
-            <li><?= $values; ?></li>
+            <li class="details-text"><?= $values; ?></li>
         <?php else: ?>
             <li>
                 <?= Yii::t('lav45/logger', '<strong>{attribute}</strong> has been changed', ['attribute' => $attribute]) ?>
 
                 <?= Yii::t('lav45/logger', 'from'); ?>
-                <strong><i><?= $values->getOldValue(); ?></i></strong>
+                <strong><i class="details-text"><?= $values->getOldValue(); ?></i></strong>
 
                 <?= Yii::t('lav45/logger', 'to'); ?>
-                <strong><i><?= $values->getNewValue(); ?></i></strong>
+                <strong><i class="details-text"><?= $values->getNewValue(); ?></i></strong>
             </li>
         <?php endif; ?>
     <?php endforeach; ?>

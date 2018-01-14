@@ -83,17 +83,23 @@ class DataModel
             return $this->formatter->{$format}($value);
         }
         if (is_callable($this->format)) {
-            $result = call_user_func($this->format, $value);
-            return null === $result ? $this->formatter->nullDisplay : $result;
+            $value = call_user_func($this->format, $value);
+            if (null === $value) {
+                return $this->formatter->nullDisplay;
+            }
+            return $value;
         }
         if (is_numeric($value)) {
             return $value;
         }
         if (filter_var($value, FILTER_VALIDATE_URL)) {
-            return Html::a($value, $value, ['target' => '_blank']);
+            return Html::a(Html::encode($value), $value, ['target' => '_blank']);
         }
         if (is_string($value)) {
-            return Html::encode(Yii::t('lav45/logger', $value));
+            $value = Yii::t('lav45/logger', $value);
+            $value = Html::encode($value);
+            $value = $this->formatter->asNtext($value);
+            return $value;
         }
         if (null === $value) {
             return $this->formatter->nullDisplay;

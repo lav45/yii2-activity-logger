@@ -19,6 +19,10 @@ $this->registerCss(<<<CSS
 .list-view {
     margin-top: 20px;
 }
+.details-text {
+    display: inline-block;
+    vertical-align: top;
+}
 CSS
 );
 
