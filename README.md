@@ -206,8 +206,30 @@ class News extends ActiveRecord
         ];
     }
 
-    // Если необхадимо форматировать данные для отображения
-    // Можно использовать любой поддерживаемый формат компонентом `Yii::$app->formatter` или произвольную функцию
+    /**
+     * Если необхадимо изменить стандартное значение `entityName` для `lav45\activityLogger\ActiveRecordBehavior`
+     * @return string
+     */
+    public function getEntityName()
+    {
+        return 'global_news';
+    }
+
+    /**
+     * Если необхадимо изменить стандартное значение `entityId` для `lav45\activityLogger\ActiveRecordBehavior`
+     * @return string
+     */
+    public function getEntityId()
+    {
+        return $this->global_news_id;
+    }
+
+    /**
+     * Если необхадимо форматировать отобоажемое значение
+     * Можно указать любой поддерживаемый формат компонентом `\yii\i18n\Formatter`
+     * или использовать произвольную функцию
+     * @return array
+     */
     public function attributeFormats()
     {
         return [
