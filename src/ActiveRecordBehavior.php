@@ -107,6 +107,10 @@ class ActiveRecordBehavior extends Behavior
      */
     public $attributes = [];
     /**
+     * @var bool
+     */
+    public $identicalAttributes = true;
+    /**
      * @var array [
      *  'title' => [
      *      'new' => ['value' => 'New title'],
@@ -209,7 +213,7 @@ class ActiveRecordBehavior extends Behavior
     {
         $result = [];
         foreach ($this->attributes as $attribute => $options) {
-            if ($this->owner->isAttributeChanged($attribute) === false) {
+            if ($this->owner->isAttributeChanged($attribute, $this->identicalAttributes) === false) {
                 continue;
             }
 
