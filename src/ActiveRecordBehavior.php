@@ -7,7 +7,7 @@ use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 
 /**
  * Class ActivityLogBehavior
@@ -360,7 +360,7 @@ class ActiveRecordBehavior extends Behavior
 
         $result = $this->owner->getPrimaryKey();
         if (empty($result)) {
-            throw new InvalidParamException();
+            throw new InvalidArgumentException();
         }
         if (is_array($result)) {
             ksort($result);
