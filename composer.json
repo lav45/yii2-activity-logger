@@ -21,9 +21,14 @@
         "php": ">=5.5.0",
         "yiisoft/yii2": "2.0.*"
     },
+    "require-dev": {
+        "ext-sqlite3": "*",
+        "phpunit/phpunit": "4.* | 5.*"
+    },
     "autoload": {
         "psr-4": {
-            "lav45\\activityLogger\\": "src"
+            "lav45\\activityLogger\\": "src",
+            "lav45\\activityLogger\\test\\": "test"
         }
     },
     "extra": {
