@@ -64,6 +64,8 @@ use yii\base\InvalidArgumentException;
  *  }
  * ============================================================
  *
+ * @property string $entityName
+ * @property string $entityId
  * @property ActiveRecord $owner
  */
 class ActiveRecordBehavior extends Behavior
@@ -346,11 +348,6 @@ class ActiveRecordBehavior extends Behavior
             return call_user_func($this->getEntityName);
         }
 
-        /** @deprecated will be removed from 1.5 version */
-        if (method_exists($this->owner, 'getEntityName')) {
-            return $this->owner->getEntityName();
-        }
-
         $class = StringHelper::basename(get_class($this->owner));
         return Inflector::camel2id($class, '_');
     }
@@ -362,11 +359,6 @@ class ActiveRecordBehavior extends Behavior
     {
         if ($this->getEntityId !== null) {
             return call_user_func($this->getEntityId);
-        }
-
-        /** @deprecated will be removed from 1.5 version */
-        if (method_exists($this->owner, 'getEntityId')) {
-            return $this->owner->getEntityId();
         }
 
         $result = $this->owner->getPrimaryKey();

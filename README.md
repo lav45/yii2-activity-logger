@@ -184,6 +184,16 @@ class News extends ActiveRecord
             ['class' => 'yii\behaviors\AttributeTypecastBehavior'],
             [
                 'class' => 'lav45\activityLogger\ActiveRecordBehavior',
+             
+                // Если необхадимо изменить стандартное значение `entityName`
+                'getEntityName' => function () {
+                    return 'global_news';
+                },
+                // Если необхадимо изменить стандартное значение `entityId`
+                'getEntityId' => function () {
+                    return $this->global_news_id;
+                }
+                
                 // Список полей за изменением которых будет производиться слежение
                 'attributes' => [
                     // Простые поля ( string|int|bool )
@@ -204,24 +214,6 @@ class News extends ActiveRecord
                 ]
             ]
         ];
-    }
-
-    /**
-     * Если необхадимо изменить стандартное значение `entityName` для `lav45\activityLogger\ActiveRecordBehavior`
-     * @return string
-     */
-    public function getEntityName()
-    {
-        return 'global_news';
-    }
-
-    /**
-     * Если необхадимо изменить стандартное значение `entityId` для `lav45\activityLogger\ActiveRecordBehavior`
-     * @return string
-     */
-    public function getEntityId()
-    {
-        return $this->global_news_id;
     }
 
     /**
