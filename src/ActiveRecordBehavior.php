@@ -10,7 +10,7 @@ use yii\helpers\StringHelper;
 use yii\base\InvalidArgumentException;
 
 /**
- * Class ActivityLogBehavior
+ * Class ActiveRecordBehavior
  * @package lav45\activityLogger\entity
  *
  * ======================= Example usage ======================
@@ -110,6 +110,14 @@ class ActiveRecordBehavior extends Behavior
      * @var bool
      */
     public $identicalAttributes = true;
+    /**
+     * @var \Closure|array|string|null custom method to getEntityName
+     */
+    public $getEntityName;
+    /**
+     * @var \Closure|array|string|null custom method to getEntityId
+     */
+    public $getEntityId;
     /**
      * @var array [
      *  'title' => [
@@ -341,6 +349,11 @@ class ActiveRecordBehavior extends Behavior
      */
     public function getEntityName()
     {
+        if ($this->getEntityName !== null) {
+            return call_user_func($this->getEntityName);
+        }
+
+        /** @deprecated will be removed from 1.5 version */
         if (method_exists($this->owner, 'getEntityName')) {
             return $this->owner->getEntityName();
         }
@@ -354,6 +367,11 @@ class ActiveRecordBehavior extends Behavior
      */
     public function getEntityId()
     {
+        if ($this->getEntityId !== null) {
+            return call_user_func($this->getEntityId);
+        }
+
+        /** @deprecated will be removed from 1.5 version */
         if (method_exists($this->owner, 'getEntityId')) {
             return $this->owner->getEntityId();
         }
