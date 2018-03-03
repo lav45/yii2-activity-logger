@@ -63,7 +63,7 @@ class ActivityLogViewModel extends ActivityLog
             'entityId' => $this->entity_id,
             'page' => null
         ]);
-        return '[' . Html::a($name , $url) . ']';
+        return '[' . Html::a($name, $url) . ']';
     }
 
     /**

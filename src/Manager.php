@@ -58,7 +58,7 @@ class Manager extends BaseObject
     /**
      * @return StorageInterface
      */
-    public function getStorage()
+    private function getStorage()
     {
         if (!$this->storage instanceof StorageInterface) {
             $this->storage = Instance::ensure($this->storage, StorageInterface::class);
