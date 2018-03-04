@@ -108,6 +108,7 @@ class ActiveRecordBehavior extends Behavior
     public $attributes = [];
     /**
      * @var bool
+     * @deprecated will be removed in 1.6 version
      */
     public $identicalAttributes = true;
     /**
@@ -200,9 +201,7 @@ class ActiveRecordBehavior extends Behavior
             $this->getLogger()->delete($this->getEntityName(), $this->getEntityId());
         }
 
-        $this->resetOwnerAttribute();
-
-        $this->saveMessage($this->getActionLabel('delete'), $this->prepareChangedAttributes());
+        $this->saveMessage($this->getActionLabel('delete'), $this->prepareChangedAttributes(true));
     }
 
     /**
@@ -215,18 +214,19 @@ class ActiveRecordBehavior extends Behavior
     }
 
     /**
+     * @param bool $unset
      * @return array
      */
-    private function prepareChangedAttributes()
+    private function prepareChangedAttributes($unset = false)
     {
         $result = [];
         foreach ($this->attributes as $attribute => $options) {
-            if ($this->owner->isAttributeChanged($attribute, $this->identicalAttributes) === false) {
+            if ($unset === false && $this->owner->isAttributeChanged($attribute, $this->identicalAttributes) === false) {
                 continue;
             }
 
             $old = $this->owner->getOldAttribute($attribute);
-            $new = $this->owner->getAttribute($attribute);
+            $new = $unset === false ? $this->owner->getAttribute($attribute) : null;
 
             $result[$attribute] = $this->resolveStoreValues($old, $new, $options);
         }
@@ -335,13 +335,6 @@ class ActiveRecordBehavior extends Behavior
     protected function saveMessage($action, array $data)
     {
         $this->getLogger()->log($this->getEntityName(), $data, $action, $this->getEntityId());
-    }
-
-    private function resetOwnerAttribute()
-    {
-        foreach ($this->attributes as $attribute => $options) {
-            $this->owner->setAttribute($attribute, null);
-        }
     }
 
     /**
