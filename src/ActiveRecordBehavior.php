@@ -3,11 +3,11 @@
 namespace lav45\activityLogger;
 
 use yii\base\Behavior;
+use yii\base\InvalidValueException;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
-use yii\base\InvalidArgumentException;
 
 /**
  * Class ActiveRecordBehavior
@@ -115,10 +115,12 @@ class ActiveRecordBehavior extends Behavior
     public $identicalAttributes = true;
     /**
      * @var \Closure|array|string|null custom method to getEntityName
+     * the callback function must return a string
      */
     public $getEntityName;
     /**
      * @var \Closure|array|string|null custom method to getEntityId
+     * the callback function can return a string or array
      */
     public $getEntityId;
     /**
@@ -357,17 +359,17 @@ class ActiveRecordBehavior extends Behavior
      */
     public function getEntityId()
     {
-        if ($this->getEntityId !== null) {
-            return call_user_func($this->getEntityId);
+        if ($this->getEntityId === null) {
+            $result = $this->owner->getPrimaryKey();
+        } else {
+            $result = call_user_func($this->getEntityId);
         }
-
-        $result = $this->owner->getPrimaryKey();
         if (empty($result)) {
-            throw new InvalidArgumentException();
+            throw new InvalidValueException('the property "entityId" can not be empty');
         }
         if (is_array($result)) {
             ksort($result);
-            return json_encode($result, 320);
+            $result = json_encode($result, 320);
         }
         return $result;
     }
