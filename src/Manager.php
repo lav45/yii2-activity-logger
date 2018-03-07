@@ -38,6 +38,10 @@ class Manager extends BaseObject
      * @var string|StorageInterface
      */
     public $storage = 'activityLoggerStorage';
+    /**
+     * @var bool
+     */
+    public $debug = YII_DEBUG;
 
     /**
      * @return array
@@ -123,11 +127,9 @@ class Manager extends BaseObject
         try {
             $result = $this->getStorage()->save($message);
         } catch (\Exception $e) {
-            if (YII_DEBUG) {
-                throw $e;
-            } else {
-                return false;
-            }
+            return $this->throwException($e);
+        } catch (\Throwable $e) {
+            return $this->throwException($e);
         }
 
         return $result > 0;
@@ -187,11 +189,26 @@ class Manager extends BaseObject
         try {
             return $this->getStorage()->delete($message);
         } catch (\Exception $e) {
-            if (YII_DEBUG) {
-                throw $e;
-            } else {
-                return false;
-            }
+            return $this->throwException($e);
+        } catch (\Throwable $e) {
+            return $this->throwException($e);
         }
+    }
+
+    /**
+     * @param \Exception|\Throwable $e
+     * @throws \Exception|\Throwable
+     * @return bool
+     */
+    private function throwException($e)
+    {
+        if (ob_get_level() > 0) {
+            ob_end_clean();
+        }
+        if ($this->debug) {
+            throw $e;
+        }
+        Yii::warning($e->getMessage());
+        return false;
     }
 }

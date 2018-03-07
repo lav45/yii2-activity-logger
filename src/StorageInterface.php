@@ -2,6 +2,10 @@
 
 namespace lav45\activityLogger;
 
+/**
+ * Interface StorageInterface
+ * @package lav45\activityLogger
+ */
 interface StorageInterface
 {
     /**
