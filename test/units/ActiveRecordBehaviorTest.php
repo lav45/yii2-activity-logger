@@ -59,6 +59,7 @@ class ActiveRecordBehaviorTest extends TestCase
         $model = $this->createModel();
         $logData = $model->getLastActivityLog();
 
+        $this->assertTrue($logData->created_at > 0);
         $this->assertEquals('Создание', $logData->action);
         $this->assertEquals('user', $logData->entity_name);
         $this->assertEquals($model->getPrimaryKey(), $logData->entity_id);

@@ -94,7 +94,7 @@ class LogMessage extends BaseObject
      */
     public function getCreatedAt()
     {
-        return $this->createdAt ?: time();
+        return $this->createdAt;
     }
 
     /**

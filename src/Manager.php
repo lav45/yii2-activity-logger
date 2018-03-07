@@ -107,7 +107,6 @@ class Manager extends BaseObject
         if ($this->enabled === false) {
             return false;
         }
-
         $options = array_filter($options);
         if (empty($options)) {
             return false;
@@ -117,6 +116,7 @@ class Manager extends BaseObject
         $message = Yii::createObject(array_merge(
             $this->messageClass,
             $this->getUserOptions(),
+            ['createdAt' => time()],
             $options
         ));
 
@@ -181,7 +181,6 @@ class Manager extends BaseObject
     private function deleteMessage(array $options)
     {
         $options['class'] = $this->messageClass['class'];
-
         /** @var LogMessage $message */
         $message = Yii::createObject($options);
 
