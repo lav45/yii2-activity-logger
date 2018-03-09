@@ -6,8 +6,9 @@ use Yii;
 use lav45\activityLogger\test\models\User;
 use lav45\activityLogger\test\models\TestEntityName;
 use lav45\activityLogger\modules\models\ActivityLog;
+use PHPUnit\Framework\TestCase;
 
-class ActiveRecordBehaviorTest extends \PHPUnit_Framework_TestCase
+class ActiveRecordBehaviorTest extends TestCase
 {
     /**
      * @return User
@@ -117,7 +118,7 @@ class ActiveRecordBehaviorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @dataProvider testUpdateModelDataProvider
+     * @dataProvider updateModelDataProvider
      * @param array $values
      * @param array $expected
      */
@@ -131,7 +132,7 @@ class ActiveRecordBehaviorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $logModel->getData());
     }
 
-    public function testUpdateModelDataProvider()
+    public function updateModelDataProvider()
     {
         return [
             'update login' => [
@@ -270,7 +271,7 @@ class ActiveRecordBehaviorTest extends \PHPUnit_Framework_TestCase
             'entity_id' => $model->getEntityId(),
         ]);
 
-        $this->assertCount(1, $logModels);
+        $this->assertEquals(1, count($logModels));
 
         $expected = [
             'status' => [
@@ -352,7 +353,7 @@ class ActiveRecordBehaviorTest extends \PHPUnit_Framework_TestCase
             'entity_id' => $model->getEntityId(),
         ]);
 
-        $this->assertCount(2, $logModels);
+        $this->assertEquals(2, count($logModels));
 
         $expected = [
             'status' => [
@@ -500,7 +501,7 @@ class ActiveRecordBehaviorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @dataProvider testCustomGetEntityIdDataProvider
+     * @dataProvider customGetEntityIdDataProvider
      * @param string|int|array $custom_entity_id
      * @param string $result_entity_id
      */
@@ -517,7 +518,7 @@ class ActiveRecordBehaviorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result_entity_id, $logger->getEntityId());
     }
 
-    public function testCustomGetEntityIdDataProvider()
+    public function customGetEntityIdDataProvider()
     {
         return [
             [1, 1],
