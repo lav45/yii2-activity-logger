@@ -37,14 +37,14 @@ class DbStorage extends BaseObject implements StorageInterface
     public function save($message)
     {
         $options = array_filter([
-            'entity_name' => $message->getEntityName(),
-            'entity_id' => $message->getEntityId(),
-            'created_at' => $message->getCreatedAt(),
-            'user_id' => $message->getUserId(),
-            'user_name' => $message->getUserName(),
-            'action' => $message->getAction(),
-            'env' => $message->getEnv(),
-            'data' => $message->getData(),
+            'entity_name' => $message->entityName,
+            'entity_id' => $message->entityId,
+            'created_at' => $message->createdAt,
+            'user_id' => $message->userId,
+            'user_name' => $message->userName,
+            'action' => $message->action,
+            'env' => $message->env,
+            'data' => $message->data,
         ]);
 
         return (new Query)
@@ -60,14 +60,14 @@ class DbStorage extends BaseObject implements StorageInterface
     public function delete($message)
     {
         $condition = array_filter([
-            'entity_name' => $message->getEntityName(),
-            'entity_id' => $message->getEntityId(),
-            'user_id' => $message->getUserId(),
-            'action' => $message->getAction(),
-            'env' => $message->getEnv(),
+            'entity_name' => $message->entityName,
+            'entity_id' => $message->entityId,
+            'user_id' => $message->userId,
+            'action' => $message->action,
+            'env' => $message->env,
         ]);
 
-        if ($date = $message->getCreatedAt()) {
+        if ($date = $message->createdAt) {
             $condition = ['and', $condition, ['<=', 'created_at', $date]];
         }
 

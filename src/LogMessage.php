@@ -9,165 +9,46 @@ use yii\base\BaseObject;
  * Class LogMessage this is a data transfer object
  * @package lav45\activityLogger
  *
- * @property string $entityName alias name target object
- * @property string $entityId id target object
- * @property string $createdAt creation date of the action
- * @property string $userId id user who performed the action
- * @property string $userName user name who performed the action
- * @property string $action the action performed on the object
- * @property string $env environment, which produced the effect
  * @property string $data json data that was modified or relate to the subject
  */
 class LogMessage extends BaseObject
 {
     /**
-     * @var \Closure custom function for the encode `$data`
+     * @var string alias name target object
      */
-    public $encode;
+    public $entityName;
     /**
-     * @var string
+     * @var string id target object
      */
-    private $entityName;
+    public $entityId;
     /**
-     * @var string
+     * @var int creation date of the action
      */
-    private $entityId;
+    public $createdAt;
     /**
-     * @var int
+     * @var string id user who performed the action
      */
-    private $createdAt;
+    public $userId;
     /**
-     * @var string
+     * @var string user name who performed the action
      */
-    private $userId;
+    public $userName;
     /**
-     * @var string
+     * @var string the action performed on the object
      */
-    private $userName;
+    public $action;
     /**
-     * @var string
+     * @var string environment, which produced the effect
      */
-    private $action;
-    /**
-     * @var string
-     */
-    private $env;
+    public $env;
     /**
      * @var mixed
      */
     private $data;
-
     /**
-     * @return string
+     * @var \Closure custom function for the encode `$data`
      */
-    public function getEntityName()
-    {
-        return $this->entityName;
-    }
-
-    /**
-     * @param string $entityName
-     */
-    public function setEntityName($entityName)
-    {
-        $this->entityName = $entityName;
-    }
-
-    /**
-     * @return string
-     */
-    public function getEntityId()
-    {
-        return $this->entityId;
-    }
-
-    /**
-     * @param string $entityId
-     */
-    public function setEntityId($entityId)
-    {
-        $this->entityId = $entityId;
-    }
-
-    /**
-     * @return int
-     */
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * @param int $date
-     */
-    public function setCreatedAt($date)
-    {
-        $this->createdAt = $date;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUserId()
-    {
-        return $this->userId;
-    }
-
-    /**
-     * @param string $userId
-     */
-    public function setUserId($userId)
-    {
-        $this->userId = $userId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUserName()
-    {
-        return $this->userName;
-    }
-
-    /**
-     * @param string $userName
-     */
-    public function setUserName($userName)
-    {
-        $this->userName = $userName;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAction()
-    {
-        return $this->action;
-    }
-
-    /**
-     * @param string $action
-     */
-    public function setAction($action)
-    {
-        $this->action = $action;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getEnv()
-    {
-        return $this->env;
-    }
-
-    /**
-     * @param null|string $env
-     */
-    public function setEnv($env)
-    {
-        $this->env = $env;
-    }
+    public $encode;
 
     /**
      * @return string|null
