@@ -10,6 +10,29 @@ use PHPUnit\Framework\TestCase;
 
 class ActiveRecordBehaviorTest extends TestCase
 {
+    public static function setUpBeforeClass()
+    {
+        Yii::$app->set('db', [
+            'class' => 'yii\db\Connection',
+            'dsn' => 'sqlite::memory:',
+        ]);
+        Yii::$app->set('activityLogger', [
+            'class' => 'lav45\activityLogger\Manager',
+        ]);
+        Yii::$app->set('activityLoggerStorage', [
+            'class' => 'lav45\activityLogger\DbStorage',
+        ]);
+
+        Yii::$app->runAction('migrate/up', [
+            'migrationPath' => __DIR__ . '/../../migrations',
+            'interactive' => 0
+        ]);
+        Yii::$app->runAction('migrate/up', [
+            'migrationPath' => __DIR__ . '/../migrations',
+            'interactive' => 0
+        ]);
+    }
+
     /**
      * @return User
      */
