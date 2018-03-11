@@ -3,6 +3,13 @@
 
 Этот файл содержит примечаний которые может нарушить работу компонента при обновлении из одной версии в другую. Хотя мы стараемся обеспечить обратную совместимость, насколько это возможно, иногда это не возможно, или приводит к существенному снижению производительности. Так же вы сможете следить за всеми критическими изменениями в нашем проекте.
 
+
+Обновление с 1.5.2
+------------------
+* Значение по умолчанию для `\lav45\activityLogger\ActiveRecordBehavior::$identicalAttributes` теперь `false`
+* `\lav45\activityLogger\ActiveRecordBehavior` не будет писать в лог пустые значения. За проверку наличия непустых данных отвечает метод `ActiveRecordBehavior::isEmpty()`, работу которого можно скорректировать с помощью свойства `ActiveRecordBehavior::$isEmpty` передав ему свою функцию.
+
+
 Обновление с 1.5.1
 ------------------
 * Удалены методы `\lav45\activityLogger\LogMessage`
@@ -22,6 +29,7 @@
     * setEnv()
     
     В место этого будут использоваться публичные свойства.
+
 
 Обновление с 1.5.0
 ------------------
@@ -48,10 +56,9 @@
     }
 ```
 
+
 Обновление с 1.4.0
 ------------------
-* Параметр `\lav45\activityLogger\ActiveRecordBehavior::$identicalAttributes` помечен как устаревший и будет удален с переходом на **1.6.0** версию.
-
 * `\lav45\activityLogger\DbStorage`
     * Удалён метод `clean($date)`, а также из интерфейса `\lav45\activityLogger\StorageInterface::clean($date)`
     * Метод `delete($entityName, $entityId)` теперь принимает `delete(\lav45\activityLogger\LogMessage $message)`
@@ -71,6 +78,7 @@
     Yii::$app->activityLogger->log($entityName, $messageText, $action, $entityId);
     ```
 
+
 Обновление с 1.3.0
 ------------------
 * Данные для `\lav45\activityLogger\modules\models\DataModel` теперь передаются через метод `setData(array $value)`
@@ -81,9 +89,11 @@
     ```
 * Для таблицы `activity_log` было добавлено поле `'id' => $this->bigPrimaryKey()` 
 
+
 Обновление с 1.2.0
 ------------------
 * `\lav45\activityLogger\DbStorage` теперь должен быть зарегистрирован в списке компонентов под именем `activityLoggerStorage` и реализовывать интерфейс `\lav45\activityLogger\StorageInterface`
+
 
 Обновление с 1.1.0
 ------------------
@@ -94,6 +104,7 @@
 * Метод `\lav45\activityLogger\modules\models\ActivityLog::getData()` теперь всегда будет возвращать массив
 * `\lav45\activityLogger\modules\Module::$createUserUrl` был удален. В место него будет использоваться ссылка выполняющая роль фильтрации данных по конкретному пользователю.
 * Параметр `\lav45\activityLogger\Manager::$user` может принимать только имя компонента зарегистрированного в приложении и соответствующего классу `\yii\web\User`
+
 
 Обновление с 1.0.0
 ------------------

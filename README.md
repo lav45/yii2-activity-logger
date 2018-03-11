@@ -155,21 +155,6 @@ Url::toRoute(['/logger/default/index', 'entityName' => 'news', 'entityId' => 1])
 class News extends ActiveRecord
 {
     // Рекомендуется использовать
-    public function rules()
-    {
-        return [
-            // Если значение поля не обязательное, тогда используйте валидатор `default`
-            // тогда если поле не будет заполнено, ему будет присвоено значение NULL.
-
-            [['parent_id'], 'integer'],
-            [['parent_id'], 'default'],
-
-            [['comment'], 'string'],
-            [['comment'], 'default'],
-        ];
-    }
-
-    // Рекомендуется использовать
     public function transactions()
     {
         return [
@@ -180,8 +165,6 @@ class News extends ActiveRecord
     public function behaviors()
     {
         return [
-            // Рекомендуется использовать для корректной работы поиска измененных полей
-            ['class' => 'yii\behaviors\AttributeTypecastBehavior'],
             [
                 'class' => 'lav45\activityLogger\ActiveRecordBehavior',
              

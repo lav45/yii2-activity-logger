@@ -3,7 +3,6 @@
 namespace lav45\activityLogger\test\models;
 
 use yii\db\ActiveRecord;
-use yii\behaviors\AttributeTypecastBehavior;
 use lav45\activityLogger\modules\models\ActivityLog;
 use lav45\activityLogger\ActiveRecordBehavior as ActivityLoggerBehavior;
 
@@ -83,9 +82,6 @@ class User extends ActiveRecord
     public function behaviors()
     {
         return [
-            'typecast' => [
-                'class' => AttributeTypecastBehavior::class,
-            ],
             'logger' => [
                 'class' => ActivityLoggerBehavior::class,
                 'actionLabels' => [

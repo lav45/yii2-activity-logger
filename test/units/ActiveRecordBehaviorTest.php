@@ -40,10 +40,10 @@ class ActiveRecordBehaviorTest extends TestCase
     {
         $model = new User();
         $model->login = 'buster';
-        $model->friend_count = 5;
-        $model->salary = 100.500;
+        $model->friend_count = '5';
+        $model->salary = '100.500';
         $model->birthday = '01.01.2005';
-        $model->company_id = 1;
+        $model->company_id = '1';
         $model->save();
         return $model;
     }
@@ -72,6 +72,29 @@ class ActiveRecordBehaviorTest extends TestCase
                     'value' => false
                 ]
             ]
+        ];
+
+        $this->assertEquals($expected, $model->getLastActivityLog()->getData());
+    }
+
+    public function testIsEmpty()
+    {
+        $model = new User();
+        /** @var \lav45\activityLogger\ActiveRecordBehavior $logger */
+        $logger = $model->getBehavior('logger');
+        $logger->isEmpty = function ($value) {
+              return empty($value);
+        };
+
+        $this->assertTrue($model->save());
+
+        $expected = [
+            'status' => [
+                'new' => [
+                    'id' => 10,
+                    'value' => 'Active'
+                ]
+            ],
         ];
 
         $this->assertEquals($expected, $model->getLastActivityLog()->getData());
@@ -485,6 +508,74 @@ class ActiveRecordBehaviorTest extends TestCase
         ];
         $this->assertEquals($expected, $logModels[1]->getData());
         $this->assertEquals('Удаление', $logModels[1]->action);
+    }
+
+    public function testLogEmptyAttributeAfterDeleteModel()
+    {
+        $model = new User();
+        $model->birthday = '01.01.2005';
+        $this->assertTrue($model->save());
+
+        $expected = [
+            'birthday' => [
+                'new' => [
+                    'value' => '01.01.2005'
+                ]
+            ],
+            'status' => [
+                'new' => [
+                    'id' => 10,
+                    'value' => 'Active'
+                ]
+            ],
+            'is_hidden' => [
+                'new' => [
+                    'value' => false
+                ]
+            ],
+        ];
+
+        $this->assertEquals($expected, $model->getLastActivityLog()->getData());
+
+        $this->assertEquals(1, $model->delete());
+
+        $logModels = ActivityLog::findAll([
+            'entity_name' => $model->getEntityName(),
+            'entity_id' => $model->getEntityId(),
+        ]);
+
+        $this->assertEquals(1, count($logModels));
+
+        $expected = [
+            'birthday' => [
+                'old' => [
+                    'value' => '01.01.2005'
+                ],
+                'new' => [
+                    'value' => null
+                ]
+            ],
+            'status' => [
+                'old' => [
+                    'id' => 10,
+                    'value' => 'Active'
+                ],
+                'new' => [
+                    'id' => null,
+                    'value' => null
+                ]
+            ],
+            'is_hidden' => [
+                'old' => [
+                    'value' => false
+                ],
+                'new' => [
+                    'value' => null
+                ]
+            ],
+        ];
+
+        $this->assertEquals($expected, $logModels[0]->getData());
     }
 
     public function testGetEntityName()

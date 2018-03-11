@@ -40,7 +40,6 @@ use yii\helpers\StringHelper;
  *  public function behaviors()
  *  {
  *      return [
- *          ['class' => 'yii\behaviors\AttributeTypecastBehavior'], // Recommended
  *          [
  *              'class' => 'lav45\activityLogger\ActiveRecordBehavior',
  *              'attributes' => [
@@ -110,9 +109,13 @@ class ActiveRecordBehavior extends Behavior
     public $attributes = [];
     /**
      * @var bool
-     * @deprecated will be removed in 1.6 version
      */
-    public $identicalAttributes = true;
+    public $identicalAttributes = false;
+    /**
+     * @var callable a PHP callable that replaces the default implementation of [[isEmpty()]].
+     * @since 1.5.2
+     */
+    public $isEmpty;
     /**
      * @var \Closure|array|string|null custom method to getEntityName
      * the callback function must return a string
@@ -195,7 +198,6 @@ class ActiveRecordBehavior extends Behavior
         if (empty($this->changedAttributes)) {
             return;
         }
-
         $this->saveMessage($this->actionName, $this->changedAttributes);
     }
 
@@ -225,16 +227,28 @@ class ActiveRecordBehavior extends Behavior
     {
         $result = [];
         foreach ($this->attributes as $attribute => $options) {
-            if ($unset === false && $this->owner->isAttributeChanged($attribute, $this->identicalAttributes) === false) {
-                continue;
-            }
-
             $old = $this->owner->getOldAttribute($attribute);
             $new = $unset === false ? $this->owner->getAttribute($attribute) : null;
+
+            if (
+                ($this->isEmpty($old) && $this->isEmpty($new)) ||
+                ($unset === false && $this->isAttributeChanged($attribute) === false)
+            ) {
+                continue;
+            }
 
             $result[$attribute] = $this->resolveStoreValues($old, $new, $options);
         }
         return $result;
+    }
+
+    /**
+     * @param string $attribute
+     * @return bool
+     */
+    private function isAttributeChanged($attribute)
+    {
+        return $this->owner->isAttributeChanged($attribute, $this->identicalAttributes);
     }
 
     /**
@@ -349,7 +363,6 @@ class ActiveRecordBehavior extends Behavior
         if ($this->getEntityName !== null) {
             return call_user_func($this->getEntityName);
         }
-
         $class = StringHelper::basename(get_class($this->owner));
         return Inflector::camel2id($class, '_');
     }
@@ -372,5 +385,21 @@ class ActiveRecordBehavior extends Behavior
             $result = json_encode($result, 320);
         }
         return $result;
+    }
+
+    /**
+     * Checks if the given value is empty.
+     * A value is considered empty if it is null, an empty array, or an empty string.
+     * Note that this method is different from PHP empty(). It will return false when the value is 0.
+     * @param mixed $value the value to be checked
+     * @return bool whether the value is empty
+     * @since 1.5.2
+     */
+    public function isEmpty($value)
+    {
+        if ($this->isEmpty !== null) {
+            return call_user_func($this->isEmpty, $value);
+        }
+        return $value === null || $value === '';
     }
 }
