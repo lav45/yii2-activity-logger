@@ -314,6 +314,36 @@ Deleted 5 record(s) from the activity log.
     $logger->log($entityName, $message, 'send mail', $entityId);
 ```
 
+
+Когда нужна оставить одну запись в логере со списком выполненных действий можно воспользоватся `LogCollection`
+В данном примере мы записываем лог синхранизации пользователей
+
+```php
+$collection = Yii::$app->activityLogger->createCollection('user');
+$collection->setAction('sync');
+//$collection->setEntityId(100);
+
+$messages = [
+    'Created: 100',
+    'Updated: 100500',
+    'Deleted: 5',
+];
+
+/**
+ * Добавляем все необходимые записи
+ */
+foreach ($messages as $message) {
+    $collection->addMessage($message);
+}
+
+/**
+ * Сохраняем все собранные на данный момент логи
+ * Посли записи список логов будет очищен
+ */
+$collection->push(); // => true
+```
+
+
 ### Удаление устаревших данных
 
 Будут удалены все логи старше одного года. Этот параметр можно изменить в настройках компонента, указав свое значение для параметра `deleteOldThanDays`
@@ -321,3 +351,8 @@ Deleted 5 record(s) from the activity log.
 ```php
 Yii::$app->activityLogger->clean();
 ```
+
+
+# Лицензии
+
+Для получения информации о лицензии проверьте файл [LICENSE.md](LICENSE.md).

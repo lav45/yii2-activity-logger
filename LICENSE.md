@@ -1,6 +1,6 @@
 BSD 3-Clause License
 
-Copyright (c) 2017, Alex
+Copyright (c) 2017, LAV45 (Alex Loban)
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

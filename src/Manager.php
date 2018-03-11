@@ -72,9 +72,19 @@ class Manager extends BaseObject
 
     /**
      * @param string $entityName
+     * @return LogCollection
+     * @since 1.5.1
+     */
+    public function createCollection($entityName)
+    {
+        return Yii::createObject(['class' => LogCollection::class], [$this, $entityName]);
+    }
+
+    /**
+     * @param string $entityName
      * @param string|array $message
      * @param null|string $action
-     * @param null|string $entityId
+     * @param null|string|int $entityId
      * @return bool
      */
     public function log($entityName, $message, $action = null, $entityId = null)
@@ -96,7 +106,7 @@ class Manager extends BaseObject
     /**
      * @param array $options
      *  - entityName :string
-     *  - entityId :string
+     *  - entityId :string|int
      *  - createdAt :int unix timestamp
      *  - userId :string
      *  - userName :string
@@ -151,7 +161,7 @@ class Manager extends BaseObject
     /**
      * @param array $options
      *  - entityName :string
-     *  - entityId :string
+     *  - entityId :string|int
      *  - userId :string
      *  - action :string
      *  - env :string
@@ -172,7 +182,7 @@ class Manager extends BaseObject
     /**
      * @param array $options
      *  - entityName :string
-     *  - entityId :string
+     *  - entityId :string|int
      *  - createdAt :int unix timestamp
      *  - userId :string
      *  - action :string
