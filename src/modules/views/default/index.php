@@ -2,6 +2,7 @@
 /**
  * @var $this yii\web\View
  * @var $dataProvider yii\data\ActiveDataProvider
+ * @var $searchModel lav45\activityLogger\modules\models\ActivityLogSearch
  */
 
 use yii\helpers\Html;
@@ -32,6 +33,8 @@ CSS
     <h2><?= Html::encode($this->title) ?></h2>
 
     <?php Pjax::begin(); ?>
+
+    <?= $this->render('_search', ['model' => $searchModel]); ?>
 
     <?= ListView::widget([
         'dataProvider' => $dataProvider,
