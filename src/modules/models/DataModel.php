@@ -95,6 +95,10 @@ class DataModel
             return Html::a(Html::encode($value), $value, ['target' => '_blank']);
         }
         if (is_string($value)) {
+            if (empty($value)) {
+                return $this->formatter->nullDisplay;
+            }
+
             $value = Yii::t('lav45/logger', $value);
             $value = Html::encode($value);
             $value = $this->formatter->asNtext($value);
