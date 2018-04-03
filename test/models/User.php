@@ -161,6 +161,7 @@ class User extends ActiveRecord
         $query = $this->getActivityLogs();
         $query->multiple = false;
 
+        /** @var null|ActivityLog $model */
         $model = $query
             ->orderBy(['id' => SORT_DESC])
             ->one();

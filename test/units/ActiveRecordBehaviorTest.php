@@ -3,11 +3,19 @@
 namespace lav45\activityLogger\test\units;
 
 use Yii;
+use yii\base\Event;
 use lav45\activityLogger\test\models\User;
+use lav45\activityLogger\test\models\UserEventMethod;
 use lav45\activityLogger\test\models\TestEntityName;
 use lav45\activityLogger\modules\models\ActivityLog;
+use lav45\activityLogger\ActiveRecordBehavior as ActiveLogBehavior;
+use lav45\activityLogger\MessageEvent;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class ActiveRecordBehaviorTest
+ * @package lav45\activityLogger\test\units
+ */
 class ActiveRecordBehaviorTest extends TestCase
 {
     public static function setUpBeforeClass()
@@ -50,6 +58,7 @@ class ActiveRecordBehaviorTest extends TestCase
 
     public function tearDown()
     {
+        // To ensure that during the test, the base does not increase in size
         $command = Yii::$app->getDb()->createCommand();
         $command->truncateTable(User::tableName())->execute();
         $command->truncateTable(ActivityLog::tableName())->execute();
@@ -83,7 +92,7 @@ class ActiveRecordBehaviorTest extends TestCase
         /** @var \lav45\activityLogger\ActiveRecordBehavior $logger */
         $logger = $model->getBehavior('logger');
         $logger->isEmpty = function ($value) {
-              return empty($value);
+            return empty($value);
         };
 
         $this->assertTrue($model->save());
@@ -661,6 +670,11 @@ class ActiveRecordBehaviorTest extends TestCase
         ]);
         $this->assertTrue($model->save());
         $this->assertNull($model->getLastActivityLog());
+
+        // Reset component settings
+        Yii::$app->set('activityLogger', [
+            'class' => 'lav45\activityLogger\Manager',
+        ]);
     }
 
     public function testDisabledLoggerAfterStart()
@@ -678,5 +692,157 @@ class ActiveRecordBehaviorTest extends TestCase
         ]);
         $this->assertTrue($model->save());
         $this->assertNull($model->getLastActivityLog());
+
+        // Reset component settings
+        Yii::$app->set('activityLogger', [
+            'class' => 'lav45\activityLogger\Manager',
+        ]);
+    }
+
+    public function testEventSaveMessage()
+    {
+        // Create
+        $model = new User();
+        $model->login = 'buster';
+
+        $model->on(ActiveLogBehavior::EVENT_BEFORE_SAVE_MESSAGE,
+            function (MessageEvent $event) use (&$beforeSaveFlag) {
+                $event->append['action'] = 'Custom action';
+                $beforeSaveFlag = true;
+            });
+
+        $model->on(ActiveLogBehavior::EVENT_AFTER_SAVE_MESSAGE,
+            function (Event $event) use (&$afterSaveFlag) {
+                $afterSaveFlag = true;
+            });
+
+        $beforeSaveFlag = false;
+        $afterSaveFlag = false;
+        $this->assertTrue($model->save());
+        $this->assertTrue($afterSaveFlag);
+        $this->assertTrue($beforeSaveFlag);
+
+        $expected = [
+            'status' => [
+                'new' => [
+                    'id' => 10,
+                    'value' => 'Active'
+                ]
+            ],
+            'is_hidden' => [
+                'new' => [
+                    'value' => false
+                ]
+            ],
+            'login' => [
+                'new' => [
+                    'value' => 'buster'
+                ]
+            ],
+            'action' => 'Custom action',
+        ];
+
+        $this->assertNotNull($model->getLastActivityLog());
+        $this->assertEquals($expected, $model->getLastActivityLog()->getData());
+
+        // Update
+        $model->login = 'buster2';
+
+        $beforeSaveFlag = false;
+        $afterSaveFlag = false;
+        $this->assertTrue($model->save());
+        $this->assertTrue($afterSaveFlag);
+        $this->assertTrue($beforeSaveFlag);
+
+        $expected = [
+            'login' => [
+                'old' => [
+                    'value' => 'buster'
+                ],
+                'new' => [
+                    'value' => 'buster2'
+                ],
+            ],
+            'action' => 'Custom action',
+        ];
+
+        $this->assertEquals($expected, $model->getLastActivityLog()->getData());
+
+        // Save without change
+        $beforeSaveFlag = false;
+        $afterSaveFlag = false;
+        $this->assertTrue($model->save());
+        $this->assertFalse($afterSaveFlag);
+        $this->assertFalse($beforeSaveFlag);
+    }
+
+    public function testEventSaveMessageMethod()
+    {
+        // Create
+        $model = new UserEventMethod();
+        $model->login = 'buster';
+
+        $model->appendLogs = [
+            'event' => 'save message',
+        ];
+
+        $model->beforeSaveFlag = false;
+        $model->afterSaveFlag = false;
+        $this->assertTrue($model->save());
+        $this->assertTrue($model->afterSaveFlag);
+        $this->assertTrue($model->beforeSaveFlag);
+
+        $expected = [
+            'status' => [
+                'new' => [
+                    'id' => 10,
+                    'value' => 'Active'
+                ]
+            ],
+            'is_hidden' => [
+                'new' => [
+                    'value' => false
+                ]
+            ],
+            'login' => [
+                'new' => [
+                    'value' => 'buster'
+                ]
+            ],
+            'event' => 'save message',
+        ];
+
+        $this->assertNotNull($model->getLastActivityLog());
+        $this->assertEquals($expected, $model->getLastActivityLog()->getData());
+
+        // Update
+        $model->login = 'buster2';
+
+        $model->beforeSaveFlag = false;
+        $model->afterSaveFlag = false;
+        $this->assertTrue($model->save());
+        $this->assertTrue($model->afterSaveFlag);
+        $this->assertTrue($model->beforeSaveFlag);
+
+        $expected = [
+            'login' => [
+                'old' => [
+                    'value' => 'buster'
+                ],
+                'new' => [
+                    'value' => 'buster2'
+                ],
+            ],
+            'event' => 'save message',
+        ];
+
+        $this->assertEquals($expected, $model->getLastActivityLog()->getData());
+
+        // Save without change
+        $model->beforeSaveFlag = false;
+        $model->afterSaveFlag = false;
+        $this->assertTrue($model->save());
+        $this->assertFalse($model->afterSaveFlag);
+        $this->assertFalse($model->beforeSaveFlag);
     }
 }

@@ -25,8 +25,14 @@ $formatter = Yii::$app->formatter;
 </h4>
 <ul class="details">
     <?php foreach ($model->getData() as $attribute => $values): ?>
-        <?php if (is_int($attribute)): ?>
-            <li class="details-text"><?= $values; ?></li>
+        <?php if (is_string($values)): ?>
+            <li>
+                <?php if(is_numeric($attribute) || empty($attribute)): ?>
+                    <?= $values; ?>
+                <?php else: ?>
+                    <strong><?= $attribute ?></strong> <?= $values; ?>
+                <?php endif; ?>
+            </li>
         <?php else: ?>
             <li>
                 <?= Yii::t('lav45/logger', '<strong>{attribute}</strong> has been changed', ['attribute' => $attribute]) ?>

@@ -4,6 +4,10 @@ namespace lav45\activityLogger;
 
 use yii\di\Instance;
 
+/**
+ * Trait ManagerTrait
+ * @package lav45\activityLogger
+ */
 trait ManagerTrait
 {
     /**

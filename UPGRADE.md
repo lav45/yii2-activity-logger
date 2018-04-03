@@ -6,6 +6,8 @@
 
 Обновление с 1.5.2
 ------------------
+* Немного доработано представление `src/modules/views/default/_item.php`
+* При записи в лог пустой строки она будет отображаться как `Yii::$app->formatter->nullDisplay`
 * Значение по умолчанию для `\lav45\activityLogger\ActiveRecordBehavior::$identicalAttributes` теперь `false`
 * `\lav45\activityLogger\ActiveRecordBehavior` не будет писать в лог пустые значения. За проверку наличия непустых данных отвечает метод `ActiveRecordBehavior::isEmpty()`, работу которого можно скорректировать с помощью свойства `ActiveRecordBehavior::$isEmpty` передав ему свою функцию.
 

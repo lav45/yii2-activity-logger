@@ -11,23 +11,9 @@ use yii\helpers\StringHelper;
 
 /**
  * Class ActiveRecordBehavior
- * @package lav45\activityLogger\entity
+ * @package lav45\activityLogger
  *
  * ======================= Example usage ======================
- *  // Recommended
- *  public function rules()
- *  {
- *      return [
- *          // If a field value is not required use `default` validator.
- *          // If a field is not filled, it will set its value to NULL.
- *
- *          [['parent_id'], 'integer'],
- *          [['parent_id'], 'default'],
- *
- *          [['comment'], 'string'],
- *          [['comment'], 'default'],
- *      ];
- *  }
  *
  *  // Recommended
  *  public function transactions()
@@ -70,6 +56,19 @@ use yii\helpers\StringHelper;
 class ActiveRecordBehavior extends Behavior
 {
     use ManagerTrait;
+
+    /**
+     * @event MessageEvent an event that is triggered before inserting a record.
+     * You may added in to the [[MessageEvent::append]] your custom log message.
+     * @since 1.5.3
+     */
+    const EVENT_BEFORE_SAVE_MESSAGE = 'beforeSaveMessage';
+    /**
+     * @event Event an event that is triggered after inserting a record.
+     * @since 1.5.3
+     */
+    const EVENT_AFTER_SAVE_MESSAGE = 'afterSaveMessage';
+
     /**
      * @var bool
      */
@@ -230,10 +229,10 @@ class ActiveRecordBehavior extends Behavior
             $old = $this->owner->getOldAttribute($attribute);
             $new = $unset === false ? $this->owner->getAttribute($attribute) : null;
 
-            if (
-                ($this->isEmpty($old) && $this->isEmpty($new)) ||
-                ($unset === false && $this->isAttributeChanged($attribute) === false)
-            ) {
+            if ($this->isEmpty($old) && $this->isEmpty($new)) {
+                continue;
+            }
+            if ($unset === false && $this->isAttributeChanged($attribute) === false) {
                 continue;
             }
 
@@ -352,7 +351,42 @@ class ActiveRecordBehavior extends Behavior
      */
     protected function saveMessage($action, array $data)
     {
+        $data = array_merge($data, $this->beforeSaveMessage());
+
         $this->getLogger()->log($this->getEntityName(), $data, $action, $this->getEntityId());
+
+        $this->afterSaveMessage();
+    }
+
+    /**
+     * @return array
+     * @since 1.5.3
+     */
+    public function beforeSaveMessage()
+    {
+        $name = self::EVENT_BEFORE_SAVE_MESSAGE;
+
+        if (method_exists($this->owner, $name)) {
+            return (array)$this->owner->$name();
+        }
+
+        $event = new MessageEvent();
+        $this->owner->trigger($name, $event);
+        return $event->append;
+    }
+
+    /**
+     * @since 1.5.3
+     */
+    public function afterSaveMessage()
+    {
+        $name = self::EVENT_AFTER_SAVE_MESSAGE;
+
+        if (method_exists($this->owner, $name)) {
+            $this->owner->$name();
+        } else {
+            $this->owner->trigger($name);
+        }
     }
 
     /**

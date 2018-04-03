@@ -19,7 +19,7 @@
 [![Total Downloads](https://poser.pugx.org/lav45/yii2-activity-logger/downloads)](https://packagist.org/packages/lav45/yii2-activity-logger)
 
 
-## Установаем расширение
+## Установка расширения
 
 ```bash
 ~$ composer require --prefer-dist lav45/yii2-activity-logger
@@ -29,7 +29,7 @@
 ## Миграции
 
 Для начала нужно настроить `MigrateController`, таким образом чтобы он получал миграции из нескольких источников.
-В настройках консольного окружения необходимо добавить следущий код:
+В настройках консольного окружения необходимо добавить следующий код:
 
 ```php
 return [
@@ -176,7 +176,7 @@ class News extends ActiveRecord
                 'getEntityId' => function () {
                     return $this->global_news_id;
                 }
-                
+
                 // Список полей за изменением которых будет производиться слежение
                 'attributes' => [
                     // Простые поля ( string|int|bool )
@@ -208,13 +208,15 @@ class News extends ActiveRecord
     public function attributeFormats()
     {
         return [
+            // Значение аттрибуда будет форматироваться с помощью Yii::$app->formatter->asDatetime($value);
             'published_at' => 'datetime',
 
-            // 'is_published' => 'boolean',
+            // Можно использовать свою функцию обратного вызова 
             'is_published' => function($value) {
                 return Yii::$app->formatter->asBoolean($value);
             },
 
+            // Если нужно вывести имени картинки и ссылку на неё
             'image' => function($value) {
                 if (empty($value)) { return null; }
 
@@ -222,6 +224,54 @@ class News extends ActiveRecord
                 return Html::a($value, $url, ['target' => '_blank']);
             }
         ];
+    }
+    
+    /**
+     * В процессе работы `\lav45\activityLogger\ActiveRecordBehavior` вызывает событие
+     * [[ActiveRecordBehavior::EVENT_BEFORE_SAVE_MESSAGE]] - перед записью логов
+     * [[ActiveRecordBehavior::EVENT_AFTER_SAVE_MESSAGE]] - после записи логов
+     */
+    public function init()
+    {
+        parent::init();
+        
+        // Регистрируем обработчики событий
+        $this->on(ActiveRecordBehavior::EVENT_BEFORE_SAVE_MESSAGE, 
+            function (\lav45\activityLogger\MessageEvent $event) {
+                // Вы можете добавить в список логов свою информацию
+                $event->append[] = 'Reset password';
+            });
+        
+        $this->on(ActiveLogBehavior::EVENT_AFTER_SAVE_MESSAGE, 
+            function (\yii\base\Event $event) {
+                // Какие-то действия после записи логов
+            });
+    }
+    
+    /*
+     * В место регистрации события вы можете создать однаименный метод который будет вызываться вместо события
+     */
+
+    /**
+     * Будет вызываться в место события [[ActiveRecordBehavior::EVENT_BEFORE_SAVE_MESSAGE]]
+     * @return array
+     */
+    public function beforeSaveMessage()
+    {
+        // Вы можете добавить в список логов свою информацию
+        return [
+            'Reset password',
+            // или заменить отображаемое значение в логах для атрибута `password_hash`
+            'password_hash' => 'Reset password',
+        ];
+    }
+
+    /**
+     * Будет вызываться в место события [[ActiveRecordBehavior::EVENT_AFTER_SAVE_MESSAGE]]
+     */
+    public function afterSaveMessage()
+    {
+        // Какие-то действия после записи логов
     }
 }
 ```
@@ -245,7 +295,7 @@ return [
 
 ```bash
 ~$ yii logger/clean
-Deleted 5 record(s) from the activity log.
+# => Deleted 5 record(s) from the activity log.
 ```
 
 ### Используя параметры командной строки
@@ -298,13 +348,13 @@ Deleted 5 record(s) from the activity log.
 ```
 
 
-Когда нужна оставить одну запись в логере со списком выполненных действий можно воспользоватся `LogCollection`
-В данном примере мы записываем лог синхранизации пользователей
+Когда в логах нужно оставить одну запись со списком выполненных действий можно воспользоваться `LogCollection`
+В данном примере мы записываем лог синхронизации пользователей
 
 ```php
 $collection = Yii::$app->activityLogger->createCollection('user');
 $collection->setAction('sync');
-//$collection->setEntityId(100);
+$collection->setEntityId(100);
 
 $messages = [
     'Created: 100',

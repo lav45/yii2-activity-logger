@@ -99,8 +99,9 @@ class ActivityLogViewModel extends ActivityLog
     public function getData()
     {
         foreach (parent::getData() as $attribute => $values) {
-            if (is_int($attribute)) {
-                yield $attribute => Html::encode(Yii::t('lav45/logger', $values));
+            if (is_string($values)) {
+                $label = is_string($attribute) ? $this->getEntityAttributeLabel($attribute) : $attribute;
+                yield $label => Html::encode(Yii::t('lav45/logger', $values));
             } else {
                 $dataModel = $this->getDataModel()
                     ->setFormat($this->getAttributeFormat($attribute))
