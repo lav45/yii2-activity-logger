@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: and1
- * Date: 01.04.2018
- * Time: 12:33
- */
 
 namespace lav45\activityLogger\modules\models;
 
@@ -49,7 +43,7 @@ class ActivityLogSearch extends Model
     public function rules()
     {
         return [
-            [['entityName'], 'string'],
+            [['entityName'], 'in', 'range' => array_keys($this->getEntityMap())],
 
             [['entityId'], 'safe'],
 
@@ -62,7 +56,7 @@ class ActivityLogSearch extends Model
     }
 
     /**
-     * Для красивых ссылок в строке браузера при фильтрации и поиске
+     * For beautiful links in the browser bar when filtering and searching
      * @return string
      */
     public function formName()
@@ -90,15 +84,18 @@ class ActivityLogSearch extends Model
         }
 
         if (!empty($this->date)) {
-            $formatter = Yii::$app->formatter;
+            $date = Yii::$app->getFormatter()
+                ->asTimestamp($this->date . ' 00:00:00 ' . Yii::$app->timeZone);
+
             $query
                 ->andFilterWhere(['and',
-                    ['>', 'created_at', $formatter->asTimestamp($this->date . ' 00:00:00 ' . Yii::$app->timeZone)],
-                    ['<', 'created_at', $formatter->asTimestamp($this->date . ' 23:59:59 ' . Yii::$app->timeZone)],
+                    ['>=', 'created_at', $date],
+                    ['<=', 'created_at', $date + 86400],
                 ]);
         }
 
-        $query->andFilterWhere(['entity_name' => $this->entityName])
+        $query
+            ->andFilterWhere(['entity_name' => $this->entityName])
             ->andFilterWhere(['entity_id' => $this->entityId])
             ->andFilterWhere(['user_id' => $this->userId])
             ->andFilterWhere(['env' => $this->env]);
@@ -127,7 +124,7 @@ class ActivityLogSearch extends Model
      */
     public function getEntityNameList()
     {
-        $data = array_flip($this->getEntityMap());
+        $data = array_keys($this->getEntityMap());
         return array_combine($data, $data);
     }
 }

@@ -17,10 +17,10 @@ $this->registerCss(<<<CSS
     color: #7e7e7e;
     margin-bottom: 1.5em;
 }
-.list-view {
+.logger-index .list-view {
     margin-top: 20px;
 }
-.details-text {
+.logger-index .details-text {
     display: inline-block;
     vertical-align: top;
 }
