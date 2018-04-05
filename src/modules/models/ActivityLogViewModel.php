@@ -14,7 +14,7 @@ use lav45\activityLogger\modules\Module;
 class ActivityLogViewModel extends ActivityLog
 {
     /**
-     * @var string|array
+     * @var DataModel|string|array
      */
     public $dataModel = DataModel::class;
     /**
