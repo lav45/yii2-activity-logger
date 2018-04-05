@@ -19,7 +19,8 @@
     ],
     "require": {
         "php": ">=5.5.0",
-        "yiisoft/yii2": "2.0.*"
+        "yiisoft/yii2": "2.0.*",
+        "2amigos/yii2-date-picker-widget" : "1.0.*"
     },
     "require-dev": {
         "ext-sqlite3": "*",

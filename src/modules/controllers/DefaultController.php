@@ -2,8 +2,9 @@
 
 namespace lav45\activityLogger\modules\controllers;
 
+use Yii;
 use yii\web\Controller;
-use yii\data\ActiveDataProvider;
+use lav45\activityLogger\modules\models\ActivityLogSearch;
 use lav45\activityLogger\modules\models\ActivityLogViewModel;
 
 /**
@@ -14,24 +15,16 @@ use lav45\activityLogger\modules\models\ActivityLogViewModel;
  */
 class DefaultController extends Controller
 {
-    public function actionIndex($entityName = null, $entityId = null, $userId = null)
+    public function actionIndex()
     {
         ActivityLogViewModel::setModule($this->module);
 
-        $query = ActivityLogViewModel::find()
-            ->orderBy(['id' => SORT_DESC])
-            ->filterWhere([
-                'entity_name' => $entityName,
-                'entity_id' => $entityId,
-                'user_id' => $userId,
-            ]);
-
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-            'sort' => false,
-        ]);
+        $searchModel = new ActivityLogSearch();
+        $searchModel->setEntityMap($this->module->entityMap);
+        $dataProvider = $searchModel->search(Yii::$app->getRequest()->getQueryParams());
 
         return $this->render('index', [
+            'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }

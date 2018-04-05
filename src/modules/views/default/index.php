@@ -2,6 +2,7 @@
 /**
  * @var $this yii\web\View
  * @var $dataProvider yii\data\ActiveDataProvider
+ * @var $searchModel lav45\activityLogger\modules\models\ActivityLogSearch
  */
 
 use yii\helpers\Html;
@@ -16,10 +17,10 @@ $this->registerCss(<<<CSS
     color: #7e7e7e;
     margin-bottom: 1.5em;
 }
-.list-view {
+.logger-index .list-view {
     margin-top: 20px;
 }
-.details-text {
+.logger-index .details-text {
     display: inline-block;
     vertical-align: top;
 }
@@ -32,6 +33,8 @@ CSS
     <h2><?= Html::encode($this->title) ?></h2>
 
     <?php Pjax::begin(); ?>
+
+    <?= $this->render('_search', ['model' => $searchModel]); ?>
 
     <?= ListView::widget([
         'dataProvider' => $dataProvider,
