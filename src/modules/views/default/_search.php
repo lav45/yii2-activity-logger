@@ -19,7 +19,6 @@ use dosamigos\datepicker\DatePicker;
 
     <?= $form->field($model, 'entityName')->dropDownList($model->getEntityNameList(), [
         'prompt' => '',
-        'onchange' => '',
     ]) ?>
 
     <?= $form->field($model, 'date')->widget(DatePicker::class, [
