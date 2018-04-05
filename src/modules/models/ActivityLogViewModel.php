@@ -80,6 +80,19 @@ class ActivityLogViewModel extends ActivityLog
     }
 
     /**
+     * @return string
+     */
+    public function getEnv()
+    {
+        $env = Html::encode($this->env);
+        $url = Url::current([
+            'env' => $this->env,
+            'page' => null
+        ]);
+        return Html::a($env, $url);
+    }
+
+    /**
      * @return \Generator|DataModel[]
      */
     public function getData()

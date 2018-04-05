@@ -4,7 +4,6 @@ namespace lav45\activityLogger\modules\controllers;
 
 use Yii;
 use yii\web\Controller;
-use yii\data\ActiveDataProvider;
 use lav45\activityLogger\modules\models\ActivityLogSearch;
 use lav45\activityLogger\modules\models\ActivityLogViewModel;
 
@@ -21,6 +20,7 @@ class DefaultController extends Controller
         ActivityLogViewModel::setModule($this->module);
 
         $searchModel = new ActivityLogSearch();
+        $searchModel->setEntityMap($this->module->entityMap);
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [

@@ -4,7 +4,6 @@
  * @var $model lav45\activityLogger\modules\models\ActivityLogSearch
  */
 
-use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use dosamigos\datepicker\DatePicker;
 
@@ -24,7 +23,7 @@ use dosamigos\datepicker\DatePicker;
     ]) ?>
 
     <?= $form->field($model, 'date')->widget(DatePicker::class, [
-        'language' => 'ru',
+        'language' => substr(Yii::$app->language, 0, 2),
         'clientOptions' => [
             'autoclose' => true,
             'todayHighlight' => true,

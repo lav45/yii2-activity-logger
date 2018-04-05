@@ -20,7 +20,7 @@ $formatter = Yii::$app->formatter;
     </span>
 
     <?php if ($model->env): ?>
-        <small class="pull-right"><?= $model->env ?></small>
+        <small class="pull-right"><?= $model->getEnv() ?></small>
     <?php endif; ?>
 </h4>
 <ul class="details">

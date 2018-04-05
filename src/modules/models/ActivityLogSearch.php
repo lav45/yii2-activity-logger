@@ -23,9 +23,25 @@ class ActivityLogSearch extends Model
      */
     public $entityName;
     /**
+     * @var int|string
+     */
+    public $entityId;
+    /**
+     * @var int|string
+     */
+    public $userId;
+    /**
+     * @var string
+     */
+    public $env;
+    /**
      * @var string
      */
     public $date;
+    /**
+     * @var array
+     */
+    private $entityMap;
 
     /**
      * @inheritdoc
@@ -34,6 +50,12 @@ class ActivityLogSearch extends Model
     {
         return [
             [['entityName'], 'string'],
+
+            [['entityId'], 'safe'],
+
+            [['userId'], 'safe'],
+
+            [['env'], 'safe'],
 
             [['date'], 'date', 'format' => 'dd.MM.yyyy'],
         ];
@@ -76,7 +98,10 @@ class ActivityLogSearch extends Model
                 ]);
         }
 
-        $query->andFilterWhere(['entity_name' => $this->entityName]);
+        $query->andFilterWhere(['entity_name' => $this->entityName])
+            ->andFilterWhere(['entity_id' => $this->entityId])
+            ->andFilterWhere(['user_id' => $this->userId])
+            ->andFilterWhere(['env' => $this->env]);
 
         return $dataProvider;
     }
@@ -84,9 +109,25 @@ class ActivityLogSearch extends Model
     /**
      * @return array
      */
+    protected function getEntityMap()
+    {
+        return $this->entityMap;
+    }
+
+    /**
+     * @param array $value
+     */
+    public function setEntityMap($value)
+    {
+        $this->entityMap = $value;
+    }
+
+    /**
+     * @return array
+     */
     public function getEntityNameList()
     {
-        $data = array_flip(Yii::$app->getModule('logger')->entityMap);
+        $data = array_flip($this->getEntityMap());
         return array_combine($data, $data);
     }
 }
