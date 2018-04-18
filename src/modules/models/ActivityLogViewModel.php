@@ -141,7 +141,7 @@ class ActivityLogViewModel extends ActivityLog
     protected function getEntityAttributeFormats()
     {
         $entityModel = $this->getEntityModel();
-        if (method_exists($entityModel, 'attributeFormats')) {
+        if ($entityModel !== null && method_exists($entityModel, 'attributeFormats')) {
             return $entityModel->attributeFormats();
         }
         return [];
