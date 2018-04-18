@@ -6,6 +6,8 @@
 
 Обновление с 1.5.2
 ------------------
+* Класс `\lav45\activityLogger\ActiveRecordBehavior` был переименован в `\lav45\activityLogger\ActiveLogBehavior`
+    Для поддержки обратной совместимости был добавлен пустой класс `\lav45\activityLogger\ActiveRecordBehavior` который будет удален с 1.6 версии
 * Немного доработано представление `src/modules/views/default/_item.php`
 * При записи в лог пустой строки она будет отображаться как `Yii::$app->formatter->nullDisplay`
 * Значение по умолчанию для `\lav45\activityLogger\ActiveRecordBehavior::$identicalAttributes` теперь `false`

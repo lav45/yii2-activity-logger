@@ -3,12 +3,12 @@
 namespace lav45\activityLogger\test\models;
 
 use yii\db\ActiveRecord;
-use lav45\activityLogger\ActiveRecordBehavior as ActivityLoggerBehavior;
+use lav45\activityLogger\ActiveLogBehavior;
 
 /**
  * Class TestEntityName
  * @package lav45\activityLogger\test\models
- * @mixin ActivityLoggerBehavior
+ * @mixin ActiveLogBehavior
  */
 class TestEntityName extends ActiveRecord
 {
@@ -16,7 +16,7 @@ class TestEntityName extends ActiveRecord
     {
         return [
             'logger' => [
-                'class' => ActivityLoggerBehavior::class,
+                'class' => ActiveLogBehavior::class,
             ],
         ];
     }

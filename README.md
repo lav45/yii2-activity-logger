@@ -150,7 +150,7 @@ Url::toRoute(['/logger/default/index', 'entityName' => 'news', 'entityId' => 1])
 
 ```php
 /**
- * @mixin \lav45\activityLogger\ActiveRecordBehavior
+ * @mixin \lav45\activityLogger\ActiveLogBehavior
  */
 class News extends ActiveRecord
 {
@@ -166,7 +166,7 @@ class News extends ActiveRecord
     {
         return [
             [
-                'class' => 'lav45\activityLogger\ActiveRecordBehavior',
+                'class' => 'lav45\activityLogger\ActiveLogBehavior',
              
                 // Если необхадимо изменить стандартное значение `entityName`
                 'getEntityName' => function () {
@@ -227,16 +227,16 @@ class News extends ActiveRecord
     }
     
     /**
-     * В процессе работы `\lav45\activityLogger\ActiveRecordBehavior` вызывает событие
-     * [[ActiveRecordBehavior::EVENT_BEFORE_SAVE_MESSAGE]] - перед записью логов
-     * [[ActiveRecordBehavior::EVENT_AFTER_SAVE_MESSAGE]] - после записи логов
+     * В процессе работы `\lav45\activityLogger\ActiveLogBehavior` вызывает событие
+     * [[ActiveLogBehavior::EVENT_BEFORE_SAVE_MESSAGE]] - перед записью логов
+     * [[ActiveLogBehavior::EVENT_AFTER_SAVE_MESSAGE]] - после записи логов
      */
     public function init()
     {
         parent::init();
         
         // Регистрируем обработчики событий
-        $this->on(ActiveRecordBehavior::EVENT_BEFORE_SAVE_MESSAGE, 
+        $this->on(ActiveLogBehavior::EVENT_BEFORE_SAVE_MESSAGE, 
             function (\lav45\activityLogger\MessageEvent $event) {
                 // Вы можете добавить в список логов свою информацию
                 $event->append[] = 'Reset password';
@@ -253,7 +253,7 @@ class News extends ActiveRecord
      */
 
     /**
-     * Будет вызываться в место события [[ActiveRecordBehavior::EVENT_BEFORE_SAVE_MESSAGE]]
+     * Будет вызываться в место события [[ActiveLogBehavior::EVENT_BEFORE_SAVE_MESSAGE]]
      * @return array
      */
     public function beforeSaveMessage()
@@ -267,7 +267,7 @@ class News extends ActiveRecord
     }
 
     /**
-     * Будет вызываться в место события [[ActiveRecordBehavior::EVENT_AFTER_SAVE_MESSAGE]]
+     * Будет вызываться в место события [[ActiveLogBehavior::EVENT_AFTER_SAVE_MESSAGE]]
      */
     public function afterSaveMessage()
     {

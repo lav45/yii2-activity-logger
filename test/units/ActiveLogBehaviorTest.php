@@ -8,15 +8,15 @@ use lav45\activityLogger\test\models\User;
 use lav45\activityLogger\test\models\UserEventMethod;
 use lav45\activityLogger\test\models\TestEntityName;
 use lav45\activityLogger\modules\models\ActivityLog;
-use lav45\activityLogger\ActiveRecordBehavior as ActiveLogBehavior;
+use lav45\activityLogger\ActiveLogBehavior;
 use lav45\activityLogger\MessageEvent;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class ActiveRecordBehaviorTest
+ * Class ActiveLogBehaviorTest
  * @package lav45\activityLogger\test\units
  */
-class ActiveRecordBehaviorTest extends TestCase
+class ActiveLogBehaviorTest extends TestCase
 {
     public static function setUpBeforeClass()
     {
@@ -89,7 +89,7 @@ class ActiveRecordBehaviorTest extends TestCase
     public function testIsEmpty()
     {
         $model = new User();
-        /** @var \lav45\activityLogger\ActiveRecordBehavior $logger */
+        /** @var \lav45\activityLogger\ActiveLogBehavior $logger */
         $logger = $model->getBehavior('logger');
         $logger->isEmpty = function ($value) {
             return empty($value);
@@ -398,7 +398,7 @@ class ActiveRecordBehaviorTest extends TestCase
     public function testSoftDelete()
     {
         $model = $this->createModel();
-        /** @var \lav45\activityLogger\ActiveRecordBehavior $logger */
+        /** @var \lav45\activityLogger\ActiveLogBehavior $logger */
         $logger = $model->getBehavior('logger');
         $logger->softDelete = true;
 
@@ -590,7 +590,7 @@ class ActiveRecordBehaviorTest extends TestCase
     public function testGetEntityName()
     {
         $model = $this->createModel();
-        /** @var \lav45\activityLogger\ActiveRecordBehavior $logger */
+        /** @var \lav45\activityLogger\ActiveLogBehavior $logger */
         $logger = $model->getBehavior('logger');
 
         $this->assertEquals('user', $logger->getEntityName());
@@ -609,7 +609,7 @@ class ActiveRecordBehaviorTest extends TestCase
     public function testDefaultGetEntityId()
     {
         $model = $this->createModel();
-        /** @var \lav45\activityLogger\ActiveRecordBehavior $logger */
+        /** @var \lav45\activityLogger\ActiveLogBehavior $logger */
         $logger = $model->getBehavior('logger');
 
         $this->assertEquals($model->getPrimaryKey(), $logger->getEntityId());
@@ -632,7 +632,7 @@ class ActiveRecordBehaviorTest extends TestCase
     public function testCustomGetEntityId($custom_entity_id, $result_entity_id)
     {
         $model = $this->createModel();
-        /** @var \lav45\activityLogger\ActiveRecordBehavior $logger */
+        /** @var \lav45\activityLogger\ActiveLogBehavior $logger */
         $logger = $model->getBehavior('logger');
 
         $logger->getEntityId = function () use ($custom_entity_id) {

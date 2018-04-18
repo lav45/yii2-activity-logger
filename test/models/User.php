@@ -4,7 +4,7 @@ namespace lav45\activityLogger\test\models;
 
 use yii\db\ActiveRecord;
 use lav45\activityLogger\modules\models\ActivityLog;
-use lav45\activityLogger\ActiveRecordBehavior as ActivityLoggerBehavior;
+use lav45\activityLogger\ActiveLogBehavior;
 
 /**
  * Class News
@@ -22,7 +22,7 @@ use lav45\activityLogger\ActiveRecordBehavior as ActivityLoggerBehavior;
  * @property ActivityLog[] $activityLogs
  * @property Company $company
  *
- * @mixin ActivityLoggerBehavior
+ * @mixin ActiveLogBehavior
  */
 class User extends ActiveRecord
 {
@@ -83,7 +83,7 @@ class User extends ActiveRecord
     {
         return [
             'logger' => [
-                'class' => ActivityLoggerBehavior::class,
+                'class' => ActiveLogBehavior::class,
                 'actionLabels' => [
                     'create' => 'Создание',
                     'update' => 'Изменение',
@@ -161,11 +161,8 @@ class User extends ActiveRecord
         $query = $this->getActivityLogs();
         $query->multiple = false;
 
-        /** @var null|ActivityLog $model */
-        $model = $query
+        return $query
             ->orderBy(['id' => SORT_DESC])
             ->one();
-
-        return $model;
     }
 }
