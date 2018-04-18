@@ -35,7 +35,7 @@
 return [
     'controllerMap' => [
         'migrate' => [
-            'class' => 'yii\console\controllers\MigrateController',
+            'class' => \yii\console\controllers\MigrateController::class,
             'migrationPath' => [
                 '@app/migrations',
                 '@vendor/lav45/yii2-activity-logger/migrations',
@@ -63,7 +63,7 @@ return [
          * Модуль будет использоваться для просмотра логов
          */
         'logger' => [
-            'class' => 'lav45\activityLogger\modules\Module',
+            'class' => \lav45\activityLogger\modules\Module::class,
 
             // Список моделей которые логировались
             'entityMap' => [
@@ -76,7 +76,7 @@ return [
          * Компонент принимает и управляет логами
          */
         'activityLogger' => [
-            'class' => 'lav45\activityLogger\Manager',
+            'class' => \lav45\activityLogger\Manager::class,
 
             // Включаем логирование для PROD версии
             'enabled' => YII_ENV_PROD,
@@ -94,7 +94,7 @@ return [
             'storage' => 'activityLoggerStorage',
 
             'messageClass' => [
-                'class' => 'lav45\activityLogger\LogMessage',
+                'class' => \lav45\activityLogger\LogMessage::class,
 
                 // При использовании компанета когда пользователь ещё не авторизировался его действия
                 // можно записывать от имени "Неизвесный пользователь", к примеру.
@@ -116,7 +116,7 @@ return [
          * Компонент принимает и управляет логами
          */
         'activityLoggerStorage' => [
-            'class' => 'lav45\activityLogger\DbStorage',
+            'class' => \lav45\activityLogger\DbStorage::class,
 
             // Имя таблицы в которой будут хранится логи
             'tableName' => '{{%activity_log}}',
@@ -166,7 +166,7 @@ class News extends ActiveRecord
     {
         return [
             [
-                'class' => 'lav45\activityLogger\ActiveLogBehavior',
+                'class' => \lav45\activityLogger\ActiveLogBehavior::class,
              
                 // Если необхадимо изменить стандартное значение `entityName`
                 'getEntityName' => function () {
@@ -285,7 +285,7 @@ class News extends ActiveRecord
 return [
     'controllerMap' => [
         'logger' => [
-            'class' => 'lav45\activityLogger\console\DefaultController'
+            'class' => \lav45\activityLogger\console\DefaultController::class
         ]
     ],
 ];

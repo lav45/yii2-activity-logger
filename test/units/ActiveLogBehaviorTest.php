@@ -21,14 +21,14 @@ class ActiveLogBehaviorTest extends TestCase
     public static function setUpBeforeClass()
     {
         Yii::$app->set('db', [
-            'class' => 'yii\db\Connection',
+            'class' => \yii\db\Connection::class,
             'dsn' => 'sqlite::memory:',
         ]);
         Yii::$app->set('activityLogger', [
-            'class' => 'lav45\activityLogger\Manager',
+            'class' => \lav45\activityLogger\Manager::class,
         ]);
         Yii::$app->set('activityLoggerStorage', [
-            'class' => 'lav45\activityLogger\DbStorage',
+            'class' => \lav45\activityLogger\DbStorage::class,
         ]);
 
         Yii::$app->runAction('migrate/up', [
@@ -322,12 +322,13 @@ class ActiveLogBehaviorTest extends TestCase
 
         $this->assertNotNull($model->company);
 
+        /** @var array $logModels */
         $logModels = ActivityLog::findAll([
             'entity_name' => $model->getEntityName(),
             'entity_id' => $model->getEntityId(),
         ]);
 
-        $this->assertEquals(1, count($logModels));
+        $this->assertCount(1, $logModels);
 
         $expected = [
             'status' => [
@@ -404,12 +405,13 @@ class ActiveLogBehaviorTest extends TestCase
 
         $this->assertEquals(1, $model->delete());
 
+        /** @var array $logModels */
         $logModels = ActivityLog::findAll([
             'entity_name' => $model->getEntityName(),
             'entity_id' => $model->getEntityId(),
         ]);
 
-        $this->assertEquals(2, count($logModels));
+        $this->assertCount(2, $logModels);
 
         $expected = [
             'status' => [
@@ -548,12 +550,13 @@ class ActiveLogBehaviorTest extends TestCase
 
         $this->assertEquals(1, $model->delete());
 
+        /** @var array $logModels */
         $logModels = ActivityLog::findAll([
             'entity_name' => $model->getEntityName(),
             'entity_id' => $model->getEntityId(),
         ]);
 
-        $this->assertEquals(1, count($logModels));
+        $this->assertCount(1, $logModels);
 
         $expected = [
             'birthday' => [
@@ -673,7 +676,7 @@ class ActiveLogBehaviorTest extends TestCase
 
         // Reset component settings
         Yii::$app->set('activityLogger', [
-            'class' => 'lav45\activityLogger\Manager',
+            'class' => \lav45\activityLogger\Manager::class,
         ]);
     }
 
@@ -695,7 +698,7 @@ class ActiveLogBehaviorTest extends TestCase
 
         // Reset component settings
         Yii::$app->set('activityLogger', [
-            'class' => 'lav45\activityLogger\Manager',
+            'class' => \lav45\activityLogger\Manager::class,
         ]);
     }
 
@@ -712,7 +715,8 @@ class ActiveLogBehaviorTest extends TestCase
             });
 
         $model->on(ActiveLogBehavior::EVENT_AFTER_SAVE_MESSAGE,
-            function (Event $event) use (&$afterSaveFlag) {
+            function ($event) use (&$afterSaveFlag) {
+                $this->assertInstanceOf(Event::class, $event);
                 $afterSaveFlag = true;
             });
 
