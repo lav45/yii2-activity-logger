@@ -4,12 +4,15 @@ namespace lav45\activityLogger\test\units;
 
 use Yii;
 use yii\base\Event;
+use yii\db\Connection;
 use lav45\activityLogger\test\models\User;
 use lav45\activityLogger\test\models\UserEventMethod;
 use lav45\activityLogger\test\models\TestEntityName;
 use lav45\activityLogger\modules\models\ActivityLog;
 use lav45\activityLogger\ActiveLogBehavior;
 use lav45\activityLogger\MessageEvent;
+use lav45\activityLogger\DbStorage;
+use lav45\activityLogger\Manager;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -21,16 +24,15 @@ class ActiveLogBehaviorTest extends TestCase
     public static function setUpBeforeClass()
     {
         Yii::$app->set('db', [
-            'class' => \yii\db\Connection::class,
+            'class' => Connection::class,
             'dsn' => 'sqlite::memory:',
         ]);
         Yii::$app->set('activityLogger', [
-            'class' => \lav45\activityLogger\Manager::class,
+            'class' => Manager::class,
         ]);
         Yii::$app->set('activityLoggerStorage', [
-            'class' => \lav45\activityLogger\DbStorage::class,
+            'class' => DbStorage::class,
         ]);
-
         Yii::$app->runAction('migrate/up', [
             'migrationPath' => __DIR__ . '/../../migrations',
             'interactive' => 0
@@ -406,10 +408,13 @@ class ActiveLogBehaviorTest extends TestCase
         $this->assertEquals(1, $model->delete());
 
         /** @var array $logModels */
-        $logModels = ActivityLog::findAll([
-            'entity_name' => $model->getEntityName(),
-            'entity_id' => $model->getEntityId(),
-        ]);
+        $logModels = ActivityLog::find()
+            ->where([
+                'entity_name' => $model->getEntityName(),
+                'entity_id' => $model->getEntityId(),
+            ])
+            ->orderBy(['id' => SORT_ASC])
+            ->all();
 
         $this->assertCount(2, $logModels);
 
