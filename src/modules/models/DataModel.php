@@ -98,7 +98,6 @@ class DataModel
             if (empty($value)) {
                 return $this->formatter->nullDisplay;
             }
-
             $value = Yii::t('lav45/logger', $value);
             $value = Html::encode($value);
             $value = $this->formatter->asNtext($value);
@@ -109,6 +108,11 @@ class DataModel
         }
         if (is_bool($value)) {
             return $this->formatter->asBoolean($value);
+        }
+        if (is_array($value)) {
+            $value = json_encode($value, JSON_PRETTY_PRINT);
+            $value = Html::tag('pre', $value);
+            return $value;
         }
         return $value;
     }
