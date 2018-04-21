@@ -9,6 +9,7 @@ use yii\db\ActiveRecord;
  * Class ActivityLogger
  * @package lav45\activityLogger
  *
+ * @property int $id
  * @property string $entity_name
  * @property string $entity_id
  * @property string $user_id
@@ -27,7 +28,6 @@ class ActivityLog extends ActiveRecord
     {
         /** @var \lav45\activityLogger\DbStorage $storage */
         $storage = Yii::$app->get('activityLoggerStorage');
-
         return $storage;
     }
 
@@ -53,6 +53,7 @@ class ActivityLog extends ActiveRecord
     public function attributeLabels()
     {
         return [
+            'id' => Yii::t('lav45/logger', 'ID'),
             'entity_name' => Yii::t('lav45/logger', 'Entity name'),
             'entity_id' => Yii::t('lav45/logger', 'Entity'),
             'user_id' => Yii::t('lav45/logger', 'User'),
