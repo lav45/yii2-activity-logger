@@ -3,6 +3,7 @@
 namespace lav45\activityLogger\modules\models;
 
 use Yii;
+use yii\base\BaseObject;
 use yii\di\Instance;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
@@ -12,7 +13,7 @@ use yii\i18n\Formatter;
  * Class DataModel
  * @package lav45\activityLogger\modules\models
  */
-class DataModel
+class DataModel extends BaseObject
 {
     /**
      * @var array
@@ -27,7 +28,7 @@ class DataModel
      */
     public $formatter = 'formatter';
 
-    public function __construct()
+    public function init()
     {
         $this->formatter = Instance::ensure($this->formatter, Formatter::class);
     }
