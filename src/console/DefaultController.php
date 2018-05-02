@@ -35,6 +35,12 @@ class DefaultController extends Controller
     public $env;
     /**
      * @var string delete old than days
+     * Valid values:
+     * 1h - 1 hour
+     * 2d - 2 days
+     * 3m - 3 month
+     * 1y - 1 year
+     * custom value - amount of days
      */
     public $deleteOldThanDays;
 
