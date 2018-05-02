@@ -33,6 +33,10 @@ class DefaultController extends Controller
      * @var string environment, which produced the effect
      */
     public $env;
+    /**
+     * @var string delete old than days
+     */
+    public $deleteOldThanDays;
 
     /**
      * @inheritdoc
@@ -45,6 +49,22 @@ class DefaultController extends Controller
             'userId',
             'logAction',
             'env',
+            'deleteOldThanDays',
+        ]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function optionAliases()
+    {
+        return array_merge(parent::optionAliases(), [
+            'd' => 'delete-old-than-days',
+            'a' => 'log-action',
+            'eid' => 'entity-id',
+            'n' => 'entity-name',
+            'uid' => 'user-id',
+            'e' => 'env',
         ]);
     }
 
@@ -60,6 +80,28 @@ class DefaultController extends Controller
             'action' => $this->logAction,
             'env' => $this->env,
         ]);
+
+        if (isset($this->deleteOldThanDays)) {
+            switch ($this->deleteOldThanDays) {
+                case '1h':
+                    $deleteOldThanDays = 0.041666666666667;
+                    break;
+                case '2d':
+                    $deleteOldThanDays = 2;
+                    break;
+                case '3m':
+                    $deleteOldThanDays = 90;
+                    break;
+                case '1y':
+                    $deleteOldThanDays = 365;
+                    break;
+                default:
+                    $deleteOldThanDays = (int) $this->deleteOldThanDays;
+                    break;
+            }
+
+            $options = array_merge($options, ['deleteOldThanDays' => $deleteOldThanDays]);
+        }
 
         $amountDeleted = $this->getLogger()->clean($options);
 

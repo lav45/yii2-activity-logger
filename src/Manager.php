@@ -170,11 +170,13 @@ class Manager extends BaseObject
      */
     public function clean(array $options = [])
     {
-        if ($this->deleteOldThanDays === false) {
+        $options = array_merge(['deleteOldThanDays' => $this->deleteOldThanDays], $options);
+
+        if ($options['deleteOldThanDays'] === false) {
             return false;
         }
 
-        $options['createdAt'] = time() - $this->deleteOldThanDays * 86400;
+        $options['createdAt'] = time() - round($options['deleteOldThanDays'] * 86400);
 
         return $this->deleteMessage($options);
     }
