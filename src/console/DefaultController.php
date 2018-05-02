@@ -2,6 +2,7 @@
 
 namespace lav45\activityLogger\console;
 
+use yii\helpers\Console;
 use yii\console\Controller;
 use lav45\activityLogger\ManagerTrait;
 
@@ -88,22 +89,19 @@ class DefaultController extends Controller
         ]);
 
         if (isset($this->deleteOldThanDays)) {
-            switch ($this->deleteOldThanDays) {
-                case '1h':
-                    $deleteOldThanDays = 0.041666666666667;
-                    break;
-                case '2d':
-                    $deleteOldThanDays = 2;
-                    break;
-                case '3m':
-                    $deleteOldThanDays = 90;
-                    break;
-                case '1y':
-                    $deleteOldThanDays = 365;
-                    break;
-                default:
-                    $deleteOldThanDays = (int) $this->deleteOldThanDays;
-                    break;
+            $deleteOldThanDays = (int) $this->deleteOldThanDays;
+            if ($deleteOldThanDays == 0) {
+                $this->stderr("Invalid date format\n", Console::FG_RED, Console::UNDERLINE);
+                return;
+            }
+
+            $character = substr($this->deleteOldThanDays, strlen($this->deleteOldThanDays) - 1, 1);
+            if ($character == 'd') {
+                $deleteOldThanDays *= 24;
+            } elseif ($character == 'm') {
+                $deleteOldThanDays *= 720;
+            } elseif ($character == 'y') {
+                $deleteOldThanDays *= 8760;
             }
 
             $options = array_merge($options, ['deleteOldThanDays' => $deleteOldThanDays]);
