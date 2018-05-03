@@ -41,9 +41,8 @@ class DefaultController extends Controller
      * 2d - 2 days
      * 3m - 3 month
      * 1y - 1 year
-     * custom value - amount of days
      */
-    public $deleteOldThanDays;
+    public $days;
 
     /**
      * @inheritdoc
@@ -56,7 +55,7 @@ class DefaultController extends Controller
             'userId',
             'logAction',
             'env',
-            'deleteOldThanDays',
+            'days',
         ]);
     }
 
@@ -66,12 +65,11 @@ class DefaultController extends Controller
     public function optionAliases()
     {
         return array_merge(parent::optionAliases(), [
-            'd' => 'delete-old-than-days',
+            'd' => 'days',
             'a' => 'log-action',
             'eid' => 'entity-id',
-            'n' => 'entity-name',
+            'e' => 'entity-name',
             'uid' => 'user-id',
-            'e' => 'env',
         ]);
     }
 
@@ -88,23 +86,23 @@ class DefaultController extends Controller
             'env' => $this->env,
         ]);
 
-        if (isset($this->deleteOldThanDays)) {
-            $deleteOldThanDays = (int) $this->deleteOldThanDays;
-            if ($deleteOldThanDays == 0) {
+        if (isset($this->days)) {
+            if (preg_match("/^((\d+)([hdmy]{1}))$/", $this->days, $days)) {
+                $character = array_pop($days);
+                $days = array_pop($days);
+                if ($character == 'd') {
+                    $days *= 24;
+                } elseif ($character == 'm') {
+                    $days *= 720;
+                } elseif ($character == 'y') {
+                    $days *= 8760;
+                }
+            } else {
                 $this->stderr("Invalid date format\n", Console::FG_RED, Console::UNDERLINE);
                 return;
             }
 
-            $character = substr($this->deleteOldThanDays, strlen($this->deleteOldThanDays) - 1, 1);
-            if ($character == 'd') {
-                $deleteOldThanDays *= 24;
-            } elseif ($character == 'm') {
-                $deleteOldThanDays *= 720;
-            } elseif ($character == 'y') {
-                $deleteOldThanDays *= 8760;
-            }
-
-            $options = array_merge($options, ['deleteOldThanDays' => $deleteOldThanDays]);
+            $options['deleteOldThanDays'] = $days;
         }
 
         $amountDeleted = $this->getLogger()->clean($options);

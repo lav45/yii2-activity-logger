@@ -3,8 +3,8 @@
 namespace lav45\activityLogger;
 
 use Yii;
-use yii\base\BaseObject;
 use yii\di\Instance;
+use yii\base\BaseObject;
 
 /**
  * Class Manager
