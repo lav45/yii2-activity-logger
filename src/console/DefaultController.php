@@ -42,7 +42,7 @@ class DefaultController extends Controller
      * 3m - 3 month
      * 1y - 1 year
      */
-    public $days;
+    public $oldThan;
 
     /**
      * @inheritdoc
@@ -55,7 +55,7 @@ class DefaultController extends Controller
             'userId',
             'logAction',
             'env',
-            'days',
+            'oldThan',
         ]);
     }
 
@@ -65,7 +65,7 @@ class DefaultController extends Controller
     public function optionAliases()
     {
         return array_merge(parent::optionAliases(), [
-            'd' => 'days',
+            'o' => 'old-than',
             'a' => 'log-action',
             'eid' => 'entity-id',
             'e' => 'entity-name',
@@ -86,16 +86,18 @@ class DefaultController extends Controller
             'env' => $this->env,
         ]);
 
-        if (isset($this->days)) {
-            if (preg_match("/^((\d+)([hdmy]{1}))$/", $this->days, $days)) {
-                $character = array_pop($days);
-                $days = array_pop($days);
-                if ($character == 'd') {
-                    $days *= 24;
+        if (isset($this->oldThan)) {
+            if (preg_match("/^(\d+)([hdmy]{1})$/", $this->oldThan, $result)) {
+                $character = array_pop($result);
+                $days = array_pop($result);
+                if ($character == 'h') {
+                    $days *= 3600;
+                } elseif ($character == 'd') {
+                    $days *= 86400;
                 } elseif ($character == 'm') {
-                    $days *= 720;
+                    $days *= 2592000;
                 } elseif ($character == 'y') {
-                    $days *= 8760;
+                    $days *= 31536000;
                 }
             } else {
                 $this->stderr("Invalid date format\n", Console::FG_RED, Console::UNDERLINE);
