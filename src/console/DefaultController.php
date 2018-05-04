@@ -88,8 +88,8 @@ class DefaultController extends Controller
 
         if (isset($this->oldThan)) {
             if (preg_match("/^(\d+)([hdmy]{1})$/", $this->oldThan, $result)) {
-                $character = array_pop($result);
-                $days = array_pop($result);
+                $character = $result[2];
+                $days = $result[1];
                 if ($character == 'h') {
                     $days *= 3600;
                 } elseif ($character == 'd') {
