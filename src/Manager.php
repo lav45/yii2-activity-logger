@@ -3,8 +3,8 @@
 namespace lav45\activityLogger;
 
 use Yii;
-use yii\base\BaseObject;
 use yii\di\Instance;
+use yii\base\BaseObject;
 
 /**
  * Class Manager
@@ -170,11 +170,13 @@ class Manager extends BaseObject
      */
     public function clean(array $options = [])
     {
-        if ($this->deleteOldThanDays === false) {
+        $options = array_merge(['deleteOldThanDays' => $this->deleteOldThanDays * 86400], $options);
+
+        if ($options['deleteOldThanDays'] === 0) {
             return false;
         }
 
-        $options['createdAt'] = time() - $this->deleteOldThanDays * 86400;
+        $options['createdAt'] = time() - $options['deleteOldThanDays'];
 
         return $this->deleteMessage($options);
     }
