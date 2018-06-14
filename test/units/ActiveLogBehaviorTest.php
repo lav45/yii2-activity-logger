@@ -715,7 +715,8 @@ class ActiveLogBehaviorTest extends TestCase
 
         $model->on(ActiveLogBehavior::EVENT_BEFORE_SAVE_MESSAGE,
             function (MessageEvent $event) use (&$beforeSaveFlag) {
-                $event->append['action'] = 'Custom action';
+                $event->logData = ['info' => 'Custom info'] + $event->logData;
+                $event->logData['action'] = 'Custom action';
                 $beforeSaveFlag = true;
             });
 
@@ -732,6 +733,7 @@ class ActiveLogBehaviorTest extends TestCase
         $this->assertTrue($beforeSaveFlag);
 
         $expected = [
+            'info' => 'Custom info',
             'status' => [
                 'new' => [
                     'id' => 10,
@@ -764,6 +766,7 @@ class ActiveLogBehaviorTest extends TestCase
         $this->assertTrue($beforeSaveFlag);
 
         $expected = [
+            'info' => 'Custom info',
             'login' => [
                 'old' => [
                     'value' => 'buster'

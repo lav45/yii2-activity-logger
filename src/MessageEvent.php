@@ -12,7 +12,7 @@ use yii\base\Event;
 class MessageEvent extends Event
 {
     /**
-     * @var array append your custom log message
+     * @var array property to store data that will be recorded in the history of logs
      */
-    public $append = [];
+    public $logData = [];
 }

@@ -4,7 +4,13 @@
 Этот файл содержит примечаний которые может нарушить работу компонента при обновлении из одной версии в другую. Хотя мы стараемся обеспечить обратную совместимость, насколько это возможно, иногда это не возможно, или приводит к существенному снижению производительности. Так же вы сможете следить за всеми критическими изменениями в нашем проекте.
 
 
-Обновление с 1.5.2
+Обновление 1.6.0
+------------------
+* Доработан метод `\lav45\activityLogger\ActiveLogBehavior::beforeSaveMessage()` и событие `\lav45\activityLogger\ActiveLogBehavior::EVENT_BEFORE_SAVE_MESSAGE`
+     Все данные которые будут сохранены, передаются всем кто подписан на событие чтобы пользователь мог добавить или изменить некоторые данные по своему усмотрению
+
+
+Обновление 1.5.3
 ------------------
 * Класс `\lav45\activityLogger\ActiveRecordBehavior` был переименован в `\lav45\activityLogger\ActiveLogBehavior`
     Для поддержки обратной совместимости был добавлен пустой класс `\lav45\activityLogger\ActiveRecordBehavior` который будет удален с 1.6 версии
@@ -14,7 +20,7 @@
 * `\lav45\activityLogger\ActiveRecordBehavior` не будет писать в лог пустые значения. За проверку наличия непустых данных отвечает метод `ActiveRecordBehavior::isEmpty()`, работу которого можно скорректировать с помощью свойства `ActiveRecordBehavior::$isEmpty` передав ему свою функцию.
 
 
-Обновление с 1.5.1
+Обновление 1.5.2
 ------------------
 * Удалены методы `\lav45\activityLogger\LogMessage`
     * getEntityName()
@@ -35,7 +41,7 @@
     В место этого будут использоваться публичные свойства.
 
 
-Обновление с 1.5.0
+Обновление 1.5.1
 ------------------
 * Для того чтобы переопределить метод `\lav45\activityLogger\ActiveRecordBehavior::getEntityName()` используйте параметр `\lav45\activityLogger\ActiveRecordBehavior::$getEntityName`. Пользовательская функция должна возвращать строку. 
 * Для того чтобы переопределить метод `\lav45\activityLogger\ActiveRecordBehavior::getEntityId()` используйте параметр `\lav45\activityLogger\ActiveRecordBehavior::$getEntityId`. Пользовательская функция должна возвращать строку или массив.
@@ -61,7 +67,7 @@
 ```
 
 
-Обновление с 1.4.0
+Обновление 1.5.0
 ------------------
 * `\lav45\activityLogger\DbStorage`
     * Удалён метод `clean($date)`, а также из интерфейса `\lav45\activityLogger\StorageInterface::clean($date)`
@@ -83,7 +89,7 @@
     ```
 
 
-Обновление с 1.3.0
+Обновление 1.4.0
 ------------------
 * Данные для `\lav45\activityLogger\modules\models\DataModel` теперь передаются через метод `setData(array $value)`
 * Был удален `\lav45\activityLogger\StorageTrait`, а его код перенесен в `\lav45\activityLogger\Manager`
@@ -94,12 +100,12 @@
 * Для таблицы `activity_log` было добавлено поле `'id' => $this->bigPrimaryKey()` 
 
 
-Обновление с 1.2.0
+Обновление 1.3.0
 ------------------
 * `\lav45\activityLogger\DbStorage` теперь должен быть зарегистрирован в списке компонентов под именем `activityLoggerStorage` и реализовывать интерфейс `\lav45\activityLogger\StorageInterface`
 
 
-Обновление с 1.1.0
+Обновление 1.2.0
 ------------------
 * `\lav45\activityLogger\modules\models\ActivityLogViewModel::getUserName()` генерирует ссылку для текущей страницы используя метод `Url::current()`
 * Изменилась фраза `'The setting <strong>{attribute}</strong> has ben changed'` на `<strong>{attribute}</strong> has ben changed`
@@ -110,7 +116,7 @@
 * Параметр `\lav45\activityLogger\Manager::$user` может принимать только имя компонента зарегистрированного в приложении и соответствующего классу `\yii\web\User`
 
 
-Обновление с 1.0.0
+Обновление 1.1.0
 ------------------
 * Удалены интерфейсы `\lav45\activityLogger\contracts\ManagerInterface` и `\lav45\activityLogger\contracts\MessageInterface`
 * `\lav45\activityLogger\contracts\StorageInterface` => `lav45\activityLogger\StorageInterface`

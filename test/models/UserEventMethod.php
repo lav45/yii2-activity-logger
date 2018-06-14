@@ -10,10 +10,10 @@ class UserEventMethod extends User
 
     public $beforeSaveFlag = false;
 
-    public function beforeSaveMessage()
+    public function beforeSaveMessage($data)
     {
         $this->beforeSaveFlag = true;
-        return $this->appendLogs;
+        return array_merge($data, $this->appendLogs);
     }
 
     public function afterSaveMessage()

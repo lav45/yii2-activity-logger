@@ -239,7 +239,7 @@ class News extends ActiveRecord
         $this->on(ActiveLogBehavior::EVENT_BEFORE_SAVE_MESSAGE, 
             function (\lav45\activityLogger\MessageEvent $event) {
                 // Вы можете добавить в список логов свою информацию
-                $event->append[] = 'Reset password';
+                $event->logData[] = 'Reset password';
             });
         
         $this->on(ActiveLogBehavior::EVENT_AFTER_SAVE_MESSAGE, 
@@ -256,14 +256,15 @@ class News extends ActiveRecord
      * Будет вызываться в место события [[ActiveLogBehavior::EVENT_BEFORE_SAVE_MESSAGE]]
      * @return array
      */
-    public function beforeSaveMessage()
+    public function beforeSaveMessage($data)
     {
         // Вы можете добавить в список логов свою информацию
-        return [
-            'Reset password',
-            // или заменить отображаемое значение в логах для атрибута `password_hash`
-            'password_hash' => 'Reset password',
-        ];
+        $data[] = 'Reset password';
+
+        // или заменить отображаемое значение в логах для атрибута `password_hash`
+        $data['password_hash'] = 'Reset password';
+
+        return $data;
     }
 
     /**

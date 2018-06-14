@@ -116,12 +116,12 @@ class ActiveLogBehavior extends Behavior
      */
     public $isEmpty;
     /**
-     * @var \Closure|array|string|null custom method to getEntityName
+     * @var \Closure|array|string custom method to getEntityName
      * the callback function must return a string
      */
     public $getEntityName;
     /**
-     * @var \Closure|array|string|null custom method to getEntityId
+     * @var \Closure|array|string custom method to getEntityId
      * the callback function can return a string or array
      */
     public $getEntityId;
@@ -351,7 +351,7 @@ class ActiveLogBehavior extends Behavior
      */
     protected function saveMessage($action, array $data)
     {
-        $data = array_merge($data, $this->beforeSaveMessage());
+        $data = $this->beforeSaveMessage($data);
 
         $this->getLogger()->log($this->getEntityName(), $data, $action, $this->getEntityId());
 
@@ -359,20 +359,22 @@ class ActiveLogBehavior extends Behavior
     }
 
     /**
+     * @param array $data
      * @return array
      * @since 1.5.3
      */
-    public function beforeSaveMessage()
+    public function beforeSaveMessage($data)
     {
         $name = self::EVENT_BEFORE_SAVE_MESSAGE;
 
         if (method_exists($this->owner, $name)) {
-            return (array)$this->owner->$name();
+            return $this->owner->$name($data);
         }
 
         $event = new MessageEvent();
+        $event->logData = $data;
         $this->owner->trigger($name, $event);
-        return $event->append;
+        return $event->logData;
     }
 
     /**
