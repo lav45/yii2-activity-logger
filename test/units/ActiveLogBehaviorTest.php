@@ -91,7 +91,7 @@ class ActiveLogBehaviorTest extends TestCase
     public function testIsEmpty()
     {
         $model = new User();
-        /** @var \lav45\activityLogger\ActiveLogBehavior $logger */
+        /** @var ActiveLogBehavior $logger */
         $logger = $model->getBehavior('logger');
         $logger->isEmpty = function ($value) {
             return empty($value);
@@ -401,7 +401,7 @@ class ActiveLogBehaviorTest extends TestCase
     public function testSoftDelete()
     {
         $model = $this->createModel();
-        /** @var \lav45\activityLogger\ActiveLogBehavior $logger */
+        /** @var ActiveLogBehavior $logger */
         $logger = $model->getBehavior('logger');
         $logger->softDelete = true;
 
@@ -598,7 +598,7 @@ class ActiveLogBehaviorTest extends TestCase
     public function testGetEntityName()
     {
         $model = $this->createModel();
-        /** @var \lav45\activityLogger\ActiveLogBehavior $logger */
+        /** @var ActiveLogBehavior $logger */
         $logger = $model->getBehavior('logger');
 
         $this->assertEquals('user', $logger->getEntityName());
@@ -617,7 +617,7 @@ class ActiveLogBehaviorTest extends TestCase
     public function testDefaultGetEntityId()
     {
         $model = $this->createModel();
-        /** @var \lav45\activityLogger\ActiveLogBehavior $logger */
+        /** @var ActiveLogBehavior $logger */
         $logger = $model->getBehavior('logger');
 
         $this->assertEquals($model->getPrimaryKey(), $logger->getEntityId());
@@ -640,7 +640,7 @@ class ActiveLogBehaviorTest extends TestCase
     public function testCustomGetEntityId($custom_entity_id, $result_entity_id)
     {
         $model = $this->createModel();
-        /** @var \lav45\activityLogger\ActiveLogBehavior $logger */
+        /** @var ActiveLogBehavior $logger */
         $logger = $model->getBehavior('logger');
 
         $logger->getEntityId = function () use ($custom_entity_id) {
@@ -667,7 +667,7 @@ class ActiveLogBehaviorTest extends TestCase
 
     public function testDisabledLoggerBeforeStart()
     {
-        /** @var \lav45\activityLogger\Manager $logger */
+        /** @var Manager $logger */
         $logger = Yii::$app->get('activityLogger');
         $logger->enabled = false;
 
@@ -681,7 +681,7 @@ class ActiveLogBehaviorTest extends TestCase
 
         // Reset component settings
         Yii::$app->set('activityLogger', [
-            'class' => \lav45\activityLogger\Manager::class,
+            'class' => Manager::class,
         ]);
     }
 
@@ -689,7 +689,7 @@ class ActiveLogBehaviorTest extends TestCase
     {
         $model = $this->createModel();
 
-        /** @var \lav45\activityLogger\Manager $logger */
+        /** @var Manager $logger */
         $logger = Yii::$app->get('activityLogger');
         $logger->delete($model->getEntityName());
         $logger->enabled = false;
@@ -703,7 +703,7 @@ class ActiveLogBehaviorTest extends TestCase
 
         // Reset component settings
         Yii::$app->set('activityLogger', [
-            'class' => \lav45\activityLogger\Manager::class,
+            'class' => Manager::class,
         ]);
     }
 
