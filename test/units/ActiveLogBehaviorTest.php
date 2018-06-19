@@ -555,7 +555,7 @@ class ActiveLogBehaviorTest extends TestCase
 
         $this->assertEquals(1, $model->delete());
 
-        /** @var array $logModels */
+        /** @var ActivityLog[]|\Countable $logModels */
         $logModels = ActivityLog::findAll([
             'entity_name' => $model->getEntityName(),
             'entity_id' => $model->getEntityId(),
@@ -856,5 +856,96 @@ class ActiveLogBehaviorTest extends TestCase
         $this->assertTrue($model->save());
         $this->assertFalse($model->afterSaveFlag);
         $this->assertFalse($model->beforeSaveFlag);
+    }
+
+    public function testArrayListValues()
+    {
+        // Create
+        $model = new User();
+        $model->arrayStatus = [
+            User::STATUS_ACTIVE,
+            User::STATUS_DRAFT,
+        ];
+
+        $this->assertTrue($model->save(false));
+
+        $statusList = $model->getStatusList();
+
+        $expected = [
+            'arrayStatus' => [
+                'new' => [
+                    'id' => [
+                        User::STATUS_ACTIVE,
+                        User::STATUS_DRAFT,
+                    ],
+                    'value' => [
+                        User::STATUS_ACTIVE => $statusList[User::STATUS_ACTIVE],
+                        User::STATUS_DRAFT => $statusList[User::STATUS_DRAFT],
+                    ]
+                ]
+            ]
+        ];
+
+        $this->assertEquals($expected, $model->getLastActivityLog()->getData());
+
+        // Update
+        $model->arrayStatus = [
+            User::STATUS_ACTIVE,
+        ];
+
+        $this->assertTrue($model->save(false));
+
+        $expected = [
+            'arrayStatus' => [
+                'old' => [
+                    'id' => [
+                        User::STATUS_ACTIVE,
+                        User::STATUS_DRAFT,
+                    ],
+                    'value' => [
+                        User::STATUS_ACTIVE => $statusList[User::STATUS_ACTIVE],
+                        User::STATUS_DRAFT => $statusList[User::STATUS_DRAFT],
+                    ]
+                ],
+                'new' => [
+                    'id' => [
+                        User::STATUS_ACTIVE,
+                    ],
+                    'value' => [
+                        User::STATUS_ACTIVE => $statusList[User::STATUS_ACTIVE],
+                    ]
+                ]
+            ]
+        ];
+
+        $this->assertEquals($expected, $model->getLastActivityLog()->getData());
+
+        // Delete
+        $this->assertEquals(1, $model->delete());
+
+        /** @var ActivityLog[]|\Countable $logModels */
+        $logModels = ActivityLog::findAll([
+            'entity_name' => $model->getEntityName(),
+            'entity_id' => $model->getEntityId(),
+        ]);
+
+        $expected = [
+            'arrayStatus' => [
+                'old' => [
+                    'id' => [
+                        User::STATUS_ACTIVE,
+                    ],
+                    'value' => [
+                        User::STATUS_ACTIVE => $statusList[User::STATUS_ACTIVE],
+                    ]
+                ],
+                'new' => [
+                    'id' => null,
+                    'value' => null
+                ]
+            ]
+        ];
+
+        $this->assertEquals($expected, $logModels[0]->getData());
     }
 }

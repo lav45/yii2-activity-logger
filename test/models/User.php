@@ -18,6 +18,9 @@ use lav45\activityLogger\ActiveLogBehavior;
  * @property string $birthday
  * @property int $status
  * @property int $company_id
+ * @property string $_array_status internal json data
+ *
+ * @property array $arrayStatus
  *
  * @property ActivityLog[] $activityLogs
  * @property Company $company
@@ -28,6 +31,7 @@ class User extends ActiveRecord
 {
     const STATUS_ACTIVE = 10;
     const STATUS_DISABLED = 1;
+    const STATUS_DRAFT = 2;
 
     /**
      * @inheritdoc
@@ -68,6 +72,8 @@ class User extends ActiveRecord
             [['status'], 'integer'],
             [['status'], 'in', 'range' => array_keys($this->getStatusList())],
 
+            [['arrayStatus'], 'safe'],
+
             [['company_id'], 'integer'],
             [['company_id'], 'exist',
                 'targetRelation' => 'company',
@@ -98,6 +104,9 @@ class User extends ActiveRecord
                     'status' => [
                         'list' => 'statusList',
                     ],
+                    'arrayStatus' => [
+                        'list' => 'statusList',
+                    ],
                     'company_id' => [
                         'relation' => 'company',
                         'attribute' => 'name',
@@ -120,7 +129,60 @@ class User extends ActiveRecord
             'salary' => 'Salary',
             'birthday' => 'Birthday',
             'status' => 'Status',
+            'arrayStatus' => 'Array status',
         ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getOldAttribute($name)
+    {
+        if ($name === 'arrayStatus') {
+            return json_decode(parent::getOldAttribute('_array_status'), true);
+        }
+
+        return parent::getOldAttribute($name);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAttribute($name)
+    {
+        if ($name === 'arrayStatus') {
+            return $this->getArrayStatus();
+        }
+
+        return parent::getAttribute($name);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isAttributeChanged($name, $identical = true)
+    {
+        if ($name === 'arrayStatus') {
+            return $this->getOldAttribute('arrayStatus') !== $this->getAttribute('arrayStatus');
+        }
+
+        return parent::isAttributeChanged($name, $identical);
+    }
+
+    /**
+     * @return array
+     */
+    public function getArrayStatus()
+    {
+        return json_decode($this->_array_status, true);
+    }
+
+    /**
+     * @param array $data
+     */
+    public function setArrayStatus(array $data)
+    {
+        $this->_array_status = json_encode($data);
     }
 
     /**
@@ -131,6 +193,7 @@ class User extends ActiveRecord
         return [
             static::STATUS_ACTIVE => 'Active',
             static::STATUS_DISABLED => 'Disabled',
+            static::STATUS_DRAFT => 'Draft',
         ];
     }
 

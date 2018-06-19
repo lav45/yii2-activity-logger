@@ -294,8 +294,8 @@ class ActiveLogBehavior extends Behavior
     }
 
     /**
-     * @param string|int $old_id
-     * @param string|int $new_id
+     * @param string|int|array $old_id
+     * @param string|int|array $new_id
      * @param string $listName
      * @return array
      */
@@ -303,9 +303,21 @@ class ActiveLogBehavior extends Behavior
     {
         $old['id'] = $old_id;
         $new['id'] = $new_id;
+        $list = [];
 
-        $old['value'] = ArrayHelper::getValue($this->owner, [$listName, $old_id]);
-        $new['value'] = ArrayHelper::getValue($this->owner, [$listName, $new_id]);
+        if (is_array($old_id) || is_array($new_id)) {
+            $list = ArrayHelper::getValue($this->owner, $listName);
+        }
+        if (is_array($old_id)) {
+            $old['value'] = array_intersect_key($list, array_flip($old_id));
+        } else {
+            $old['value'] = ArrayHelper::getValue($this->owner, [$listName, $old_id]);
+        }
+        if (is_array($new_id)) {
+            $new['value'] = array_intersect_key($list, array_flip($new_id));
+        } else {
+            $new['value'] = ArrayHelper::getValue($this->owner, [$listName, $new_id]);
+        }
 
         return [
             'old' => $old,

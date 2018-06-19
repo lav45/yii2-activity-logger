@@ -15,6 +15,7 @@ class m180213_204156_init extends Migration
             'birthday' => $this->date(),
             'status' => $this->integer()->defaultValue(10)->notNull(),
             'company_id' => $this->integer(),
+            '_array_status' => $this->text(),
         ]);
 
         $this->createTable('company', [
