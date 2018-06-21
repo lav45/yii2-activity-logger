@@ -176,7 +176,15 @@ class News extends ActiveRecord
                 'getEntityId' => function () {
                     return $this->global_news_id;
                 }
-
+                /** 
+                 * В случаях когда нужно для конкретного ActiveLogBehavior делать подпись с понятным названием.
+                 * Если на странице выводятся история изменения всех пользователей,  
+                 * то невсегда понятно у кого именно изменился статут, день рождения или другие данные
+                 */
+                'beforeSaveMessage' => function ($data) {
+                    return ['attribute' => 'custom data'] + $data;
+                }
+                
                 // Список полей за изменением которых будет производиться слежение
                 'attributes' => [
                     // Простые поля ( string|int|bool )

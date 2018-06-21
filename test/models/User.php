@@ -66,7 +66,7 @@ class User extends ActiveRecord
 
             [['salary'], 'number'],
 
-            [['birthday'], 'date'],
+            [['birthday'], 'date', 'format' => 'dd.MM.yyyy'],
 
             [['status'], 'default', 'value' => self::STATUS_ACTIVE],
             [['status'], 'integer'],

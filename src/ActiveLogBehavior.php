@@ -73,6 +73,11 @@ class ActiveLogBehavior extends Behavior
      * @var bool
      */
     public $softDelete = false;
+
+    /**
+     * @var null|\Closure
+     */
+    public $beforeSaveMessage;
     /**
      * @var array
      *  - create
@@ -379,6 +384,9 @@ class ActiveLogBehavior extends Behavior
     {
         $name = self::EVENT_BEFORE_SAVE_MESSAGE;
 
+        if ($this->beforeSaveMessage !== null) {
+            return call_user_func($this->beforeSaveMessage, $data);
+        }
         if (method_exists($this->owner, $name)) {
             return $this->owner->$name($data);
         }
