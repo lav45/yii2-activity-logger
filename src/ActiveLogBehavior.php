@@ -73,9 +73,9 @@ class ActiveLogBehavior extends Behavior
      * @var bool
      */
     public $softDelete = false;
-
     /**
-     * @var null|\Closure
+     * @var \Closure
+     * @since 1.6.0
      */
     public $beforeSaveMessage;
     /**
@@ -116,7 +116,7 @@ class ActiveLogBehavior extends Behavior
      */
     public $identicalAttributes = false;
     /**
-     * @var callable a PHP callable that replaces the default implementation of [[isEmpty()]].
+     * @var \Closure a PHP callable that replaces the default implementation of [[isEmpty()]].
      * @since 1.5.2
      */
     public $isEmpty;

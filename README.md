@@ -170,11 +170,11 @@ class News extends ActiveRecord
              
                 // Если необхадимо изменить стандартное значение `entityName`
                 'getEntityName' => function () {
-                    return 'global_news';
+                    return static::tableName();
                 },
                 // Если необхадимо изменить стандартное значение `entityId`
                 'getEntityId' => function () {
-                    return $this->global_news_id;
+                    return $this->getPrimaryKey();
                 }
                 /** 
                  * В случаях когда нужно для конкретного ActiveLogBehavior делать подпись с понятным названием.
