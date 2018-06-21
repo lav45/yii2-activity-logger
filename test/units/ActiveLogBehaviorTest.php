@@ -858,6 +858,70 @@ class ActiveLogBehaviorTest extends TestCase
         $this->assertFalse($model->beforeSaveFlag);
     }
 
+    public function testEventSaveMessageCallback()
+    {
+        // Create
+        $model = new User();
+        $model->login = 'John';
+
+        $expected = [
+            'test' => 'test',
+            'status' => [
+                'new' => [
+                    'id' => 10,
+                    'value' => 'Active',
+                ],
+            ],
+            'login' => [
+                'new' => [
+                    'value' => 'John',
+                ],
+            ],
+            'is_hidden' => [
+                'new' => [
+                    'value' => false,
+                ],
+            ],
+        ];
+
+        /** @var ActiveLogBehavior $logger */
+        $logger = $model->getBehavior('logger');
+        $logger->beforeSaveMessage = function ($data) {
+            return ['test' => 'test'] + $data;
+        };
+
+        $this->assertTrue($model->save());
+        $this->assertNotNull($model->getLastActivityLog());
+        $this->assertEquals($expected, $model->getLastActivityLog()->getData());
+
+        // Update
+        $model->login = 'buster2';
+
+        $logger->beforeSaveMessage = function ($data) {
+            return ['test' => 'test'] + $data + ['action' => 'Custom action'];
+        };
+
+        $this->assertTrue($model->save());
+
+        $expected = [
+            'test' => 'test',
+            'login' => [
+                'old' => [
+                    'value' => 'John'
+                ],
+                'new' => [
+                    'value' => 'buster2'
+                ],
+            ],
+            'action' => 'Custom action',
+        ];
+
+        $this->assertEquals($expected, $model->getLastActivityLog()->getData());
+
+        // Save without change
+        $this->assertTrue($model->save());
+    }
+
     public function testArrayListValues()
     {
         // Create
