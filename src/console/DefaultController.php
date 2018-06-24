@@ -92,17 +92,16 @@ class DefaultController extends Controller
             'env' => $this->env,
         ]);
 
-        if (isset($this->oldThan)) {
+        if (null !== $this->oldThan) {
             if (preg_match("/^(\d+)([hdmy]{1})$/", $this->oldThan, $result)) {
-                $character = $result[2];
-                $days = $result[1];
-                if ($character == 'h') {
+                list($days, $character) = $result;
+                if ($character === 'h') {
                     $days *= 3600;
-                } elseif ($character == 'd') {
+                } elseif ($character === 'd') {
                     $days *= 86400;
-                } elseif ($character == 'm') {
+                } elseif ($character === 'm') {
                     $days *= 2592000;
-                } elseif ($character == 'y') {
+                } elseif ($character === 'y') {
                     $days *= 31536000;
                 }
             } else {
@@ -115,7 +114,7 @@ class DefaultController extends Controller
 
         $amountDeleted = $this->getLogger()->clean($options);
 
-        if ($amountDeleted !== false) {
+        if (false !== $amountDeleted) {
             echo "Deleted {$amountDeleted} record(s) from the activity log.\n";
         }
     }

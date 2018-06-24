@@ -124,7 +124,7 @@ class Manager extends BaseObject
      */
     private function saveMessage(array $options)
     {
-        if ($this->enabled === false) {
+        if (false === $this->enabled) {
             return false;
         }
         $options = array_filter($options);

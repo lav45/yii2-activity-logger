@@ -8,7 +8,6 @@
 
 namespace lav45\activityLogger;
 
-use yii\helpers\Json;
 use yii\base\BaseObject;
 
 /**
@@ -81,8 +80,8 @@ class LogMessage extends BaseObject
      */
     private function encode($data)
     {
-        if ($this->encode === null) {
-            return Json::encode($data);
+        if (null === $this->encode) {
+            return json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         }
         return call_user_func($this->encode, $data);
     }

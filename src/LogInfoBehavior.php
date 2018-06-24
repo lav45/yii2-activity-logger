@@ -65,7 +65,7 @@ class LogInfoBehavior extends Behavior
     public function beforeSave(MessageEvent $event)
     {
         if ($data = $this->getInfoData()) {
-            if ($this->prepend === true) {
+            if (true === $this->prepend) {
                 $event->logData = [$data] + $event->logData;
             } else {
                 $event->logData[] = $data;
@@ -78,7 +78,7 @@ class LogInfoBehavior extends Behavior
      */
     protected function getInfoData()
     {
-        if ($this->template === null) {
+        if (null === $this->template) {
             return null;
         }
         if (is_callable($this->template)) {

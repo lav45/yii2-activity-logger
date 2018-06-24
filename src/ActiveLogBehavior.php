@@ -184,7 +184,7 @@ class ActiveLogBehavior extends Behavior
      */
     public function events()
     {
-        if ($this->getLogger()->enabled === false) {
+        if (false === $this->getLogger()->enabled) {
             return [];
         }
 
@@ -213,7 +213,7 @@ class ActiveLogBehavior extends Behavior
 
     public function beforeDelete()
     {
-        if ($this->softDelete === false) {
+        if (false === $this->softDelete) {
             $this->getLogger()->delete($this->getEntityName(), $this->getEntityId());
         }
 
@@ -238,12 +238,12 @@ class ActiveLogBehavior extends Behavior
         $result = [];
         foreach ($this->attributes as $attribute => $options) {
             $old = $this->owner->getOldAttribute($attribute);
-            $new = $unset === false ? $this->owner->getAttribute($attribute) : null;
+            $new = false === $unset ? $this->owner->getAttribute($attribute) : null;
 
             if ($this->isEmpty($old) && $this->isEmpty($new)) {
                 continue;
             }
-            if ($unset === false && $this->isAttributeChanged($attribute) === false) {
+            if (false === $unset && false === $this->isAttributeChanged($attribute)) {
                 continue;
             }
 
@@ -390,7 +390,7 @@ class ActiveLogBehavior extends Behavior
     {
         $name = self::EVENT_BEFORE_SAVE_MESSAGE;
 
-        if ($this->beforeSaveMessage !== null) {
+        if (null !== $this->beforeSaveMessage) {
             return call_user_func($this->beforeSaveMessage, $data);
         }
         if (method_exists($this->owner, $name)) {
@@ -422,7 +422,7 @@ class ActiveLogBehavior extends Behavior
      */
     public function getEntityName()
     {
-        if ($this->getEntityName !== null) {
+        if (null !== $this->getEntityName) {
             return call_user_func($this->getEntityName);
         }
         $class = StringHelper::basename(get_class($this->owner));
@@ -434,7 +434,7 @@ class ActiveLogBehavior extends Behavior
      */
     public function getEntityId()
     {
-        if ($this->getEntityId === null) {
+        if (null === $this->getEntityId) {
             $result = $this->owner->getPrimaryKey();
         } else {
             $result = call_user_func($this->getEntityId);
@@ -459,9 +459,9 @@ class ActiveLogBehavior extends Behavior
      */
     public function isEmpty($value)
     {
-        if ($this->isEmpty !== null) {
+        if (null !== $this->isEmpty) {
             return call_user_func($this->isEmpty, $value);
         }
-        return $value === null || $value === '';
+        return null === $value || $value === '';
     }
 }
