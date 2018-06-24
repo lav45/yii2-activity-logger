@@ -25,10 +25,6 @@ class Manager extends BaseObject
      */
     public $enabled = true;
     /**
-     * @var int|bool
-     */
-    public $deleteOldThanDays = 365;
-    /**
      * @var string|null
      */
     public $user = 'user';
@@ -43,7 +39,7 @@ class Manager extends BaseObject
         'class' => LogMessage::class
     ];
     /**
-     * @var string|StorageInterface
+     * @var string|array|StorageInterface
      */
     public $storage = 'activityLoggerStorage';
     /**
@@ -156,6 +152,7 @@ class Manager extends BaseObject
     }
 
     /**
+     * @param $old_than int - unix timestamp
      * @param array $options
      *  - entityName :string
      *  - entityId :string|int
@@ -163,19 +160,11 @@ class Manager extends BaseObject
      *  - action :string
      *  - env :string
      *
-     * @return int|bool the count of deleted rows or false if clear range not set
+     * @return int|false the number of deleted rows, or false if an error occurred
      */
-    public function clean($options = [])
+    public function clean($old_than, array $options = [])
     {
-        if (empty($options)) {
-            return false;
-        }
-        if (isset($options['deleteOldThanDays'])) {
-            $options['createdAt'] = $options['deleteOldThanDays'];
-            unset($options['deleteOldThanDays']);
-        } elseif ($this->deleteOldThanDays !== false) {
-            $options['createdAt'] = time() - $this->deleteOldThanDays * 86400;
-        }
+        $options['createdAt'] = $old_than;
         return $this->deleteMessage($options);
     }
 
@@ -188,7 +177,7 @@ class Manager extends BaseObject
      *  - action :string
      *  - env :string
      *
-     * @return int|bool the count of deleted rows or false if clear range not set
+     * @return int|false the number of deleted rows, or false if an error occurred
      */
     private function deleteMessage($options)
     {
@@ -212,13 +201,10 @@ class Manager extends BaseObject
      */
     private function throwException($e)
     {
-        if (ob_get_level() > 0) {
-            ob_end_clean();
-        }
         if ($this->debug) {
             throw $e;
         }
-        Yii::warning($e->getMessage());
+        Yii::error($e->getMessage(), static::class);
         return false;
     }
 }

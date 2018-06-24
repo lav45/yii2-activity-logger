@@ -48,7 +48,7 @@ class DefaultController extends Controller
      * 3m - 3 month
      * 1y - 1 year
      */
-    public $oldThan;
+    public $oldThan = '1y';
 
     /**
      * @inheritdoc
@@ -92,30 +92,35 @@ class DefaultController extends Controller
             'env' => $this->env,
         ]);
 
-        if (null !== $this->oldThan) {
-            if (preg_match("/^(\d+)([hdmy]{1})$/", $this->oldThan, $result)) {
-                list(,$days, $character) = $result;
-                if ($character === 'h') {
-                    $days *= 3600;
-                } elseif ($character === 'd') {
-                    $days *= 86400;
-                } elseif ($character === 'm') {
-                    $days *= 2592000;
-                } elseif ($character === 'y') {
-                    $days *= 31536000;
-                }
-            } else {
-                $this->stderr("Invalid date format\n", Console::FG_RED, Console::UNDERLINE);
-                return;
+        $old_than = $this->parseDate($this->oldThan);
+        if (null === $old_than) {
+            $this->stderr("Invalid date format\n", Console::FG_RED, Console::UNDERLINE);
+            return;
+        }
+
+        $count = $this->getLogger()->clean($old_than, $options);
+
+        $this->stdout("Deleted {$count} record(s) from the activity log.\n");
+    }
+
+    /**
+     * @param string $str
+     * @return int|null
+     */
+    private function parseDate($str)
+    {
+        if (preg_match("/^(\d+)([dmy]{1})$/", $str, $matches)) {
+            $count = $matches[1];
+            $alias = $matches[2];
+            $aliases = [
+                'd' => 'day',
+                'm' => 'month',
+                'y' => 'year',
+            ];
+            if (isset($aliases[$alias])) {
+                return strtotime("-{$count} {$aliases[$alias]} 0:00 UTC");
             }
-
-            $options['deleteOldThanDays'] = $days;
         }
-
-        $amountDeleted = $this->getLogger()->clean($options);
-
-        if (false !== $amountDeleted) {
-            echo "Deleted {$amountDeleted} record(s) from the activity log.\n";
-        }
+        return null;
     }
 }

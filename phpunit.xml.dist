@@ -19,7 +19,6 @@
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">src</directory>
             <exclude>
-                <directory suffix=".php">src/console</directory>
                 <directory suffix=".php">src/modules</directory>
                 <directory suffix="Interface.php">src</directory>
             </exclude>
