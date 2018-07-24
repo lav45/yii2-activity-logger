@@ -9,11 +9,13 @@
 namespace lav45\activityLogger;
 
 use yii\base\Behavior;
-use yii\base\InvalidValueException;
 use yii\db\ActiveRecord;
-use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
+use yii\db\JsonExpression;
+use yii\db\ArrayExpression;
+use yii\helpers\ArrayHelper;
 use yii\helpers\StringHelper;
+use yii\base\InvalidValueException;
 
 /**
  * Class ActiveLogBehavior
@@ -298,6 +300,14 @@ class ActiveLogBehavior extends Behavior
      */
     private function resolveSimpleValues($old_id, $new_id)
     {
+        if ($old_id instanceof ArrayExpression || $old_id instanceof JsonExpression) {
+            $old_id = $old_id->getValue();
+        }
+
+        if ($new_id instanceof ArrayExpression || $new_id instanceof JsonExpression) {
+            $new_id = $new_id->getValue();
+        }
+
         return [
             'old' => ['value' => $old_id],
             'new' => ['value' => $new_id],
