@@ -176,6 +176,10 @@ class Manager extends BaseObject
      */
     public function clean(array $options = [])
     {
+        if (empty($options)) {
+            return false;
+        }
+
         if (isset($options['deleteOldThanDays'])) {
             $options['createdAt'] = $options['deleteOldThanDays'];
             unset($options['deleteOldThanDays']);
