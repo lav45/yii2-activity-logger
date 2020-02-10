@@ -42,18 +42,4 @@ class Module extends \yii\base\Module
             'basePath' => __DIR__ . '/messages',
         ];
     }
-
-    /**
-     * @param string $id
-     * @return null|\yii\base\Model
-     */
-    public function getEntityObject($id)
-    {
-        if (!isset($this->entityMap[$id])) {
-            return null;
-        }
-        /** @var \yii\base\Model $class */
-        $class = $this->entityMap[$id];
-        return $class::instance();
-    }
 }

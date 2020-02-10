@@ -11,7 +11,6 @@ namespace lav45\activityLogger\modules\models;
 use Yii;
 use yii\helpers\Url;
 use yii\helpers\Html;
-use lav45\activityLogger\modules\Module;
 
 /**
  * Class ActivityLogViewModel
@@ -19,29 +18,36 @@ use lav45\activityLogger\modules\Module;
  */
 class ActivityLogViewModel extends ActivityLog
 {
-    /**
-     * @var DataModel|string|array
-     */
+    /** @var DataModel|string|array */
     public $dataModel = DataModel::class;
-    /**
-     * @var Module
-     */
-    private static $module;
+    /** @var array [ entity_name => Entity::class ] */
+    public $entityMap = [];
+    /** @var array */
+    private $entityModel = [];
 
     /**
-     * @param Module $module
-     */
-    public static function setModule($module)
-    {
-        static::$module = $module;
-    }
-
-    /**
-     * @return null|\yii\base\Model
+     * @return \yii\base\Model|null
      */
     protected function getEntityModel()
     {
-        return self::$module->getEntityObject($this->entity_name);
+        if (isset($this->entityModel[$this->entity_name]) === false) {
+            $this->entityModel[$this->entity_name] = $this->getEntityObject($this->entity_name);
+        }
+        return $this->entityModel[$this->entity_name] ?: null;
+    }
+
+    /**
+     * @param string $id
+     * @return false|\yii\base\Model
+     */
+    private function getEntityObject($id)
+    {
+        if (isset($this->entityMap[$id]) === false) {
+            return false;
+        }
+        /** @var \yii\base\Model $class */
+        $class = $this->entityMap[$id];
+        return $class::instance();
     }
 
     /**

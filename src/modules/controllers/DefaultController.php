@@ -23,7 +23,9 @@ class DefaultController extends Controller
 {
     public function actionIndex()
     {
-        ActivityLogViewModel::setModule($this->module);
+        Yii::$container->set(ActivityLogViewModel::class, [
+            'entityMap' => $this->module->entityMap
+        ]);
 
         $searchModel = new ActivityLogSearch();
         $searchModel->setEntityMap($this->module->entityMap);
