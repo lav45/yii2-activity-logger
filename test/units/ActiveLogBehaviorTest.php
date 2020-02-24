@@ -112,7 +112,7 @@ class ActiveLogBehaviorTest extends TestCase
         $logData = $model->getLastActivityLog();
 
         $this->assertTrue($logData->created_at > 0);
-        $this->assertEquals('Создание', $logData->action);
+        $this->assertEquals(ActivityLog::ACTION_CREATE, $logData->action);
         $this->assertEquals('user', $logData->entity_name);
         $this->assertEquals($model->getPrimaryKey(), $logData->entity_id);
 
@@ -181,7 +181,7 @@ class ActiveLogBehaviorTest extends TestCase
         $model->setAttributes($values);
         $this->assertTrue($model->save());
         $logModel = $model->getLastActivityLog();
-        $this->assertEquals('Изменение', $logModel->action);
+        $this->assertEquals(ActivityLog::ACTION_UPDATE, $logModel->action);
         $this->assertEquals($expected, $logModel->getData());
     }
 
@@ -390,7 +390,7 @@ class ActiveLogBehaviorTest extends TestCase
             ]
         ];
         $this->assertEquals($expected, $logModels[0]->getData());
-        $this->assertEquals('Удаление', $logModels[0]->action);
+        $this->assertEquals(ActivityLog::ACTION_DELETE, $logModels[0]->action);
     }
 
     public function testSoftDelete()
@@ -453,7 +453,7 @@ class ActiveLogBehaviorTest extends TestCase
             ]
         ];
         $this->assertEquals($expected, $logModels[0]->getData());
-        $this->assertEquals('Создание', $logModels[0]->action);
+        $this->assertEquals(ActivityLog::ACTION_CREATE, $logModels[0]->action);
 
         $expected = [
             'status' => [
@@ -518,7 +518,7 @@ class ActiveLogBehaviorTest extends TestCase
             ]
         ];
         $this->assertEquals($expected, $logModels[1]->getData());
-        $this->assertEquals('Удаление', $logModels[1]->action);
+        $this->assertEquals(ActivityLog::ACTION_DELETE, $logModels[1]->action);
     }
 
     public function testLogEmptyAttributeAfterDeleteModel()

@@ -28,21 +28,38 @@ use yii\db\ActiveRecord;
 class ActivityLog extends ActiveRecord
 {
     /**
-     * @return \lav45\activityLogger\DbStorage
+     * The action that will be recorded when the ActiveRecord::EVENT_AFTER_INSERT event occurs
+     * @since 1.7.0
      */
-    protected static function getStorage()
-    {
-        /** @var \lav45\activityLogger\DbStorage $storage */
-        $storage = Yii::$app->get('activityLoggerStorage');
-        return $storage;
-    }
+    const ACTION_CREATE = 'create';
+    /**
+     * The action that will be recorded when the ActiveRecord::EVENT_AFTER_UPDATE event occurs
+     * @since 1.7.0
+     */
+    const ACTION_UPDATE = 'update';
+    /**
+     * The action that will be recorded when the ActiveRecord::EVENT_BEFORE_DELETE event occurs
+     * @since 1.7.0
+     */
+    const ACTION_DELETE = 'delete';
+
+    /**
+     * @var string
+     * @since 1.7.0
+     */
+    public static $db;
+    /**
+     * @var string
+     * @since 1.7.0
+     */
+    public static $tableName = '{{%activity_log}}';
 
     /**
      * @return string the table name
      */
     public static function tableName()
     {
-        return self::getStorage()->tableName;
+        return static::$tableName ?: parent::tableName();
     }
 
     /**
@@ -50,7 +67,10 @@ class ActivityLog extends ActiveRecord
      */
     public static function getDb()
     {
-        return self::getStorage()->db;
+        if (static::$db) {
+            return Yii::$app->get(static::$db);
+        }
+        return parent::getDb();
     }
 
     /**
@@ -68,6 +88,19 @@ class ActivityLog extends ActiveRecord
             'action' => Yii::t('lav45/logger', 'Action'),
             'env' => Yii::t('lav45/logger', 'Environment'),
             'data' => Yii::t('lav45/logger', 'Data'),
+        ];
+    }
+
+    /**
+     * @return array
+     * @since 1.7.0
+     */
+    public function getActionList()
+    {
+        return [
+            static::ACTION_CREATE => Yii::t('lav45/logger', 'created'),
+            static::ACTION_UPDATE => Yii::t('lav45/logger', 'updated'),
+            static::ACTION_DELETE => Yii::t('lav45/logger', 'removed'),
         ];
     }
 

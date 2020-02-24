@@ -8,14 +8,15 @@
 
 namespace lav45\activityLogger;
 
+use lav45\activityLogger\modules\models\ActivityLog;
 use yii\base\Behavior;
-use yii\db\ActiveRecord;
-use yii\helpers\Inflector;
-use yii\db\JsonExpression;
-use yii\db\ArrayExpression;
-use yii\helpers\ArrayHelper;
-use yii\helpers\StringHelper;
 use yii\base\InvalidValueException;
+use yii\db\ActiveRecord;
+use yii\db\ArrayExpression;
+use yii\db\JsonExpression;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Inflector;
+use yii\helpers\StringHelper;
 
 /**
  * Class ActiveLogBehavior
@@ -87,17 +88,6 @@ class ActiveLogBehavior extends Behavior
      */
     public $beforeSaveMessage;
     /**
-     * @var array
-     *  - create
-     *  - update
-     *  - delete
-     */
-    public $actionLabels = [
-        'create' => 'created',
-        'update' => 'updated',
-        'delete' => 'removed',
-    ];
-    /**
      * @var array [
      *  // simple attribute
      *  'title',
@@ -139,6 +129,22 @@ class ActiveLogBehavior extends Behavior
      */
     public $getEntityId;
     /**
+     * @var string
+     * @since 1.7.0
+     */
+    public $actionCreate = ActivityLog::ACTION_CREATE;
+    /**
+     * @var string
+     * @since 1.7.0
+     */
+    public $actionUpdate = ActivityLog::ACTION_UPDATE;
+    /**
+     * @var string
+     * @since 1.7.0
+     */
+    public $actionDelete = ActivityLog::ACTION_DELETE;
+
+    /**
      * @var array [
      *  'title' => [
      *      'new' => ['value' => 'New title'],
@@ -161,7 +167,7 @@ class ActiveLogBehavior extends Behavior
     /**
      * @var string
      */
-    private $actionName;
+    private $action;
 
     /**
      * Initializes the object.
@@ -202,7 +208,7 @@ class ActiveLogBehavior extends Behavior
     public function beforeSave()
     {
         $this->changedAttributes = $this->prepareChangedAttributes();
-        $this->actionName = $this->getActionLabel($this->owner->getIsNewRecord() ? 'create' : 'update');
+        $this->action = $this->owner->getIsNewRecord() ? $this->actionCreate : $this->actionUpdate;
     }
 
     public function afterSave()
@@ -210,7 +216,7 @@ class ActiveLogBehavior extends Behavior
         if (empty($this->changedAttributes)) {
             return;
         }
-        $this->saveMessage($this->actionName, $this->changedAttributes);
+        $this->saveMessage($this->action, $this->changedAttributes);
     }
 
     public function beforeDelete()
@@ -218,17 +224,7 @@ class ActiveLogBehavior extends Behavior
         if (false === $this->softDelete) {
             $this->getLogger()->delete($this->getEntityName(), $this->getEntityId());
         }
-
-        $this->saveMessage($this->getActionLabel('delete'), $this->prepareChangedAttributes(true));
-    }
-
-    /**
-     * @param string $label
-     * @return string|null
-     */
-    private function getActionLabel($label)
-    {
-        return ArrayHelper::getValue($this->actionLabels, $label);
+        $this->saveMessage($this->actionDelete, $this->prepareChangedAttributes(true));
     }
 
     /**
@@ -248,7 +244,6 @@ class ActiveLogBehavior extends Behavior
             if (false === $unset && false === $this->isAttributeChanged($attribute)) {
                 continue;
             }
-
             $result[$attribute] = $this->resolveStoreValues($old, $new, $options);
         }
         return $result;
@@ -385,9 +380,7 @@ class ActiveLogBehavior extends Behavior
     protected function saveMessage($action, array $data)
     {
         $data = $this->beforeSaveMessage($data);
-
         $this->getLogger()->log($this->getEntityName(), $data, $action, $this->getEntityId());
-
         $this->afterSaveMessage();
     }
 

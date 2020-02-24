@@ -90,11 +90,6 @@ class User extends ActiveRecord
         return [
             'logger' => [
                 'class' => ActiveLogBehavior::class,
-                'actionLabels' => [
-                    'create' => 'Создание',
-                    'update' => 'Изменение',
-                    'delete' => 'Удаление',
-                ],
                 'attributes' => [
                     'login',
                     'is_hidden',
