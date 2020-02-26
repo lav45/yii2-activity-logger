@@ -4,7 +4,6 @@ namespace lav45\activityLogger\test\units;
 
 use Yii;
 use yii\base\Event;
-use yii\db\Connection;
 use lav45\activityLogger\test\models\User;
 use lav45\activityLogger\test\models\UserEventMethod;
 use lav45\activityLogger\test\models\TestEntityName;
@@ -23,10 +22,6 @@ class ActiveLogBehaviorTest extends TestCase
 {
     public static function setUpBeforeClass()
     {
-        Yii::$app->set('db', [
-            'class' => Connection::class,
-            'dsn' => 'sqlite::memory:',
-        ]);
         Yii::$app->set('activityLogger', [
             'class' => Manager::class,
         ]);

@@ -408,6 +408,14 @@ Yii::$app->activityLogger->clean();
 ```
 
 
+# Тестирование
+
+```
+~$ docker build --pull --rm -t php-yii2-activity-logger .
+~$ ./container composer update --prefer-dist
+~$ ./container vendor/bin/phpunit
+```
+
 # Лицензии
 
 Для получения информации о лицензии проверьте файл [LICENSE.md](LICENSE.md).

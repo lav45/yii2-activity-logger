@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+docker run --rm --interactive --tty \
+  -u $(id -u):$(id -g) \
+  --volume $PWD:/app \
+  --workdir /app \
+  php-yii2-activity-logger:latest $@
