@@ -23,9 +23,7 @@ if (isset(Yii::$app->params['datePicker-language'])) {
         'layout' => 'inline',
     ]); ?>
 
-    <?= $form->field($model, 'entityName')->dropDownList($model->getEntityNameList(), [
-        'prompt' => '',
-    ]) ?>
+    <?= $form->field($model, 'entityName')->dropDownList($model->getEntityNameList(), ['prompt' => '']) ?>
 
     <?= $form->field($model, 'date')->widget(DatePicker::class, [
         'language' => $language,

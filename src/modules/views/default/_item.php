@@ -7,32 +7,47 @@
  * @var $widget yii\widgets\ListView
  */
 
-$formatter = Yii::$app->getFormatter();
 $actionList = $model->getActionList();
+
+use yii\helpers\Html;
+use yii\helpers\Url;
 
 ?>
 <h4>
-    <?= $model->getEntityName() ?>
+    <?php
+    $name = $model->entity_name;
+    if ($model->entity_id) {
+        $name .= ':' . $model->entity_id;
+    }
+    $url = Url::current([
+        'entityName' => $model->entity_name,
+        'entityId' => $model->entity_id,
+        'page' => null
+    ]);
+    ?>
 
-    <?= $model->getUserName() . ' ' . $actionList[$model->action] ?>
+    [<?= Html::a(Html::encode($name), $url) ?>]
 
-    <span title="<?= $formatter->asDatetime($model->created_at) ?>">
-        <?= $formatter->asRelativeTime($model->created_at) ?>
-    </span>
+    <?php $url = Url::current(['userId' => $model->user_id, 'page' => null]); ?>
+    <?= Html::a(Html::encode($model->user_name), $url) . ' ' . $actionList[$model->action] ?>
+
+    <span><?= Yii::$app->getFormatter()->asDatetime($model->created_at) ?></span>
 
     <?php if ($model->env): ?>
-        <small class="pull-right"><?= $model->getEnv() ?></small>
+        <small class="pull-right">
+            <?php $url = Url::current(['env' => $model->env, 'page' => null]); ?>
+            <?= Html::a(Html::encode($model->env), $url) ?>
+        </small>
     <?php endif; ?>
 </h4>
 <ul class="details">
     <?php foreach ($model->getData() as $attribute => $values): ?>
         <?php if (is_string($values)): ?>
             <li>
-                <?php if(is_numeric($attribute) || empty($attribute)): ?>
-                    <?= $values ?>
-                <?php else: ?>
-                    <strong><?= $attribute ?></strong> <?= $values ?>
+                <?php if(is_string($attribute)): ?>
+                    <strong><?= $attribute ?></strong>
                 <?php endif; ?>
+                <?= Html::encode(Yii::t('lav45/logger', $values)) ?>
             </li>
         <?php else: ?>
             <li>

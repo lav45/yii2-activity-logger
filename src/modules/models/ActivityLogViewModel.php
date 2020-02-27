@@ -9,8 +9,6 @@
 namespace lav45\activityLogger\modules\models;
 
 use Yii;
-use yii\helpers\Url;
-use yii\helpers\Html;
 
 /**
  * Class ActivityLogViewModel
@@ -24,6 +22,15 @@ class ActivityLogViewModel extends ActivityLog
     public $entityMap = [];
     /** @var array */
     private $entityModel = [];
+
+    /**
+     * @param array $row
+     * @return ActivityLog|object|static
+     */
+    public static function instantiate($row)
+    {
+        return Yii::createObject(static::class);
+    }
 
     /**
      * @return \yii\base\Model|null
@@ -51,61 +58,6 @@ class ActivityLogViewModel extends ActivityLog
     }
 
     /**
-     * @return array
-     */
-    public function attributeLabels()
-    {
-        return array_merge(parent::attributeLabels(), [
-            'entityName' => Yii::t('lav45/logger', 'Entity name'),
-            'userName' => Yii::t('lav45/logger', 'User name'),
-        ]);
-    }
-
-    /**
-     * @return string
-     */
-    public function getEntityName()
-    {
-        $name = $this->entity_name;
-        if ($this->entity_id) {
-            $name .= ':' . $this->entity_id;
-        }
-        $url = Url::current([
-            'entityName' => $this->entity_name,
-            'entityId' => $this->entity_id,
-            'page' => null
-        ]);
-        return '[' . Html::a($name, $url) . ']';
-    }
-
-    /**
-     * @return string
-     */
-    public function getUserName()
-    {
-        $name = Html::encode($this->user_name);
-        $url = Url::current([
-            'userId' => $this->user_id,
-            'page' => null
-        ]);
-        return Html::a($name, $url);
-    }
-
-    /**
-     * @return string
-     * @since 1.5.2
-     */
-    public function getEnv()
-    {
-        $env = Html::encode($this->env);
-        $url = Url::current([
-            'env' => $this->env,
-            'page' => null
-        ]);
-        return Html::a($env, $url);
-    }
-
-    /**
      * @return \Generator|DataModel[]
      */
     public function getData()
@@ -113,7 +65,7 @@ class ActivityLogViewModel extends ActivityLog
         foreach (parent::getData() as $attribute => $values) {
             if (is_string($values)) {
                 $label = is_string($attribute) ? $this->getEntityAttributeLabel($attribute) : $attribute;
-                yield $label => Html::encode(Yii::t('lav45/logger', $values));
+                yield $label => $values;
             } else {
                 $dataModel = $this->getDataModel()
                     ->setFormat($this->getAttributeFormat($attribute))
