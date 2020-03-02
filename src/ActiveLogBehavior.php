@@ -380,8 +380,19 @@ class ActiveLogBehavior extends Behavior
     protected function saveMessage($action, array $data)
     {
         $data = $this->beforeSaveMessage($data);
-        $this->getLogger()->log($this->getEntityName(), $data, $action, $this->getEntityId());
+        $this->addLog($data, $action);
         $this->afterSaveMessage();
+    }
+
+    /**
+     * @param string|array $message
+     * @param string|null $action
+     * @return bool
+     * @since 1.7.0
+     */
+    public function addLog($message, $action = null)
+    {
+        return $this->getLogger()->log($this->getEntityName(), $message, $action, $this->getEntityId());
     }
 
     /**
