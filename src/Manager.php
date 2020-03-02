@@ -8,6 +8,8 @@
 
 namespace lav45\activityLogger;
 
+use Exception;
+use Throwable;
 use Yii;
 use yii\di\Instance;
 use yii\base\BaseObject;
@@ -127,10 +129,6 @@ class Manager extends BaseObject
         if (false === $this->enabled) {
             return false;
         }
-        $options = array_filter($options);
-        if (empty($options)) {
-            return false;
-        }
 
         /** @var LogMessage $message */
         $message = Yii::createObject(array_merge(
@@ -142,9 +140,9 @@ class Manager extends BaseObject
 
         try {
             $result = $this->getStorage()->save($message);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->throwException($e);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return $this->throwException($e);
         }
 
@@ -209,17 +207,17 @@ class Manager extends BaseObject
 
         try {
             return $this->getStorage()->delete($message);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->throwException($e);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return $this->throwException($e);
         }
     }
 
     /**
-     * @param \Exception|\Throwable $e
-     * @throws \Exception|\Throwable
+     * @param Exception|Throwable $e
      * @return bool
+     * @throws Exception|Throwable
      */
     private function throwException($e)
     {

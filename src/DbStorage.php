@@ -42,20 +42,18 @@ class DbStorage extends BaseObject implements StorageInterface
      */
     public function save($message)
     {
-        $options = array_filter([
-            'entity_name' => $message->entityName,
-            'entity_id' => $message->entityId,
-            'created_at' => $message->createdAt,
-            'user_id' => $message->userId,
-            'user_name' => $message->userName,
-            'action' => $message->action,
-            'env' => $message->env,
-            'data' => $message->data,
-        ]);
-
         return (new Query)
             ->createCommand($this->db)
-            ->insert($this->tableName, $options)
+            ->insert($this->tableName, [
+                'entity_name' => $message->entityName,
+                'entity_id' => $message->entityId,
+                'created_at' => $message->createdAt,
+                'user_id' => $message->userId,
+                'user_name' => $message->userName,
+                'action' => $message->action,
+                'env' => $message->env,
+                'data' => $message->data,
+            ])
             ->execute();
     }
 
