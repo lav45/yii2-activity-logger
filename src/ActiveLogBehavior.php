@@ -449,7 +449,7 @@ class ActiveLogBehavior extends Behavior
         } else {
             $result = call_user_func($this->getEntityId);
         }
-        if (empty($result)) {
+        if ($this->isEmpty($result)) {
             throw new InvalidValueException('the property "entityId" can not be empty');
         }
         if (is_array($result)) {
@@ -472,6 +472,6 @@ class ActiveLogBehavior extends Behavior
         if (null !== $this->isEmpty) {
             return call_user_func($this->isEmpty, $value);
         }
-        return null === $value || $value === '';
+        return null === $value || '' === $value || [] === $value;
     }
 }
