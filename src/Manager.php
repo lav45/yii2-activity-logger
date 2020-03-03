@@ -56,15 +56,20 @@ class Manager extends BaseObject
      */
     protected function getUserOptions()
     {
-        if ($user = Yii::$app->get($this->user, false)) {
-            /** @var \yii\web\IdentityInterface $identity */
-            $identity = $user->identity;
-            return [
-                'userId' => $identity->getId(),
-                'userName' => $identity->{$this->userNameAttribute}
-            ];
+        /** @var \yii\web\User $user */
+        $user = Yii::$app->get($this->user, false);
+        if ($user === null) {
+            return [];
         }
-        return [];
+        /** @var \yii\web\IdentityInterface $identity */
+        $identity = $user->getIdentity();
+        if ($identity === null) {
+            return [];
+        }
+        return [
+            'userId' => $identity->getId(),
+            'userName' => $identity->{$this->userNameAttribute}
+        ];
     }
 
     /**
@@ -76,16 +81,6 @@ class Manager extends BaseObject
             $this->storage = Instance::ensure($this->storage, StorageInterface::class);
         }
         return $this->storage;
-    }
-
-    /**
-     * @param string $entityName
-     * @return LogCollection
-     * @since 1.5.1
-     */
-    public function createCollection($entityName)
-    {
-        return Yii::createObject(['class' => LogCollection::class], [$this, $entityName]);
     }
 
     /**
@@ -124,28 +119,26 @@ class Manager extends BaseObject
      *
      * @return bool
      */
-    private function saveMessage(array $options)
+    private function saveMessage($options)
     {
         if (false === $this->enabled) {
             return false;
         }
-
-        /** @var LogMessage $message */
-        $message = Yii::createObject(array_merge(
-            $this->messageClass,
-            $this->getUserOptions(),
-            ['createdAt' => time()],
-            $options
-        ));
-
         try {
+            /** @var LogMessage $message */
+            $message = Yii::createObject(array_merge(
+                $this->messageClass,
+                $this->getUserOptions(),
+                ['createdAt' => time()],
+                $options
+            ));
+
             $result = $this->getStorage()->save($message);
         } catch (Exception $e) {
             return $this->throwException($e);
         } catch (Throwable $e) {
             return $this->throwException($e);
         }
-
         return $result > 0;
     }
 
@@ -172,19 +165,17 @@ class Manager extends BaseObject
      *
      * @return int|bool the count of deleted rows or false if clear range not set
      */
-    public function clean(array $options = [])
+    public function clean($options = [])
     {
         if (empty($options)) {
             return false;
         }
-
         if (isset($options['deleteOldThanDays'])) {
             $options['createdAt'] = $options['deleteOldThanDays'];
             unset($options['deleteOldThanDays']);
         } elseif ($this->deleteOldThanDays !== false) {
             $options['createdAt'] = time() - $this->deleteOldThanDays * 86400;
         }
-
         return $this->deleteMessage($options);
     }
 
@@ -199,13 +190,13 @@ class Manager extends BaseObject
      *
      * @return int|bool the count of deleted rows or false if clear range not set
      */
-    private function deleteMessage(array $options)
+    private function deleteMessage($options)
     {
-        $options['class'] = $this->messageClass['class'];
-        /** @var LogMessage $message */
-        $message = Yii::createObject($options);
-
         try {
+            $options['class'] = $this->messageClass['class'];
+            /** @var LogMessage $message */
+            $message = Yii::createObject($options);
+
             return $this->getStorage()->delete($message);
         } catch (Exception $e) {
             return $this->throwException($e);
