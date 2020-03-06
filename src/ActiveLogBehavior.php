@@ -245,22 +245,13 @@ class ActiveLogBehavior extends Behavior
             if ($this->isEmpty($old) && $this->isEmpty($new)) {
                 continue;
             }
-            if (false === $unset && false === $this->isAttributeChanged($attribute)) {
+            if (false === $unset && false === $this->owner->isAttributeChanged($attribute, $this->identicalAttributes)) {
                 continue;
             }
 
             $result[$attribute] = $this->resolveStoreValues($old, $new, $options);
         }
         return $result;
-    }
-
-    /**
-     * @param string $attribute
-     * @return bool
-     */
-    private function isAttributeChanged($attribute)
-    {
-        return $this->owner->isAttributeChanged($attribute, $this->identicalAttributes);
     }
 
     /**
