@@ -50,6 +50,14 @@ class DataModel extends BaseObject
     }
 
     /**
+     * @return array
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    /**
      * @param string|\Closure|null $value
      * @return $this
      */
@@ -95,6 +103,9 @@ class DataModel extends BaseObject
             }
             return $value;
         }
+        if (null === $value) {
+            return $this->formatter->nullDisplay;
+        }
         if (is_numeric($value)) {
             return $value;
         }
@@ -109,9 +120,6 @@ class DataModel extends BaseObject
             $value = Html::encode($value);
             $value = $this->formatter->asNtext($value);
             return $value;
-        }
-        if (null === $value) {
-            return $this->formatter->nullDisplay;
         }
         if (is_bool($value)) {
             return $this->formatter->asBoolean($value);
