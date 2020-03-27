@@ -411,7 +411,7 @@ Yii::$app->activityLogger->clean();
 # Тестирование
 
 ```
-~$ docker build --pull --rm -t php-yii2-activity-logger .
+~$ docker build --pull --rm -t php74-test .
 ~$ ./container composer update --prefer-dist
 ~$ ./container vendor/bin/phpunit
 ```
