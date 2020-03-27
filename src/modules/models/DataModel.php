@@ -116,10 +116,7 @@ class DataModel extends BaseObject
             if (empty($value)) {
                 return $this->formatter->nullDisplay;
             }
-            $value = Yii::t('lav45/logger', $value);
-            $value = Html::encode($value);
-            $value = $this->formatter->asNtext($value);
-            return $value;
+            return $this->formatter->asNtext($value);
         }
         if (is_bool($value)) {
             return $this->formatter->asBoolean($value);
