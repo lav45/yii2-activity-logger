@@ -1,5 +1,11 @@
 FROM phpdockerio/php74-cli:latest
 
+ARG UID
+ARG GID
+
+RUN usermod --non-unique --uid ${UID} www-data
+RUN groupmod --non-unique --gid ${GID} www-data
+
 RUN apt-get update
 RUN apt-get upgrade -y
 RUN apt-get install -y apt-utils
