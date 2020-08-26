@@ -50,13 +50,7 @@ class ActivityLogSearch extends Model
     {
         return [
             [['entityName'], 'in', 'range' => array_keys($this->getEntityMap())],
-
-            [['entityId'], 'safe'],
-
-            [['userId'], 'safe'],
-
-            [['env'], 'safe'],
-
+            [['entityId', 'userId', 'env'], 'string', 'max' => 32],
             [['date'], 'date', 'format' => 'dd.MM.yyyy'],
         ];
     }
@@ -85,26 +79,23 @@ class ActivityLogSearch extends Model
             'sort' => false,
         ]);
 
-        if (!($this->load($params, '') && $this->validate())) {
+        if (!($this->load($params) && $this->validate())) {
             return $dataProvider;
         }
 
         if (!empty($this->date)) {
-            $date = Yii::$app->getFormatter()
-                ->asTimestamp($this->date . ' 00:00:00 ' . Yii::$app->timeZone);
-
-            $query
-                ->andFilterWhere(['and',
-                    ['>=', 'created_at', $date],
-                    ['<=', 'created_at', $date + 86400],
-                ]);
+            $time_zone = Yii::$app->getTimeZone();
+            $date_from = strtotime("{$this->date} 00:00:00 {$time_zone}");
+            $date_to = $date_from + 86399; // + 23:59:59
+            $query->andWhere(['between', 'created_at', $date_from, $date_to]);
         }
 
-        $query
-            ->andFilterWhere(['entity_name' => $this->entityName])
-            ->andFilterWhere(['entity_id' => $this->entityId])
-            ->andFilterWhere(['user_id' => $this->userId])
-            ->andFilterWhere(['env' => $this->env]);
+        $query->andFilterWhere([
+            'entity_name' => $this->entityName,
+            'entity_id' => $this->entityId,
+            'user_id' => $this->userId,
+            'env' => $this->env,
+        ]);
 
         return $dataProvider;
     }
