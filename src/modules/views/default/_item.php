@@ -24,7 +24,7 @@ use yii\helpers\Url;
         'entityId' => $model->entity_id,
         'page' => null
     ]);
-    $action = isset($actionList[$model->action]) ? $actionList[$model->action] : ucfirst($model->action);
+    $action = isset($actionList[$model->action]) ? $actionList[$model->action] : $model->action;
     ?>
 
     [<?= Html::a(Html::encode($name), $url) ?>]
