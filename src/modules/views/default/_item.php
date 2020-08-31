@@ -24,12 +24,13 @@ use yii\helpers\Url;
         'entityId' => $model->entity_id,
         'page' => null
     ]);
+    $action = isset($actionList[$model->action]) ? $actionList[$model->action] : ucfirst($model->action);
     ?>
 
     [<?= Html::a(Html::encode($name), $url) ?>]
 
     <?php $url = Url::current(['userId' => $model->user_id, 'page' => null]); ?>
-    <?= Html::a(Html::encode($model->user_name), $url) . ' ' . $actionList[$model->action] ?>
+    <?= Html::a(Html::encode($model->user_name), $url) . ' ' . $action ?>
 
     <span><?= Yii::$app->getFormatter()->asDatetime($model->created_at) ?></span>
 
