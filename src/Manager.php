@@ -11,8 +11,8 @@ namespace lav45\activityLogger;
 use Exception;
 use Throwable;
 use Yii;
-use yii\di\Instance;
 use yii\base\BaseObject;
+use yii\di\Instance;
 
 /**
  * Class Manager
@@ -33,12 +33,6 @@ class Manager extends BaseObject
      */
     public $userNameAttribute = 'username';
     /**
-     * @var array
-     */
-    public $messageClass = [
-        'class' => LogMessage::class
-    ];
-    /**
      * @var string|array|StorageInterface
      */
     public $storage = 'activityLoggerStorage';
@@ -46,32 +40,28 @@ class Manager extends BaseObject
      * @var bool
      */
     public $debug = YII_DEBUG;
+    /**
+     * @var string
+     */
+    public $env;
 
     /**
-     * @return array
+     * @return \yii\web\IdentityInterface|null
      */
-    protected function getUserOptions()
+    protected function getUserIdentity()
     {
         /** @var \yii\web\User $user */
         $user = Yii::$app->get($this->user, false);
-        if ($user === null) {
-            return [];
+        if ($user) {
+            return $user->getIdentity();
         }
-        /** @var \yii\web\IdentityInterface $identity */
-        $identity = $user->getIdentity();
-        if ($identity === null) {
-            return [];
-        }
-        return [
-            'userId' => $identity->getId(),
-            'userName' => $identity->{$this->userNameAttribute}
-        ];
+        return null;
     }
 
     /**
      * @return StorageInterface
      */
-    private function getStorage()
+    protected function getStorage()
     {
         if (!$this->storage instanceof StorageInterface) {
             $this->storage = Instance::ensure($this->storage, StorageInterface::class);
@@ -80,123 +70,58 @@ class Manager extends BaseObject
     }
 
     /**
-     * @param string $entityName
-     * @param string|array $message
-     * @param null|string $action
-     * @param null|string|int $entityId
+     * @param LogMessageDTO $message
      * @return bool
      */
-    public function log($entityName, $message, $action = null, $entityId = null)
-    {
-        if (empty($entityName) || empty($message)) {
-            return false;
-        }
-        if (is_string($message)) {
-            $message = [$message];
-        }
-        return $this->saveMessage([
-            'entityName' => $entityName,
-            'entityId' => $entityId,
-            'data' => $message,
-            'action' => $action,
-        ]);
-    }
-
-    /**
-     * @param array $options
-     *  - entityName :string
-     *  - entityId :string|int
-     *  - createdAt :int unix timestamp
-     *  - userId :string
-     *  - userName :string
-     *  - action :string
-     *  - env :string
-     *  - data :array
-     *
-     * @return bool
-     */
-    private function saveMessage($options)
+    public function log(LogMessageDTO $message)
     {
         if (false === $this->enabled) {
             return false;
         }
-        try {
-            /** @var LogMessage $message */
-            $message = Yii::createObject(array_merge(
-                $this->messageClass,
-                $this->getUserOptions(),
-                ['createdAt' => time()],
-                $options
-            ));
 
-            $result = $this->getStorage()->save($message);
-        } catch (Exception $e) {
-            return $this->throwException($e);
-        } catch (Throwable $e) {
-            return $this->throwException($e);
+        $message->createdAt = time();
+        $message->env = $this->env;
+
+        if ($identity = $this->getUserIdentity()) {
+            $message->userId = $identity->getId();
+            $message->userName = $identity->{$this->userNameAttribute};
         }
-        return $result > 0;
+
+        try {
+            $this->getStorage()->save($message);
+            return true;
+        } catch (Exception $e) {
+            $this->throwException($e);
+        } catch (Throwable $e) {
+            $this->throwException($e);
+        }
+        return false;
     }
 
     /**
-     * @param string $entityName
-     * @param string|null $entityId
+     * @param LogMessageDTO $message
+     * @param int|null $old_than
      * @return bool
      */
-    public function delete($entityName, $entityId = null)
+    public function delete(LogMessageDTO $message, $old_than = null)
     {
-        return $this->deleteMessage([
-            'entityName' => $entityName,
-            'entityId' => $entityId,
-        ]);
-    }
-
-    /**
-     * @param $old_than int - unix timestamp
-     * @param array $options
-     *  - entityName :string
-     *  - entityId :string|int
-     *  - userId :string
-     *  - action :string
-     *  - env :string
-     *
-     * @return int|false the number of deleted rows, or false if an error occurred
-     */
-    public function clean($old_than, array $options = [])
-    {
-        $options['createdAt'] = $old_than;
-        return $this->deleteMessage($options);
-    }
-
-    /**
-     * @param array $options
-     *  - entityName :string
-     *  - entityId :string|int
-     *  - createdAt :int unix timestamp
-     *  - userId :string
-     *  - action :string
-     *  - env :string
-     *
-     * @return int|false the number of deleted rows, or false if an error occurred
-     */
-    private function deleteMessage($options)
-    {
-        try {
-            $options['class'] = $this->messageClass['class'];
-            /** @var LogMessage $message */
-            $message = Yii::createObject($options);
-
-            return $this->getStorage()->delete($message);
-        } catch (Exception $e) {
-            return $this->throwException($e);
-        } catch (Throwable $e) {
-            return $this->throwException($e);
+        if (false === $this->enabled) {
+            return false;
         }
+
+        try {
+            $this->getStorage()->delete($message, $old_than);
+            return true;
+        } catch (Exception $e) {
+            $this->throwException($e);
+        } catch (Throwable $e) {
+            $this->throwException($e);
+        }
+        return false;
     }
 
     /**
      * @param Exception|Throwable $e
-     * @return bool
      * @throws Exception|Throwable
      */
     private function throwException($e)
@@ -205,6 +130,5 @@ class Manager extends BaseObject
             throw $e;
         }
         Yii::error($e->getMessage(), static::class);
-        return false;
     }
 }

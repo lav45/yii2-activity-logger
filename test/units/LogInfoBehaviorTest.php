@@ -21,7 +21,7 @@ class LogInfoBehaviorTest extends TestCase
 
         $expected = $event->logData;
         $model->trigger(ActiveLogBehavior::EVENT_BEFORE_SAVE_MESSAGE, $event);
-        $this->assertEquals($expected, $event->logData);
+        self::assertEquals($expected, $event->logData);
     }
 
     public function testStringTemplate()
@@ -36,7 +36,7 @@ class LogInfoBehaviorTest extends TestCase
         $event = new MessageEvent();
         $model->trigger(ActiveLogBehavior::EVENT_BEFORE_SAVE_MESSAGE, $event);
 
-        $this->assertEquals($expected, $event->logData);
+        self::assertEquals($expected, $event->logData);
     }
 
     public function testClosureTemplate()
@@ -53,7 +53,7 @@ class LogInfoBehaviorTest extends TestCase
         $event = new MessageEvent();
         $model->trigger(ActiveLogBehavior::EVENT_BEFORE_SAVE_MESSAGE, $event);
 
-        $this->assertEquals($expected, $event->logData);
+        self::assertEquals($expected, $event->logData);
     }
 
     public function testAppendPrependLog()
@@ -69,7 +69,7 @@ class LogInfoBehaviorTest extends TestCase
         $expected = ["{$model->username} ({$model->profile['email']})"] + $event->logData;
 
         $model->trigger(ActiveLogBehavior::EVENT_BEFORE_SAVE_MESSAGE, $event);
-        $this->assertEquals($expected, $event->logData);
+        self::assertEquals($expected, $event->logData);
 
         $behavior->prepend = false;
         $event->logData = ['first log action'];
@@ -78,7 +78,7 @@ class LogInfoBehaviorTest extends TestCase
         $expected[] = "{$model->username} ({$model->profile['email']})";
 
         $model->trigger(ActiveLogBehavior::EVENT_BEFORE_SAVE_MESSAGE, $event);
-        $this->assertEquals($expected, $event->logData);
+        self::assertEquals($expected, $event->logData);
     }
 }
 

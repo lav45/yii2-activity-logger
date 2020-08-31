@@ -8,9 +8,10 @@
 
 namespace lav45\activityLogger\console;
 
-use yii\helpers\Console;
-use yii\console\Controller;
+use lav45\activityLogger\LogMessageDTO;
 use lav45\activityLogger\ManagerTrait;
+use yii\console\Controller;
+use yii\helpers\Console;
 
 /**
  * Class DefaultController
@@ -20,25 +21,15 @@ class DefaultController extends Controller
 {
     use ManagerTrait;
 
-    /**
-     * @var string alias name target object
-     */
+    /** @var string alias name target object */
     public $entityName;
-    /**
-     * @var string id target object
-     */
+    /** @var string id target object */
     public $entityId;
-    /**
-     * @var string id user who performed the action
-     */
+    /** @var string id user who performed the action */
     public $userId;
-    /**
-     * @var string the action performed on the object
-     */
+    /** @var string the action performed on the object */
     public $logAction;
-    /**
-     * @var string environment, which produced the effect
-     */
+    /** @var string environment, which produced the effect */
     public $env;
     /**
      * @var string delete old than days
@@ -84,7 +75,13 @@ class DefaultController extends Controller
      */
     public function actionClean()
     {
-        $options = array_filter([
+        $old_than = $this->parseDate($this->oldThan);
+        if (null === $old_than) {
+            $this->stderr("Invalid date format\n", Console::FG_RED, Console::UNDERLINE);
+            return;
+        }
+
+        $messageDto = new LogMessageDTO([
             'entityName' => $this->entityName,
             'entityId' => $this->entityId,
             'userId' => $this->userId,
@@ -92,13 +89,7 @@ class DefaultController extends Controller
             'env' => $this->env,
         ]);
 
-        $old_than = $this->parseDate($this->oldThan);
-        if (null === $old_than) {
-            $this->stderr("Invalid date format\n", Console::FG_RED, Console::UNDERLINE);
-            return;
-        }
-
-        $count = $this->getLogger()->clean($old_than, $options);
+        $count = $this->getLogger()->delete($messageDto, $old_than);
 
         $this->stdout("Deleted {$count} record(s) from the activity log.\n");
     }

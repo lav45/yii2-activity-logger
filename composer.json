@@ -5,6 +5,8 @@
     "homepage": "https://github.com/LAV45/yii2-activity-logger",
     "type": "yii2-extension",
     "license": "BSD-3-Clause",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "authors": [
         {
             "name": "Alexey Loban",
@@ -29,13 +31,17 @@
     },
     "autoload": {
         "psr-4": {
-            "lav45\\activityLogger\\": "src",
+            "lav45\\activityLogger\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
             "lav45\\activityLogger\\test\\": "test"
         }
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.7.x-dev"
+            "dev-master": "1.8.x-dev"
         }
     }
 }

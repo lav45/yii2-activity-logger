@@ -2,6 +2,7 @@
 
 namespace lav45\activityLogger\test\console;
 
+use lav45\activityLogger\LogMessageDTO;
 use PHPUnit\Framework\TestCase;
 use yii\base\Module;
 
@@ -29,8 +30,8 @@ class DefaultControllerTest extends TestCase
         $controller->run('clean', $params);
 
         $manager = $controller->getLogger();
-        $this->assertEquals($manager->old_than, $result[1]);
-        $this->assertEquals($manager->options, $result[0]);
+        self::assertEquals($manager->old_than, $result[1]);
+        self::assertEquals($manager->options, $result[0]);
     }
 
     /**
@@ -107,11 +108,11 @@ class DefaultControllerTest extends TestCase
 
         $manager->result = 10;
         $controller->runAction('clean');
-        $this->assertEquals("Deleted {$manager->result} record(s) from the activity log.\n", $controller->stdout);
+        self::assertEquals("Deleted {$manager->result} record(s) from the activity log.\n", $controller->stdout);
 
         $manager->result = false;
         $controller->runAction('clean', ['old-than' => '12']);
-        $this->assertEquals("Invalid date format\n", $controller->stderr);
+        self::assertEquals("Invalid date format\n", $controller->stderr);
     }
 }
 
@@ -140,10 +141,10 @@ class Manager extends \lav45\activityLogger\Manager
 
     public $options;
 
-    public function clean($old_than, array $options = [])
+    public function delete(LogMessageDTO $message, $old_than = null)
     {
         $this->old_than = $old_than;
-        $this->options = $options;
+        $this->options = array_filter((array)$message);
         return $this->result;
     }
 }

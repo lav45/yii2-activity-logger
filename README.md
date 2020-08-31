@@ -2,8 +2,8 @@
 
 <table>
     <tr>
-        <td width="200">
-            <img src="https://user-images.githubusercontent.com/675367/33967884-6dc55ca8-e076-11e7-88c5-4ba5d7d69012.png" alt="yii2-activity-logger" />
+        <td>
+            <img width="200px" src="https://user-images.githubusercontent.com/675367/33967884-6dc55ca8-e076-11e7-88c5-4ba5d7d69012.png" alt="yii2-activity-logger" />
         </td>
         <td>
             Это расширение поможет вам отслеживать пользовательскую активность на сайте.
@@ -90,23 +90,8 @@ return [
             // идентификатор компонента хранилища логов `\lav45\activityLogger\StorageInterface`
             'storage' => 'activityLoggerStorage',
 
-            'messageClass' => [
-                'class' => \lav45\activityLogger\LogMessage::class,
-
-                // При использовании компанета когда пользователь ещё не авторизировался его действия
-                // можно записывать от имени "Неизвесный пользователь", к примеру.
-                'userId' => 'cron',
-                'userName' => 'Неизвесный пользователь',
-
-                // Окружение из которого проиводило действие
-                'env' => 'console',
-
-                // Так же можно указать значение по умолчанию и для других параметров
-                // 'entityId' => '...',
-                // 'createdAt' => time(),
-                // 'action' => '...',
-                // 'data' => [" ... "],
-            ],
+            // Окружение из которого проиводило действие
+            'env' => 'console',
         ],
 
         /**
@@ -306,15 +291,15 @@ return [
 ];
 ```
 
-Теперь можно периодически чистить устаревшие логи выполняя команду из консоли
+Если необходимо удалить старые логи для этого используйте консольный контроллер:
 
 ```bash
-~$ yii logger/clean
+~$ yii logger/clean --old-than=1y
 # => Deleted 5 record(s) from the activity log.
 ```
 
 
-### Используя параметры командной строки
+### Параметры командной строки
 
 * `--entity-id, -eid`: string. Идентификатор целевого объекта
 
@@ -333,15 +318,6 @@ return [
     - 2d - старше 2 дней
     - 3m - старше 3-х месяцев
     - 4y - старше 4 лет.
-
-
-В следующем примере показано, как можно использовать эти параметры.
-
-Например если вы хотите удалить старые запись из логов для консольного окружения, для этого вы можете использовать следующую команду:
-
-```
-~$ yii logger/clean --env=console --old-than=30d
-```
 
 
 ## Ручное использование компонента
@@ -372,41 +348,25 @@ return [
 ```
 
 
-Когда в логах нужно оставить одну запись со списком выполненных действий можно воспользоваться `LogCollection`
-В данном примере мы записываем лог синхронизации пользователей
+Когда в логах нужна оставить одну запись со списком выполненных действий можно воспользоваться `LogCollection`
 
 ```php
-$collection = Yii::$app->activityLogger->createCollection('user');
-$collection->setAction('sync');
-$collection->setEntityId(100);
+use lav45\activityLogger\LogCollection;
 
-$messages = [
-    'Created: 100',
-    'Updated: 100500',
-    'Deleted: 5',
-];
+$collection = new LogCollection(Yii::$app->activityLogger, 'entityName');
 
 /**
  * Добавляем все необходимые записи
  */
-foreach ($messages as $message) {
-    $collection->addMessage($message);
-}
+$collection->addMessage('Created: 100');
+$collection->addMessage('Updated: 100500');
+$collection->addMessage('Deleted: 5');
 
 /**
- * Сохраняем все собранные на данный момент логи
+ * Сохраняем все собранные сообщение как одну запись в логах
  * Посли записи список логов будет очищен
  */
 $collection->push(); // => true
-```
-
-
-### Удаление устаревших данных
-
-Будут удалены все логи старше одного года.
-
-```php
-Yii::$app->activityLogger->clean(strtotime('-1 year'));
 ```
 
 

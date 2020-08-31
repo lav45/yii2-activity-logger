@@ -40,7 +40,7 @@ class LogCollection
      * @param Manager $logger
      * @param string $entityName
      */
-    public function __construct($logger, $entityName)
+    public function __construct(Manager $logger, $entityName)
     {
         $this->logger = $logger;
         $this->entityName = $entityName;
@@ -94,11 +94,11 @@ class LogCollection
             return false;
         }
 
-        return $this->logger->log(
-            $this->entityName,
-            $messages,
-            $this->action,
-            $this->entityId
-        );
+        return $this->logger->log(new LogMessageDTO([
+            'entityName' => $this->entityName,
+            'entityId' => $this->entityId,
+            'action' => $this->action,
+            'data' => $messages,
+        ]));
     }
 }

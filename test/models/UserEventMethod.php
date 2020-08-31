@@ -2,7 +2,7 @@
 
 namespace lav45\activityLogger\test\models;
 
-class UserEventMethod extends User
+class UserEventMethod extends LogUser
 {
     public $appendLogs = [];
 

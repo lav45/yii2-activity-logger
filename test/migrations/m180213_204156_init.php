@@ -30,4 +30,11 @@ class m180213_204156_init extends Migration
             'name' => $this->string(),
         ]);
     }
+
+    public function down()
+    {
+        $this->dropTable('user');
+        $this->dropTable('company');
+        $this->dropTable('test_entity_name');
+    }
 }

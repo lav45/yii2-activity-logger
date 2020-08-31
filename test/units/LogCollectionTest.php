@@ -3,7 +3,7 @@
 namespace lav45\activityLogger\test\units;
 
 use lav45\activityLogger\LogCollection;
-use lav45\activityLogger\test\components\FakeLogger;
+use lav45\activityLogger\test\components\FakeManager;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -14,42 +14,39 @@ class LogCollectionTest extends TestCase
 {
     public function testSetEntityId()
     {
-        /** @var \lav45\activityLogger\Manager|FakeLogger $logger */
-        $logger = new FakeLogger();
+        $logger = new FakeManager();
         $collection = new LogCollection($logger, 'test');
 
         $entityId = 10;
-        $this->assertEquals($collection, $collection->setEntityId($entityId));
+        self::assertEquals($collection, $collection->setEntityId($entityId));
 
         $collection->addMessage('test message');
         $collection->push();
 
         $logs = $logger->removeLogs();
 
-        $this->assertEquals($entityId, $logs[0]['entityId']);
+        self::assertEquals($entityId, $logs[0]['entityId']);
     }
 
     public function testSetAction()
     {
-        /** @var \lav45\activityLogger\Manager|FakeLogger $logger */
-        $logger = new FakeLogger();
+        $logger = new FakeManager();
         $collection = new LogCollection($logger, 'test');
 
         $action = 'sync';
-        $this->assertEquals($collection, $collection->setAction($action));
+        self::assertEquals($collection, $collection->setAction($action));
 
         $collection->addMessage('Updated: 100500');
         $collection->push();
 
         $logs = $logger->removeLogs();
 
-        $this->assertEquals($action, $logs[0]['action']);
+        self::assertEquals($action, $logs[0]['action']);
     }
 
     public function testAddAndPushMessage()
     {
-        /** @var \lav45\activityLogger\Manager|FakeLogger $logger */
-        $logger = new FakeLogger();
+        $logger = new FakeManager();
         $collection = new LogCollection($logger, 'test');
 
         $messages = [
@@ -62,11 +59,11 @@ class LogCollectionTest extends TestCase
             $collection->addMessage($message);
         }
 
-        $this->assertTrue($collection->push());
-        $this->assertFalse($collection->push());
+        self::assertTrue($collection->push());
+        self::assertFalse($collection->push());
 
         $logs = $logger->removeLogs();
 
-        $this->assertEquals($messages, $logs[0]['message']);
+        self::assertEquals($messages, $logs[0]['message']);
     }
 }

@@ -11,12 +11,10 @@ namespace lav45\activityLogger;
 use yii\base\BaseObject;
 
 /**
- * Class LogMessage this is a data transfer object
+ * Class LogMessageDTO this is a data transfer object
  * @package lav45\activityLogger
- *
- * @property string $data json data that was modified or relate to the subject
  */
-class LogMessage extends BaseObject
+class LogMessageDTO extends BaseObject
 {
     /**
      * @var string alias name target object
@@ -47,42 +45,7 @@ class LogMessage extends BaseObject
      */
     public $env;
     /**
-     * @var mixed
+     * @var array|string
      */
-    private $data;
-    /**
-     * @var \Closure custom function for the encode `$data`
-     */
-    public $encode;
-
-    /**
-     * @return string|null
-     */
-    public function getData()
-    {
-        if (empty($this->data)) {
-            return null;
-        }
-        return $this->encode($this->data);
-    }
-
-    /**
-     * @param mixed $data
-     */
-    public function setData($data)
-    {
-        $this->data = $data;
-    }
-
-    /**
-     * @param mixed $data
-     * @return string
-     */
-    private function encode($data)
-    {
-        if (null === $this->encode) {
-            return json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-        }
-        return call_user_func($this->encode, $data);
-    }
+    public $data;
 }

@@ -37,12 +37,11 @@ class DbStorage extends BaseObject implements StorageInterface
     }
 
     /**
-     * @param LogMessage $message
-     * @return int
+     * @param LogMessageDTO $message
      */
-    public function save($message)
+    public function save(LogMessageDTO $message)
     {
-        return (new Query)
+        (new Query)
             ->createCommand($this->db)
             ->insert($this->tableName, [
                 'entity_name' => $message->entityName,
@@ -52,16 +51,25 @@ class DbStorage extends BaseObject implements StorageInterface
                 'user_name' => $message->userName,
                 'action' => $message->action,
                 'env' => $message->env,
-                'data' => $message->data,
+                'data' => $this->encode($message->data),
             ])
             ->execute();
     }
 
     /**
-     * @param LogMessage $message
-     * @return int
+     * @param array|string $data
+     * @return string
      */
-    public function delete($message)
+    private function encode($data)
+    {
+        return json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+    }
+
+    /**
+     * @param LogMessageDTO $message
+     * @param int|null $old_than
+     */
+    public function delete(LogMessageDTO $message, $old_than = null)
     {
         $condition = array_filter([
             'entity_name' => $message->entityName,
@@ -71,11 +79,11 @@ class DbStorage extends BaseObject implements StorageInterface
             'env' => $message->env,
         ]);
 
-        if ($date = $message->createdAt) {
-            $condition = ['and', $condition, ['<=', 'created_at', $date]];
+        if ($old_than) {
+            $condition = ['and', $condition, ['<=', 'created_at', $old_than]];
         }
 
-        return (new Query)
+        (new Query)
             ->createCommand($this->db)
             ->delete($this->tableName, $condition)
             ->execute();

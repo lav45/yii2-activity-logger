@@ -2,9 +2,10 @@
 
 namespace lav45\activityLogger\test\models;
 
-use yii\db\ActiveRecord;
-use lav45\activityLogger\modules\models\ActivityLog;
 use lav45\activityLogger\ActiveLogBehavior;
+use lav45\activityLogger\modules\models\ActivityLog;
+use yii\db\ActiveRecord;
+use yii\web\IdentityInterface;
 
 /**
  * Class News
@@ -27,7 +28,7 @@ use lav45\activityLogger\ActiveLogBehavior;
  *
  * @mixin ActiveLogBehavior
  */
-class User extends ActiveRecord
+class User extends ActiveRecord implements IdentityInterface
 {
     const STATUS_ACTIVE = 10;
     const STATUS_DISABLED = 1;
@@ -85,35 +86,6 @@ class User extends ActiveRecord
     /**
      * @inheritdoc
      */
-    public function behaviors()
-    {
-        return [
-            'logger' => [
-                'class' => ActiveLogBehavior::class,
-                'attributes' => [
-                    'login',
-                    'is_hidden',
-                    'friend_count',
-                    'salary',
-                    'birthday',
-                    'status' => [
-                        'list' => 'statusList',
-                    ],
-                    'arrayStatus' => [
-                        'list' => 'statusList',
-                    ],
-                    'company_id' => [
-                        'relation' => 'company',
-                        'attribute' => 'name',
-                    ],
-                ],
-            ],
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function attributeLabels()
     {
         return [
@@ -126,58 +98,6 @@ class User extends ActiveRecord
             'status' => 'Status',
             'arrayStatus' => 'Array status',
         ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getOldAttribute($name)
-    {
-        if ($name === 'arrayStatus') {
-            return json_decode(parent::getOldAttribute('_array_status'), true);
-        }
-
-        return parent::getOldAttribute($name);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getAttribute($name)
-    {
-        if ($name === 'arrayStatus') {
-            return $this->getArrayStatus();
-        }
-
-        return parent::getAttribute($name);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function isAttributeChanged($name, $identical = true)
-    {
-        if ($name === 'arrayStatus') {
-            return $this->getOldAttribute('arrayStatus') !== $this->getAttribute('arrayStatus');
-        }
-
-        return parent::isAttributeChanged($name, $identical);
-    }
-
-    /**
-     * @return array
-     */
-    public function getArrayStatus()
-    {
-        return json_decode($this->_array_status, true);
-    }
-
-    /**
-     * @param array $data
-     */
-    public function setArrayStatus(array $data)
-    {
-        $this->_array_status = json_encode($data);
     }
 
     /**
@@ -222,5 +142,30 @@ class User extends ActiveRecord
         return $query
             ->orderBy(['id' => SORT_DESC])
             ->one();
+    }
+
+    public static function findIdentity($id)
+    {
+        return static::findOne($id);
+    }
+
+    public static function findIdentityByAccessToken($token, $type = null)
+    {
+        return null;
+    }
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function getAuthKey()
+    {
+        return null;
+    }
+
+    public function validateAuthKey($authKey)
+    {
+        return false;
     }
 }

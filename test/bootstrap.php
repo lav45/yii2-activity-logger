@@ -1,22 +1,35 @@
 <?php
 
+use yii\caching\MemCache;
+use yii\console\Application;
+use yii\db\Connection;
+
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 defined('YII_ENV') or define('YII_ENV', 'test');
 
 require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 
-new \yii\console\Application([
+new Application([
     'id' => 'test',
     'basePath' => __DIR__,
     'components' => [
         'cache' => [
-            'class' => \yii\caching\MemCache::class,
+            'class' => MemCache::class,
             'useMemcached' => extension_loaded('memcached'),
         ],
         'db' => [
-            'class' => \yii\db\Connection::class,
+            'class' => Connection::class,
             'dsn' => 'sqlite::memory:',
         ]
     ]
+]);
+
+Yii::$app->runAction('migrate/up', [
+    'migrationPath' => __DIR__ . '/../migrations',
+    'interactive' => 0
+]);
+Yii::$app->runAction('migrate/up', [
+    'migrationPath' => __DIR__ . '/migrations',
+    'interactive' => 0
 ]);

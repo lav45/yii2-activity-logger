@@ -222,7 +222,10 @@ class ActiveLogBehavior extends Behavior
     public function beforeDelete()
     {
         if (false === $this->softDelete) {
-            $this->getLogger()->delete($this->getEntityName(), $this->getEntityId());
+            $this->getLogger()->delete(new LogMessageDTO([
+                'entityName' => $this->getEntityName(),
+                'entityId' => $this->getEntityId(),
+            ]));
         }
         $this->saveMessage($this->actionDelete, $this->prepareChangedAttributes(true));
     }
@@ -376,14 +379,19 @@ class ActiveLogBehavior extends Behavior
     }
 
     /**
-     * @param string|array $message
+     * @param string|array $data
      * @param string|null $action
      * @return bool
      * @since 1.7.0
      */
-    public function addLog($message, $action = null)
+    public function addLog($data, $action = null)
     {
-        return $this->getLogger()->log($this->getEntityName(), $message, $action, $this->getEntityId());
+        return $this->getLogger()->log(new LogMessageDTO([
+            'entityName' => $this->getEntityName(),
+            'entityId' => $this->getEntityId(),
+            'action' => $action,
+            'data' => $data,
+        ]));
     }
 
     /**
@@ -427,11 +435,16 @@ class ActiveLogBehavior extends Behavior
      */
     public function getEntityName()
     {
-        if (null !== $this->getEntityName) {
+        if (is_string($this->getEntityName)) {
+            return $this->getEntityName;
+        }
+        if (is_callable($this->getEntityName)) {
             return call_user_func($this->getEntityName);
         }
-        $class = StringHelper::basename(get_class($this->owner));
-        return Inflector::camel2id($class, '_');
+        $class = get_class($this->owner);
+        $class = StringHelper::basename($class);
+        $this->getEntityName = Inflector::camel2id($class, '_');
+        return $this->getEntityName;
     }
 
     /**
@@ -441,8 +454,10 @@ class ActiveLogBehavior extends Behavior
     {
         if (null === $this->getEntityId) {
             $result = $this->owner->getPrimaryKey();
-        } else {
+        } elseif (is_callable($this->getEntityId)) {
             $result = call_user_func($this->getEntityId);
+        } else {
+            $result = $this->getEntityId;
         }
         if ($this->isEmpty($result)) {
             throw new InvalidValueException('the property "entityId" can not be empty');
