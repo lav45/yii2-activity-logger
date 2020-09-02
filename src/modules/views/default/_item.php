@@ -35,7 +35,7 @@ use yii\helpers\Url;
     <span><?= Yii::$app->getFormatter()->asDatetime($model->created_at) ?></span>
 
     <?php if ($model->env): ?>
-        <small class="pull-right float-right">
+        <small style="float: right;">
             <?php $url = Url::current(['env' => $model->env, 'page' => null]); ?>
             <?= Html::a(Html::encode($model->env), $url) ?>
         </small>

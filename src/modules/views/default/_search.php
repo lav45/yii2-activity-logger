@@ -5,14 +5,7 @@
  */
 
 use yii\helpers\Html;
-use yii\bootstrap\ActiveForm;
-use dosamigos\datepicker\DatePicker;
-
-if (isset(Yii::$app->params['datePicker-language'])) {
-    $language = Yii::$app->params['datePicker-language'];
-} else {
-    $language = substr(Yii::$app->language, 0, 2);
-}
+use yii\widgets\ActiveForm;
 
 ?>
 <div class="logger-search">
@@ -25,15 +18,8 @@ if (isset(Yii::$app->params['datePicker-language'])) {
 
     <?= $form->field($model, 'entityName')->dropDownList($model->getEntityNameList(), ['prompt' => '']) ?>
 
-    <?= $form->field($model, 'date')->widget(DatePicker::class, [
-        'language' => $language,
-        'clientOptions' => [
-            'autoclose' => true,
-            'todayHighlight' => true,
-            'format' => 'dd.mm.yyyy',
-            'endDate' => date('d.m.Y'),
-            'clearBtn' => true,
-        ],
+    <?= $form->field($model, 'date')->input('date', [
+        'max' => date('Y-m-d'),
     ]) ?>
 
     <?= Html::a(Yii::t('lav45/logger', 'Reset'), ['index'], [
