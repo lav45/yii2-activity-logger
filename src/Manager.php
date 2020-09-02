@@ -33,6 +33,10 @@ class Manager extends BaseObject
      */
     public $userNameAttribute = 'username';
     /**
+     * @var string
+     */
+    public $userIdPrefix;
+    /**
      * @var string|array|StorageInterface
      */
     public $storage = 'activityLoggerStorage';
@@ -85,6 +89,9 @@ class Manager extends BaseObject
         if ($identity = $this->getUserIdentity()) {
             $message->userId = $identity->getId();
             $message->userName = $identity->{$this->userNameAttribute};
+        }
+        if ($this->userIdPrefix && $message->userId) {
+            $message->userId = $this->userIdPrefix . $message->userId;
         }
 
         try {

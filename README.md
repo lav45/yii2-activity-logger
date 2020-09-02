@@ -87,6 +87,9 @@ return [
             // Поле для отображения имени из модели пользователя
             'userNameAttribute' => 'username',
 
+            // Префикс нужен для того чтобы исключить пересечения userId если у вас в проекте авторизуется несколько разных сущностей 
+            'userIdPrefix' => 'u',
+
             // идентификатор компонента хранилища логов `\lav45\activityLogger\StorageInterface`
             'storage' => 'activityLoggerStorage',
 
