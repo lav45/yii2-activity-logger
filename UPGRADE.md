@@ -6,6 +6,9 @@
 
 Обновление 1.8.0
 ------------------
+* В классе `\lav45\activityLogger\modules\models\ActivityLogSearch` удалены методы `setEntityMap()`, `getEntityMap()`, `getEntityNameList()`
+* Доработана `src/modules/views/default/_item.php`
+* Удалён `src/modules/views/default/_search.php`
 * Доработан `\lav45\activityLogger\StorageInterface` и `\lav45\activityLogger\DbStorage`
 * Переименован и доработан класс `\lav45\activityLogger\LogMessage` => `LogMessageDTO`
 * Удалено свойство `\lav45\activityLogger\Manager::$messageClass` 

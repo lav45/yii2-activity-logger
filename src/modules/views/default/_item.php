@@ -14,22 +14,25 @@ use yii\helpers\Url;
 
 ?>
 <h4>
-    <?php
-    $name = $model->entity_name;
-    if ($model->entity_id) {
-        $name .= ':' . $model->entity_id;
-    }
-    $url = Url::current([
+    [
+    <?= Html::a(Html::encode($model->entity_name), Url::current([
         'entityName' => $model->entity_name,
-        'entityId' => $model->entity_id,
+        'entityId' => null,
         'page' => null
-    ]);
+    ])) ?>
+    <?php if($model->entity_id): ?>
+        <?= ':' . Html::a(Html::encode($model->entity_id), Url::current([
+            'entityName' => $model->entity_name,
+            'entityId' => $model->entity_id,
+            'page' => null
+        ])) ?>
+    <?php endif; ?>
+    ]
+
+    <?php
+    $url = Url::current(['userId' => $model->user_id, 'page' => null]);
     $action = isset($actionList[$model->action]) ? $actionList[$model->action] : $model->action;
     ?>
-
-    [<?= Html::a(Html::encode($name), $url) ?>]
-
-    <?php $url = Url::current(['userId' => $model->user_id, 'page' => null]); ?>
     <?= Html::a(Html::encode($model->user_name), $url) . ' ' . $action ?>
 
     <span><?= Yii::$app->getFormatter()->asDatetime($model->created_at) ?></span>

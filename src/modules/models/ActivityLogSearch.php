@@ -38,10 +38,6 @@ class ActivityLogSearch extends Model
      * @var string
      */
     public $date;
-    /**
-     * @var array
-     */
-    private $entityMap;
 
     /**
      * @inheritdoc
@@ -49,8 +45,7 @@ class ActivityLogSearch extends Model
     public function rules()
     {
         return [
-            [['entityName'], 'in', 'range' => array_keys($this->getEntityMap())],
-            [['entityId', 'userId', 'env'], 'string', 'max' => 32],
+            [['entityName', 'entityId', 'userId', 'env'], 'string', 'max' => 32],
             [['date'], 'date', 'format' => 'dd.MM.yyyy'],
         ];
     }
@@ -98,30 +93,5 @@ class ActivityLogSearch extends Model
         ]);
 
         return $dataProvider;
-    }
-
-    /**
-     * @return array
-     */
-    protected function getEntityMap()
-    {
-        return $this->entityMap;
-    }
-
-    /**
-     * @param array $value
-     */
-    public function setEntityMap($value)
-    {
-        $this->entityMap = $value;
-    }
-
-    /**
-     * @return array
-     */
-    public function getEntityNameList()
-    {
-        $data = array_keys($this->getEntityMap());
-        return array_combine($data, $data);
     }
 }
