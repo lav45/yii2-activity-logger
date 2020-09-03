@@ -81,7 +81,7 @@ class DefaultController extends Controller
             return;
         }
 
-        $messageDto = new LogMessageDTO([
+        $message = new LogMessageDTO([
             'entityName' => $this->entityName,
             'entityId' => $this->entityId,
             'userId' => $this->userId,
@@ -89,7 +89,7 @@ class DefaultController extends Controller
             'env' => $this->env,
         ]);
 
-        $count = $this->getLogger()->delete($messageDto, $old_than);
+        $count = $this->getLogger()->delete($message, $old_than);
 
         $this->stdout("Deleted {$count} record(s) from the activity log.\n");
     }

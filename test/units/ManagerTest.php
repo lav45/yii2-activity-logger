@@ -109,8 +109,8 @@ namespace lav45\activityLogger\test\units {
 
             $manager = $this->createManager();
             $manager->userNameAttribute = 'login';
-            $manager->env = 'console test 1';
 
+            $env = 'console test 1';
             $entityName = 'test';
             $data = ['test'];
             self::$time = time();
@@ -118,6 +118,7 @@ namespace lav45\activityLogger\test\units {
             $message = new LogMessageDTO([
                 'entityName' => $entityName,
                 'data' => $data,
+                'env' => $env,
             ]);
 
             $manager->log($message);
@@ -130,7 +131,7 @@ namespace lav45\activityLogger\test\units {
             self::assertEquals($storageMessage->entityName, $entityName);
             self::assertEquals($storageMessage->data, $data);
             self::assertEquals($storageMessage->createdAt, self::$time);
-            self::assertEquals($storageMessage->env, $manager->env);
+            self::assertEquals($storageMessage->env, $env);
 
             $this->removeUser();
             $this->logoutUser();
@@ -141,8 +142,8 @@ namespace lav45\activityLogger\test\units {
         public function testLogWithOutUser()
         {
             $manager = $this->createManager();
-            $manager->env = 'console test 2';
 
+            $env = 'console test 2';
             $entityName = 'test';
             $data = ['test'];
             self::$time = time();
@@ -150,6 +151,7 @@ namespace lav45\activityLogger\test\units {
             $message = new LogMessageDTO([
                 'entityName' => $entityName,
                 'data' => $data,
+                'env' => $env,
             ]);
 
             $manager->log($message);
@@ -162,7 +164,7 @@ namespace lav45\activityLogger\test\units {
             self::assertEquals($storageMessage->entityName, $entityName);
             self::assertEquals($storageMessage->data, $data);
             self::assertEquals($storageMessage->createdAt, self::$time);
-            self::assertEquals($storageMessage->env, $manager->env);
+            self::assertEquals($storageMessage->env, $env);
 
             self::$time = null;
         }

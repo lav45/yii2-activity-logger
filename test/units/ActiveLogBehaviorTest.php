@@ -8,8 +8,8 @@ use lav45\activityLogger\LogMessageDTO;
 use lav45\activityLogger\Manager;
 use lav45\activityLogger\MessageEvent;
 use lav45\activityLogger\modules\models\ActivityLog;
-use lav45\activityLogger\test\models\TestEntityName;
 use lav45\activityLogger\test\models\LogUser as User;
+use lav45\activityLogger\test\models\TestEntityName;
 use lav45\activityLogger\test\models\UserEventMethod;
 use PHPUnit\Framework\TestCase;
 use Yii;
@@ -48,14 +48,22 @@ class ActiveLogBehaviorTest extends TestCase
 
     public function tearDown()
     {
-        // To ensure that during the test, the base does not increase in size
-        $command = Yii::$app->getDb()->createCommand();
-        $command->truncateTable(User::tableName())->execute();
-        $command->truncateTable(ActivityLog::tableName())->execute();
+        User::deleteAll();
+        ActivityLog::deleteAll();
     }
 
     public function testCreateModelWithDefaultOptions()
     {
+        $ent = 'console';
+        $userId = 'console';
+        $userName = 'Droid R2-D2';
+
+        Yii::$container->set(LogMessageDTO::class, [
+            'env' => $ent,
+            'userId' => $userId,
+            'userName' => $userName,
+        ]);
+
         $model = new User();
         self::assertTrue($model->save());
 
@@ -73,7 +81,13 @@ class ActiveLogBehaviorTest extends TestCase
             ]
         ];
 
-        self::assertEquals($expected, $model->getLastActivityLog()->getData());
+        $activityLog = $model->getLastActivityLog();
+
+        self::assertEquals($expected, $activityLog->getData());
+        self::assertEquals($ent, $activityLog->env);
+        self::assertEquals($userId, $activityLog->user_id);
+        self::assertEquals($userName, $activityLog->user_name);
+        self::assertEquals(ActivityLog::ACTION_CREATE, $activityLog->action);
     }
 
     public function testIsEmpty()
@@ -814,8 +828,10 @@ class ActiveLogBehaviorTest extends TestCase
             'event' => 'save message',
         ];
 
-        self::assertNotNull($model->getLastActivityLog());
-        self::assertEquals($expected, $model->getLastActivityLog()->getData());
+        $activityLog = $model->getLastActivityLog();
+
+        self::assertNotNull($activityLog);
+        self::assertEquals($expected, $activityLog->getData());
 
         // Update
         $model->login = 'buster2';
@@ -881,8 +897,10 @@ class ActiveLogBehaviorTest extends TestCase
         };
 
         self::assertTrue($model->save());
-        self::assertNotNull($model->getLastActivityLog());
-        self::assertEquals($expected, $model->getLastActivityLog()->getData());
+
+        $activityLog = $model->getLastActivityLog();
+        self::assertNotNull($activityLog);
+        self::assertEquals($expected, $activityLog->getData());
 
         // Update
         $model->login = 'buster2';

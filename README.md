@@ -92,9 +92,6 @@ return [
 
             // идентификатор компонента хранилища логов `\lav45\activityLogger\StorageInterface`
             'storage' => 'activityLoggerStorage',
-
-            // Окружение из которого проиводило действие
-            'env' => 'console',
         ],
 
         /**
@@ -113,8 +110,19 @@ return [
 ];
 ```
 
+Значения по умолчанию для всех лог записей можна задать через `Yii::$container`
+Для удобства этот код можно разместить в файле `bootstrap.php`
 
-### Создаем ссылки для просмотра записанных логов
+```php
+Yii::$container->set(\lav45\activityLogger\LogMessageDTO::class, [
+    'env' => 'console', // Окружение из которого проиводило действие
+    'userId' => 'console',
+    'userName' => 'Droid R2-D2',
+]);
+```
+
+
+### Ссылки для просмотра логов
 
 ```php
 // На этой странице можно просмотреть все логи
@@ -328,26 +336,28 @@ return [
 ### Добавление логов
 
 Пригодится в тех случаях когда в процессе работы приложения не используются ActiveRecord модели.
-Например при отправке отчетов, скачивании файлов, работа с внешним API, и т.д
+Например при отправке отчетов, скачивании файлов, работа с внешним API, логирование процесса работы консольного контроллера и т.д
 
 ```php
+use lav45\activityLogger\LogMessageDTO;
+
+$message = Yii::createObject([
+    'class' => LogMessageDTO::class,
+
     // имя сущности
-    $entityName = 'user';
+    'entityName' => 'user',
+
     // id сущности с которой производится действие
-    $entityId = 10;
+    'entityId' => 10,
+    
+    // Действие которое сейчас выполняется
+    'action' => 'download',
+
     // текст с описанием действия
-    $message = 'export data';
+    'data' => ['export data'],
+]);
 
-    $logger = Yii::$app->activityLogger;
-
-    // Сохранение текстового сообщения слязанного с $entityName
-    $logger->log($entityName, $message);
-
-    // Сохранение текстового сообщения слязанного с $entityName при выполнении действия "download"
-    $logger->log($entityName, $message, 'download');
-
-    // Сохранение текстового сообщения слязанного с $entityName и $entityId при выполнении действия "send mail"
-    $logger->log($entityName, $message, 'send mail', $entityId);
+Yii::$app->activityLogger->log($message);
 ```
 
 

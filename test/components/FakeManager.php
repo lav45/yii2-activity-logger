@@ -11,8 +11,8 @@ use lav45\activityLogger\Manager;
  */
 class FakeManager extends Manager
 {
-    /** @var string[] */
-    private $logs = [];
+    /** @var LogMessageDTO */
+    public $message;
 
     /**
      * @param LogMessageDTO $message
@@ -20,22 +20,7 @@ class FakeManager extends Manager
      */
     public function log(LogMessageDTO $message)
     {
-        $this->logs[] = [
-            'entityName' => $message->entityName,
-            'entityId' => $message->entityId,
-            'message' => $message->data,
-            'action' => $message->action,
-        ];
+        $this->message = $message;
         return true;
-    }
-
-    /**
-     * @return array
-     */
-    public function removeLogs()
-    {
-        $data = $this->logs;
-        $this->logs = [];
-        return $data;
     }
 }

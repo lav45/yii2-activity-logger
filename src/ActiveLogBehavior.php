@@ -9,6 +9,7 @@
 namespace lav45\activityLogger;
 
 use lav45\activityLogger\modules\models\ActivityLog;
+use Yii;
 use yii\base\Behavior;
 use yii\base\InvalidValueException;
 use yii\db\ActiveRecord;
@@ -386,12 +387,15 @@ class ActiveLogBehavior extends Behavior
      */
     public function addLog($data, $action = null)
     {
-        return $this->getLogger()->log(new LogMessageDTO([
+        $message = Yii::createObject([
+            'class' => LogMessageDTO::class,
             'entityName' => $this->getEntityName(),
             'entityId' => $this->getEntityId(),
             'action' => $action,
             'data' => $data,
-        ]));
+        ]);
+
+        return $this->getLogger()->log($message);
     }
 
     /**

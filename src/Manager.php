@@ -44,10 +44,6 @@ class Manager extends BaseObject
      * @var bool
      */
     public $debug = YII_DEBUG;
-    /**
-     * @var string
-     */
-    public $env;
 
     /**
      * @return \yii\web\IdentityInterface|null
@@ -84,14 +80,10 @@ class Manager extends BaseObject
         }
 
         $message->createdAt = time();
-        $message->env = $this->env;
 
         if ($identity = $this->getUserIdentity()) {
-            $message->userId = $identity->getId();
+            $message->userId = $this->userIdPrefix . $identity->getId();
             $message->userName = $identity->{$this->userNameAttribute};
-        }
-        if ($this->userIdPrefix && $message->userId) {
-            $message->userId = $this->userIdPrefix . $message->userId;
         }
 
         try {

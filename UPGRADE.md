@@ -6,11 +6,18 @@
 
 Обновление 1.8.0
 ------------------
-* Удалено свойство `\lav45\activityLogger\Manager::$messageClass`
-* Добавлено свойство `\lav45\activityLogger\Manager::$env` с помощью которого можно указать окружение в котором работает компанент
 * Доработан `\lav45\activityLogger\StorageInterface` и `\lav45\activityLogger\DbStorage`
 * Переименован и доработан класс `\lav45\activityLogger\LogMessage` => `LogMessageDTO`
+* Удалено свойство `\lav45\activityLogger\Manager::$messageClass` 
 
+Настройки из свойство `Manager::$messageClass` можно передать через `Yii::$container`
+```php
+Yii::$container->set(\lav45\activityLogger\LogMessageDTO::class, [
+    'env' => 'console', // Окружение из которого проиводило действие
+    'userId' => 'console',
+    'userName' => 'Droid R2-D2',
+]);
+```
 
 Обновление 1.7.0
 ------------------

@@ -3,8 +3,10 @@
 namespace lav45\activityLogger\test\units;
 
 use lav45\activityLogger\LogCollection;
+use lav45\activityLogger\LogMessageDTO;
 use lav45\activityLogger\test\components\FakeManager;
 use PHPUnit\Framework\TestCase;
+use Yii;
 
 /**
  * Class LogCollectionTest
@@ -15,7 +17,8 @@ class LogCollectionTest extends TestCase
     public function testSetEntityId()
     {
         $logger = new FakeManager();
-        $collection = new LogCollection($logger, 'test');
+        $entityName = 'test';
+        $collection = new LogCollection($logger, $entityName);
 
         $entityId = 10;
         self::assertEquals($collection, $collection->setEntityId($entityId));
@@ -23,9 +26,8 @@ class LogCollectionTest extends TestCase
         $collection->addMessage('test message');
         $collection->push();
 
-        $logs = $logger->removeLogs();
-
-        self::assertEquals($entityId, $logs[0]['entityId']);
+        self::assertEquals($entityId, $logger->message->entityId);
+        self::assertEquals($entityName, $logger->message->entityName);
     }
 
     public function testSetAction()
@@ -39,15 +41,23 @@ class LogCollectionTest extends TestCase
         $collection->addMessage('Updated: 100500');
         $collection->push();
 
-        $logs = $logger->removeLogs();
-
-        self::assertEquals($action, $logs[0]['action']);
+        self::assertEquals($action, $logger->message->action);
     }
 
     public function testAddAndPushMessage()
     {
         $logger = new FakeManager();
         $collection = new LogCollection($logger, 'test');
+
+        $ent = 'console';
+        $userId = 'console';
+        $userName = 'Droid R2-D2';
+
+        Yii::$container->set(LogMessageDTO::class, [
+            'env' => $ent,
+            'userId' => $userId,
+            'userName' => $userName,
+        ]);
 
         $messages = [
             'Created: 100',
@@ -62,8 +72,9 @@ class LogCollectionTest extends TestCase
         self::assertTrue($collection->push());
         self::assertFalse($collection->push());
 
-        $logs = $logger->removeLogs();
-
-        self::assertEquals($messages, $logs[0]['message']);
+        self::assertEquals($ent, $logger->message->env);
+        self::assertEquals($userId, $logger->message->userId);
+        self::assertEquals($userName, $logger->message->userName);
+        self::assertEquals($messages, $logger->message->data);
     }
 }

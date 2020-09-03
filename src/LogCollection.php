@@ -8,6 +8,8 @@
 
 namespace lav45\activityLogger;
 
+use Yii;
+
 /**
  * Class LogCollection
  * @package lav45\activityLogger
@@ -94,11 +96,14 @@ class LogCollection
             return false;
         }
 
-        return $this->logger->log(new LogMessageDTO([
+        $message = Yii::createObject([
+            'class' => LogMessageDTO::class,
             'entityName' => $this->entityName,
             'entityId' => $this->entityId,
             'action' => $this->action,
             'data' => $messages,
-        ]));
+        ]);
+
+        return $this->logger->log($message);
     }
 }
