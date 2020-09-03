@@ -33,6 +33,10 @@ CSS
 
     <?php Pjax::begin(); ?>
 
+    <div style="text-align: right;">
+        <?= Html::a(Yii::t('lav45/logger', 'Reset'), ['index']) ?>
+    </div>
+
     <?= ListView::widget([
         'dataProvider' => $dataProvider,
         'itemView' => '_item',
