@@ -11,7 +11,9 @@ use lav45\activityLogger\Manager;
  */
 class FakeManager extends Manager
 {
-    /** @var LogMessageDTO */
+    /**
+     * @var LogMessageDTO
+     */
     public $message;
 
     /**

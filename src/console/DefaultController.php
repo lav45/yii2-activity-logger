@@ -21,15 +21,25 @@ class DefaultController extends Controller
 {
     use ManagerTrait;
 
-    /** @var string alias name target object */
+    /**
+     * @var string alias name target object
+     */
     public $entityName;
-    /** @var string id target object */
+    /**
+     * @var string id target object
+     */
     public $entityId;
-    /** @var string id user who performed the action */
+    /**
+     * @var string id user who performed the action
+     */
     public $userId;
-    /** @var string the action performed on the object */
+    /**
+     * @var string the action performed on the object
+     */
     public $logAction;
-    /** @var string environment, which produced the effect */
+    /**
+     * @var string environment, which produced the effect
+     */
     public $env;
     /**
      * @var string delete old than days

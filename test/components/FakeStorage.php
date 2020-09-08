@@ -11,9 +11,13 @@ use lav45\activityLogger\StorageInterface;
  */
 class FakeStorage implements StorageInterface
 {
-    /** @var LogMessageDTO */
+    /**
+     * @var LogMessageDTO
+     */
     public $message;
-    /** @var int */
+    /**
+     * @var int
+     */
     public $old_than;
 
     public function save(LogMessageDTO $message)
