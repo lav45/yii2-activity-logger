@@ -8,7 +8,6 @@
 
 namespace lav45\activityLogger;
 
-use lav45\activityLogger\modules\models\ActivityLog;
 use Yii;
 use yii\base\Behavior;
 use yii\base\InvalidValueException;
@@ -129,21 +128,6 @@ class ActiveLogBehavior extends Behavior
      * the callback function can return a string or array
      */
     public $getEntityId;
-    /**
-     * @var string
-     * @since 1.7.0
-     */
-    public $actionCreate = ActivityLog::ACTION_CREATE;
-    /**
-     * @var string
-     * @since 1.7.0
-     */
-    public $actionUpdate = ActivityLog::ACTION_UPDATE;
-    /**
-     * @var string
-     * @since 1.7.0
-     */
-    public $actionDelete = ActivityLog::ACTION_DELETE;
 
     /**
      * @var array [
@@ -209,7 +193,7 @@ class ActiveLogBehavior extends Behavior
     public function beforeSave()
     {
         $this->changedAttributes = $this->prepareChangedAttributes();
-        $this->action = $this->owner->getIsNewRecord() ? $this->actionCreate : $this->actionUpdate;
+        $this->action = $this->owner->getIsNewRecord() ? 'created' : 'updated';
     }
 
     public function afterSave()
@@ -228,7 +212,7 @@ class ActiveLogBehavior extends Behavior
                 'entityId' => $this->getEntityId(),
             ]));
         }
-        $this->saveMessage($this->actionDelete, $this->prepareChangedAttributes(true));
+        $this->saveMessage('deleted', $this->prepareChangedAttributes(true));
     }
 
     /**

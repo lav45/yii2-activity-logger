@@ -87,7 +87,7 @@ class ActiveLogBehaviorTest extends TestCase
         self::assertEquals($ent, $activityLog->env);
         self::assertEquals($userId, $activityLog->user_id);
         self::assertEquals($userName, $activityLog->user_name);
-        self::assertEquals(ActivityLog::ACTION_CREATE, $activityLog->action);
+        self::assertEquals('created', $activityLog->action);
     }
 
     public function testIsEmpty()
@@ -119,7 +119,7 @@ class ActiveLogBehaviorTest extends TestCase
         $logData = $model->getLastActivityLog();
 
         self::assertTrue($logData->created_at > 0);
-        self::assertEquals(ActivityLog::ACTION_CREATE, $logData->action);
+        self::assertEquals('created', $logData->action);
         self::assertEquals('user', $logData->entity_name);
         self::assertEquals($model->getPrimaryKey(), $logData->entity_id);
 
@@ -188,7 +188,7 @@ class ActiveLogBehaviorTest extends TestCase
         $model->setAttributes($values);
         self::assertTrue($model->save());
         $logModel = $model->getLastActivityLog();
-        self::assertEquals(ActivityLog::ACTION_UPDATE, $logModel->action);
+        self::assertEquals('updated', $logModel->action);
         self::assertEquals($expected, $logModel->getData());
     }
 
@@ -397,7 +397,7 @@ class ActiveLogBehaviorTest extends TestCase
             ]
         ];
         self::assertEquals($expected, $logModels[0]->getData());
-        self::assertEquals(ActivityLog::ACTION_DELETE, $logModels[0]->action);
+        self::assertEquals('deleted', $logModels[0]->action);
     }
 
     public function testSoftDelete()
@@ -460,7 +460,7 @@ class ActiveLogBehaviorTest extends TestCase
             ]
         ];
         self::assertEquals($expected, $logModels[0]->getData());
-        self::assertEquals(ActivityLog::ACTION_CREATE, $logModels[0]->action);
+        self::assertEquals('created', $logModels[0]->action);
 
         $expected = [
             'status' => [
@@ -525,7 +525,7 @@ class ActiveLogBehaviorTest extends TestCase
             ]
         ];
         self::assertEquals($expected, $logModels[1]->getData());
-        self::assertEquals(ActivityLog::ACTION_DELETE, $logModels[1]->action);
+        self::assertEquals('deleted', $logModels[1]->action);
     }
 
     public function testLogEmptyAttributeAfterDeleteModel()
