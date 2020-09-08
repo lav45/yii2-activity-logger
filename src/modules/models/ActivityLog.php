@@ -28,22 +28,6 @@ use yii\db\ActiveRecord;
 class ActivityLog extends ActiveRecord
 {
     /**
-     * The action that will be recorded when the ActiveRecord::EVENT_AFTER_INSERT event occurs
-     * @since 1.7.0
-     */
-    const ACTION_CREATE = 'create';
-    /**
-     * The action that will be recorded when the ActiveRecord::EVENT_AFTER_UPDATE event occurs
-     * @since 1.7.0
-     */
-    const ACTION_UPDATE = 'update';
-    /**
-     * The action that will be recorded when the ActiveRecord::EVENT_BEFORE_DELETE event occurs
-     * @since 1.7.0
-     */
-    const ACTION_DELETE = 'delete';
-
-    /**
      * @var string
      * @since 1.7.0
      */
@@ -88,19 +72,6 @@ class ActivityLog extends ActiveRecord
             'action' => Yii::t('lav45/logger', 'Action'),
             'env' => Yii::t('lav45/logger', 'Environment'),
             'data' => Yii::t('lav45/logger', 'Data'),
-        ];
-    }
-
-    /**
-     * @return array
-     * @since 1.7.0
-     */
-    public function getActionList()
-    {
-        return [
-            static::ACTION_CREATE => Yii::t('lav45/logger', 'created'),
-            static::ACTION_UPDATE => Yii::t('lav45/logger', 'updated'),
-            static::ACTION_DELETE => Yii::t('lav45/logger', 'removed'),
         ];
     }
 

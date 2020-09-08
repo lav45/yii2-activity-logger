@@ -8,7 +8,6 @@
 
 namespace lav45\activityLogger\modules\models;
 
-use Yii;
 use yii\base\BaseObject;
 use yii\di\Instance;
 use yii\helpers\Html;

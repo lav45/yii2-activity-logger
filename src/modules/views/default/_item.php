@@ -7,8 +7,6 @@
  * @var $widget yii\widgets\ListView
  */
 
-$actionList = $model->getActionList();
-
 use yii\helpers\Html;
 use yii\helpers\Url;
 
@@ -24,7 +22,7 @@ use yii\helpers\Url;
         'entityId' => $model->entity_id,
         'page' => null
     ]);
-    $action = isset($actionList[$model->action]) ? $actionList[$model->action] : $model->action;
+    $action = Yii::t('lav45/logger', $model->action);
     ?>
 
     [<?= Html::a(Html::encode($name), $url) ?>]

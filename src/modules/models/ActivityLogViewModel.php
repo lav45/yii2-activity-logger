@@ -16,11 +16,17 @@ use Yii;
  */
 class ActivityLogViewModel extends ActivityLog
 {
-    /** @var DataModel|string|array */
+    /**
+     * @var DataModel|string|array
+     */
     public $dataModel = DataModel::class;
-    /** @var array [ entity_name => Entity::class ] */
+    /**
+     * @var array [ entity_name => Entity::class ]
+     */
     public $entityMap = [];
-    /** @var array */
+    /**
+     * @var array
+     */
     private $entityModel = [];
 
     /**
