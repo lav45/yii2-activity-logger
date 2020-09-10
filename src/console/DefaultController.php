@@ -101,7 +101,11 @@ class DefaultController extends Controller
 
         $count = $this->getLogger()->delete($message, $old_than);
 
-        $this->stdout("Deleted {$count} record(s) from the activity log.\n");
+        if ($count) {
+            $this->stdout("Success delete record from the activity log.\n");
+        }
+
+        $this->stdout("Error when delete records from the activity log.\n");
     }
 
     /**
