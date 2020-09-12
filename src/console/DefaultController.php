@@ -99,13 +99,11 @@ class DefaultController extends Controller
             'env' => $this->env,
         ]);
 
-        $count = $this->getLogger()->delete($message, $old_than);
-
-        if ($count) {
-            $this->stdout("Success delete record from the activity log.\n");
+        if ($this->getLogger()->delete($message, $old_than)) {
+            $this->stdout("Successful clearing the logs.\n");
+        } else {
+            $this->stdout("Error while cleaning the logs.\n");
         }
-
-        $this->stdout("Error when delete records from the activity log.\n");
     }
 
     /**

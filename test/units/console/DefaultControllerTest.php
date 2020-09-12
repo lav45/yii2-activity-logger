@@ -106,9 +106,13 @@ class DefaultControllerTest extends TestCase
         $controller = $this->createController();
         $manager = $controller->getLogger();
 
-        $manager->result = 10;
+        $manager->result = true;
         $controller->runAction('clean');
-        self::assertEquals("Deleted {$manager->result} record(s) from the activity log.\n", $controller->stdout);
+        self::assertEquals("Successful clearing the logs.\n", $controller->stdout);
+
+        $manager->result = false;
+        $controller->runAction('clean');
+        self::assertEquals("Error while cleaning the logs.\n", $controller->stdout);
 
         $manager->result = false;
         $controller->runAction('clean', ['old-than' => '12']);
