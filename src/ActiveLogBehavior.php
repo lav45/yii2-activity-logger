@@ -306,7 +306,7 @@ class ActiveLogBehavior extends Behavior
         if (is_array($old_id)) {
             $old['value'] = array_intersect_key($list, array_flip($old_id));
         } else {
-            $old['value'] = ArrayHelper::getValue($this->owner, [$listName, $old_id]);
+            $old['value'] = ($old_id === null) ? null: ArrayHelper::getValue($this->owner, [$listName, $old_id]);
         }
         if (is_array($new_id)) {
             $new['value'] = array_intersect_key($list, array_flip($new_id));
@@ -343,7 +343,7 @@ class ActiveLogBehavior extends Behavior
             ->limit(count($targetId))
             ->all();
 
-        $old['value'] = ArrayHelper::getValue($relationModels, [$old_id, $attribute]);
+        $old['value'] = ($old_id === null) ? null: ArrayHelper::getValue($relationModels, [$old_id, $attribute]);
         $new['value'] = ArrayHelper::getValue($relationModels, [$new_id, $attribute]);
 
         return [
