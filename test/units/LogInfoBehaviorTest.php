@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
  */
 class LogInfoBehaviorTest extends TestCase
 {
-    public function testEmptyTemplate()
+    public function testEmptyTemplate(): void
     {
         $model = new LogInfoModel();
         $event = new MessageEvent();
@@ -24,7 +24,7 @@ class LogInfoBehaviorTest extends TestCase
         self::assertEquals($expected, $event->logData);
     }
 
-    public function testStringTemplate()
+    public function testStringTemplate(): void
     {
         $model = new LogInfoModel();
         /** @var LogInfoBehavior $behavior */
@@ -39,12 +39,12 @@ class LogInfoBehaviorTest extends TestCase
         self::assertEquals($expected, $event->logData);
     }
 
-    public function testClosureTemplate()
+    public function testClosureTemplate(): void
     {
         $model = new LogInfoModel();
         /** @var LogInfoBehavior $behavior */
         $behavior = $model->getBehavior('logInfo');
-        $behavior->template = function () use ($model) {
+        $behavior->template = static function () use ($model) {
             return "{$model->username} ({$model->profile['email']})";
         };
 
@@ -56,7 +56,7 @@ class LogInfoBehaviorTest extends TestCase
         self::assertEquals($expected, $event->logData);
     }
 
-    public function testAppendPrependLog()
+    public function testAppendPrependLog(): void
     {
         $model = new LogInfoModel();
         /** @var LogInfoBehavior $behavior */
@@ -89,21 +89,16 @@ class LogInfoBehaviorTest extends TestCase
  */
 class LogInfoModel extends Model
 {
-    /**
-     * @var string
-     */
-    public $username = 'David';
+    public string $username = 'David';
 
-    /**
-     * @return array
-     */
-    public function getProfile() {
+    public function getProfile(): array
+    {
         return [
             'email' => 'david@gmail.com'
         ];
     }
 
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             'logInfo' => [

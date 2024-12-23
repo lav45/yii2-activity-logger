@@ -1,27 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<phpunit
-    bootstrap="test/bootstrap.php"
-    backupGlobals="false"
-    backupStaticAttributes="false"
-    colors="true"
-    verbose="true"
-    convertErrorsToExceptions="true"
-    convertNoticesToExceptions="true"
-    convertWarningsToExceptions="true"
-    processIsolation="false"
-    stopOnFailure="false">
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.6/phpunit.xsd"
+     bootstrap="test/bootstrap.php"
+     cacheResultFile=".cache/.phpunit.result"
+     colors="true"
+     verbose="true"
+>
     <testsuites>
         <testsuite name="Target Test Suite">
             <directory>test/units</directory>
         </testsuite>
     </testsuites>
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">src</directory>
-            <exclude>
-                <directory suffix=".php">src/modules</directory>
-                <directory suffix="Interface.php">src</directory>
-            </exclude>
-        </whitelist>
-    </filter>
 </phpunit>

@@ -18,13 +18,11 @@
 [![License](https://poser.pugx.org/lav45/yii2-activity-logger/license)](https://github.com/lav45/yii2-activity-logger/blob/master/LICENSE.md)
 [![Total Downloads](https://poser.pugx.org/lav45/yii2-activity-logger/downloads)](https://packagist.org/packages/lav45/yii2-activity-logger)
 
-
 ## Установка расширения
 
 ```bash
-~$ composer require --prefer-dist lav45/yii2-activity-logger
+composer require --prefer-dist lav45/yii2-activity-logger
 ```
-
 
 ## Миграции
 
@@ -48,9 +46,8 @@ return [
 Запускаем миграции
 
 ```bash
-~$ yii migrate
+yii migrate
 ```
-
 
 ## Подключение
 
@@ -68,8 +65,8 @@ return [
             // Список моделей которые логировались
             'entityMap' => [
                 'news' => 'common\models\News',
-            ],
-        ]
+            ],
+        ]
     ],
     'components' => [
         /**
@@ -100,7 +97,7 @@ return [
         'activityLoggerStorage' => [
             'class' => \lav45\activityLogger\DbStorage::class,
 
-            // Имя таблицы в которой будут хранится логи
+            // Имя таблицы в которой будут храниться логи
             'tableName' => '{{%activity_log}}',
 
             // идентификатор компонента `\yii\db\Connection`
@@ -110,17 +107,16 @@ return [
 ];
 ```
 
-Значения по умолчанию для всех лог записей можна задать через `Yii::$container`
+Значения по умолчанию для всех лог записей можно задать через `Yii::$container`
 Для удобства этот код можно разместить в файле `bootstrap.php`
 
 ```php
 Yii::$container->set(\lav45\activityLogger\LogMessageDTO::class, [
-    'env' => 'console', // Окружение из которого проиводило действие
+    'env' => 'console', // Окружение из которого производилось действие
     'userId' => 'console',
     'userName' => 'Droid R2-D2',
 ]);
 ```
-
 
 ### Ссылки для просмотра логов
 
@@ -137,7 +133,6 @@ Url::toRoute(['/logger/default/index', 'entityName' => 'news']);
 // На этой странице можно просмотреть журналы действий для всех объектов "news" с "id" => 1
 Url::toRoute(['/logger/default/index', 'entityName' => 'news', 'entityId' => 1]);
 ```
-
 
 ## Пример использования для ActiveRecord модели
 
@@ -222,20 +217,19 @@ class News extends ActiveRecord
             'published_at' => 'datetime',
 
             // Можно использовать свою функцию обратного вызова 
-            'is_published' => function($value) {
+            'is_published' => static function($value) {
                 return Yii::$app->formatter->asBoolean($value);
             },
 
             // Если нужно вывести имени картинки и ссылку на неё
-            'image' => function($value) {
+            'image' => static function($value) {
                 if (empty($value)) { return null; }
-
                 $url = "https://cdn.site.com/img/{$value}";
                 return Html::a($value, $url, ['target' => '_blank']);
             }
         ];
     }
-    
+
     /**
      * В процессе работы `\lav45\activityLogger\ActiveLogBehavior` вызывает событие
      * [[ActiveLogBehavior::EVENT_BEFORE_SAVE_MESSAGE]] - перед записью логов
@@ -244,20 +238,18 @@ class News extends ActiveRecord
     public function init()
     {
         parent::init();
-        
+
         // Регистрируем обработчики событий
-        $this->on(ActiveLogBehavior::EVENT_BEFORE_SAVE_MESSAGE, 
-            function (\lav45\activityLogger\MessageEvent $event) {
-                // Вы можете добавить в список логов свою информацию
-                $event->logData[] = 'Reset password';
-            });
-        
-        $this->on(ActiveLogBehavior::EVENT_AFTER_SAVE_MESSAGE, 
-            function (\yii\base\Event $event) {
-                // Какие-то действия после записи логов
-            });
+        $this->on(ActiveLogBehavior::EVENT_BEFORE_SAVE_MESSAGE, static function (\lav45\activityLogger\MessageEvent $event) {
+            // Вы можете добавить в список логов свою информацию
+            $event->logData[] = 'Reset password';
+        });
+
+        $this->on(ActiveLogBehavior::EVENT_AFTER_SAVE_MESSAGE, static function (\yii\base\Event $event) {
+            // Какие-то действия после записи логов
+        });
     }
-    
+
     /*
      * Вместо регистрации события вы можете создать одноименный метод, который будет вызываться вместо события
      */
@@ -287,7 +279,6 @@ class News extends ActiveRecord
 }
 ```
 
-
 ## Добавим консольный контроллер для очистки логов
 
 Это необязательное расширение. Если вы не планируете удалять устаревшие логи, можете пропустить этот пункт.
@@ -305,10 +296,9 @@ return [
 Если необходимо удалить старые логи, используйте консольный контроллер:
 
 ```bash
-~$ yii logger/clean --old-than=1y
+yii logger/clean --old-than=1y
 # => Deleted 5 record(s) from the activity log.
 ```
-
 
 ### Параметры командной строки
 
@@ -324,19 +314,19 @@ return [
 
 * `--old-than, -o`: string. Удаление старых данных
 
-    Допустимые значения: 
+  Допустимые значения:
     - 1h - старше 1 часа
-    - 2d - старше 2 дней
+    - 2d - старше 2-х дней
     - 3m - старше 3-х месяцев
-    - 4y - старше 4 лет.
-
+    - 4y - старше 4 лет
 
 ## Ручное использование компонента
 
 ### Добавление логов
 
 Пригодится в тех случаях, когда в процессе работы приложения не используются ActiveRecord модели.
-Например, при отправке отчетов, скачивании файлов, работе с внешним API, логировании процесса работы консольного контроллера и т.д
+Например, при отправке отчетов, скачивании файлов, работе с внешним API, логировании процесса работы консольного
+контроллера и т.д
 
 ```php
 use lav45\activityLogger\LogMessageDTO;
@@ -360,7 +350,6 @@ $message = Yii::createObject([
 Yii::$app->activityLogger->log($message);
 ```
 
-
 Когда в логах нужно оставить одну запись со списком выполненных действий, можно воспользоваться `LogCollection`
 
 ```php
@@ -377,13 +366,12 @@ $collection->addMessage('Deleted: 5');
 
 /**
  * Сохраняем все собранные сообщения как одну запись в логах
- * Посли записи список логов будет очищен
+ * После записи список логов будет очищен
  */
 $collection->push(); // => true
 ```
 
-
-# Тестирование
+## Тестирование
 
 ```
 ~$ ./build.sh
@@ -391,6 +379,15 @@ $collection->push(); // => true
 ~$ ./composer phpunit
 ```
 
-# Лицензии
+## Поддерживаемые версии
+
+**Активно поддерживается только последняя версия.**
+
+| Version | PHP Versions | Status      |
+|---------|--------------|-------------|
+| `2.x`   | `>=7.4`      | Active      |
+| `1.x`   | `>=5.5`      | End of life |
+
+## Лицензии
 
 Для получения информации о лицензии проверьте файл [LICENSE.md](LICENSE.md).

@@ -10,7 +10,7 @@ RUN apk add --no-cache \
     php7-mbstring \
     php7-opcache \
     php7-dom \
-    php7-xml \
+    php7-xml php7-xmlwriter \
     php7-tokenizer \
     php7-pecl-memcached \
     php7-sqlite3 sqlite \

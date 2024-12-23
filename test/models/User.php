@@ -30,9 +30,9 @@ use yii\web\IdentityInterface;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
-    const STATUS_ACTIVE = 10;
-    const STATUS_DISABLED = 1;
-    const STATUS_DRAFT = 2;
+    public const STATUS_ACTIVE = 10;
+    public const STATUS_DISABLED = 1;
+    public const STATUS_DRAFT = 2;
 
     /**
      * @inheritdoc
@@ -139,6 +139,7 @@ class User extends ActiveRecord implements IdentityInterface
         $query = $this->getActivityLogs();
         $query->multiple = false;
 
+        /** @var null|ActivityLog */
         return $query
             ->orderBy(['id' => SORT_DESC])
             ->one();

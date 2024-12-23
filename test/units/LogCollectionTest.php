@@ -14,7 +14,7 @@ use Yii;
  */
 class LogCollectionTest extends TestCase
 {
-    public function testSetEntityId()
+    public function testSetEntityId(): void
     {
         $logger = new FakeManager();
         $entityName = 'test';
@@ -30,7 +30,7 @@ class LogCollectionTest extends TestCase
         self::assertEquals($entityName, $logger->message->entityName);
     }
 
-    public function testSetAction()
+    public function testSetAction(): void
     {
         $logger = new FakeManager();
         $collection = new LogCollection($logger, 'test');
@@ -44,7 +44,7 @@ class LogCollectionTest extends TestCase
         self::assertEquals($action, $logger->message->action);
     }
 
-    public function testAddAndPushMessage()
+    public function testAddAndPushMessage(): void
     {
         $logger = new FakeManager();
         $collection = new LogCollection($logger, 'test');

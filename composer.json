@@ -1,5 +1,6 @@
 {
     "name": "lav45/yii2-activity-logger",
+    "version": "2.0.0",
     "description": "Tools to store user activity log for Yii2",
     "keywords": ["yii2", "extension", "log", "logger", "activity logger"],
     "homepage": "https://github.com/lav45/yii2-activity-logger",
@@ -20,13 +21,15 @@
         }
     ],
     "require": {
-        "php": ">=5.5.0",
-        "yiisoft/yii2": ">=2.0.49"
+        "php": ">=7.4.0",
+        "yiisoft/yii2": "2.0.*"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest",
-        "phpunit/phpunit": "4.8 - 7.5",
-        "ext-sqlite3": "*"
+        "phpunit/phpunit": "9.*",
+        "ext-sqlite3": "*",
+        "ext-pdo": "*",
+        "ext-pdo_sqlite": "*"
     },
     "scripts": {
         "phpunit": "vendor/bin/phpunit"
@@ -43,7 +46,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.8.x-dev"
+            "dev-master": "2.0.x-dev"
         }
     },
     "config": {

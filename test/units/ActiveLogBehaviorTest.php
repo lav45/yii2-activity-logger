@@ -14,6 +14,7 @@ use lav45\activityLogger\test\models\UserEventMethod;
 use PHPUnit\Framework\TestCase;
 use Yii;
 use yii\base\Event;
+use yii\base\InvalidValueException;
 
 /**
  * Class ActiveLogBehaviorTest
@@ -21,7 +22,7 @@ use yii\base\Event;
  */
 class ActiveLogBehaviorTest extends TestCase
 {
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         Yii::$app->set('activityLogger', [
             'class' => Manager::class,
@@ -34,7 +35,7 @@ class ActiveLogBehaviorTest extends TestCase
     /**
      * @return User
      */
-    private function createModel()
+    private function createModel(): User
     {
         $model = new User();
         $model->login = 'buster';
@@ -46,13 +47,13 @@ class ActiveLogBehaviorTest extends TestCase
         return $model;
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         User::deleteAll();
         ActivityLog::deleteAll();
     }
 
-    public function testCreateModelWithDefaultOptions()
+    public function testCreateModelWithDefaultOptions(): void
     {
         $ent = 'console';
         $userId = 'console';
@@ -90,12 +91,12 @@ class ActiveLogBehaviorTest extends TestCase
         self::assertEquals('created', $activityLog->action);
     }
 
-    public function testIsEmpty()
+    public function testIsEmpty(): void
     {
         $model = new User();
         /** @var ActiveLogBehavior $logger */
         $logger = $model->getBehavior('logger');
-        $logger->isEmpty = function ($value) {
+        $logger->isEmpty = static function ($value) {
             return empty($value);
         };
 
@@ -113,7 +114,7 @@ class ActiveLogBehaviorTest extends TestCase
         self::assertEquals($expected, $model->getLastActivityLog()->getData());
     }
 
-    public function testCreateModelWithCustomOptions()
+    public function testCreateModelWithCustomOptions(): void
     {
         $model = $this->createModel();
         $logData = $model->getLastActivityLog();
@@ -166,7 +167,7 @@ class ActiveLogBehaviorTest extends TestCase
         self::assertEquals($expected, $logData->getData());
     }
 
-    public function testSaveWithoutUpdateAttributes()
+    public function testSaveWithoutUpdateAttributes(): void
     {
         $model = $this->createModel();
 
@@ -182,7 +183,7 @@ class ActiveLogBehaviorTest extends TestCase
      * @param array $values
      * @param array $expected
      */
-    public function testUpdateModel(array $values, array $expected)
+    public function testUpdateModel(array $values, array $expected): void
     {
         $model = $this->createModel();
         $model->setAttributes($values);
@@ -192,7 +193,7 @@ class ActiveLogBehaviorTest extends TestCase
         self::assertEquals($expected, $logModel->getData());
     }
 
-    public function updateModelDataProvider()
+    public function updateModelDataProvider(): array
     {
         return [
             'update login' => [
@@ -319,7 +320,7 @@ class ActiveLogBehaviorTest extends TestCase
         ];
     }
 
-    public function testDeleteModel()
+    public function testDeleteModel(): void
     {
         $model = $this->createModel();
         self::assertEquals(1, $model->delete());
@@ -400,7 +401,7 @@ class ActiveLogBehaviorTest extends TestCase
         self::assertEquals('deleted', $logModels[0]->action);
     }
 
-    public function testSoftDelete()
+    public function testSoftDelete(): void
     {
         $model = $this->createModel();
         /** @var ActiveLogBehavior $logger */
@@ -528,7 +529,7 @@ class ActiveLogBehaviorTest extends TestCase
         self::assertEquals('deleted', $logModels[1]->action);
     }
 
-    public function testLogEmptyAttributeAfterDeleteModel()
+    public function testLogEmptyAttributeAfterDeleteModel(): void
     {
         $model = new User();
         $model->birthday = '01.01.2005';
@@ -597,7 +598,7 @@ class ActiveLogBehaviorTest extends TestCase
         self::assertEquals($expected, $logModels[0]->getData());
     }
 
-    public function testGetEntityName()
+    public function testGetEntityName(): void
     {
         $model = $this->createModel();
         /** @var ActiveLogBehavior $logger */
@@ -616,7 +617,7 @@ class ActiveLogBehaviorTest extends TestCase
         self::assertEquals('test_entity_name', $testModel->getEntityName());
     }
 
-    public function testDefaultGetEntityId()
+    public function testDefaultGetEntityId(): void
     {
         $model = $this->createModel();
         /** @var ActiveLogBehavior $logger */
@@ -625,11 +626,9 @@ class ActiveLogBehaviorTest extends TestCase
         self::assertEquals($model->getPrimaryKey(), $logger->getEntityId());
     }
 
-    /**
-     * @expectedException \yii\base\InvalidValueException
-     */
-    public function testExceptionGetEntityId()
+    public function testExceptionGetEntityId(): void
     {
+        $this->expectException(InvalidValueException::class);
         $testModel = new TestEntityName();
         $testModel->getEntityId();
     }
@@ -639,20 +638,20 @@ class ActiveLogBehaviorTest extends TestCase
      * @param string|int|array $custom_entity_id
      * @param string $result_entity_id
      */
-    public function testCustomGetEntityId($custom_entity_id, $result_entity_id)
+    public function testCustomGetEntityId($custom_entity_id, $result_entity_id): void
     {
         $model = $this->createModel();
         /** @var ActiveLogBehavior $logger */
         $logger = $model->getBehavior('logger');
 
-        $logger->getEntityId = function () use ($custom_entity_id) {
+        $logger->getEntityId = static function () use ($custom_entity_id) {
             return $custom_entity_id;
         };
 
         self::assertEquals($result_entity_id, $logger->getEntityId());
     }
 
-    public function customGetEntityIdDataProvider()
+    public function customGetEntityIdDataProvider(): array
     {
         return [
             [1, 1],
@@ -667,7 +666,7 @@ class ActiveLogBehaviorTest extends TestCase
         ];
     }
 
-    public function testDisabledLoggerBeforeStart()
+    public function testDisabledLoggerBeforeStart(): void
     {
         /** @var Manager $logger */
         $logger = Yii::$app->get('activityLogger');
@@ -687,7 +686,7 @@ class ActiveLogBehaviorTest extends TestCase
         ]);
     }
 
-    public function testDisabledLoggerAfterStart()
+    public function testDisabledLoggerAfterStart(): void
     {
         $model = $this->createModel();
 
@@ -711,7 +710,7 @@ class ActiveLogBehaviorTest extends TestCase
         ]);
     }
 
-    public function testEventSaveMessage()
+    public function testEventSaveMessage(): void
     {
         // Create
         $model = new User();
@@ -792,7 +791,7 @@ class ActiveLogBehaviorTest extends TestCase
         self::assertFalse($beforeSaveFlag);
     }
 
-    public function testEventSaveMessageMethod()
+    public function testEventSaveMessageMethod(): void
     {
         // Create
         $model = new UserEventMethod();
@@ -864,7 +863,7 @@ class ActiveLogBehaviorTest extends TestCase
         self::assertFalse($model->beforeSaveFlag);
     }
 
-    public function testEventSaveMessageCallback()
+    public function testEventSaveMessageCallback(): void
     {
         // Create
         $model = new User();
@@ -892,7 +891,7 @@ class ActiveLogBehaviorTest extends TestCase
 
         /** @var ActiveLogBehavior $logger */
         $logger = $model->getBehavior('logger');
-        $logger->beforeSaveMessage = function ($data) {
+        $logger->beforeSaveMessage = static function ($data) {
             return ['test' => 'test'] + $data;
         };
 
@@ -905,7 +904,7 @@ class ActiveLogBehaviorTest extends TestCase
         // Update
         $model->login = 'buster2';
 
-        $logger->beforeSaveMessage = function ($data) {
+        $logger->beforeSaveMessage = static function ($data) {
             return ['test' => 'test'] + $data + ['action' => 'Custom action'];
         };
 
@@ -930,7 +929,7 @@ class ActiveLogBehaviorTest extends TestCase
         self::assertTrue($model->save());
     }
 
-    public function testArrayListValues()
+    public function testArrayListValues(): void
     {
         // Create
         $model = new User();

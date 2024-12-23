@@ -19,15 +19,12 @@ namespace lav45\activityLogger\test\units {
     class ManagerTest extends TestCase
     {
         /**
-         * @var int virtual time to be returned by mocked time() function.
+         * @var int|null virtual time to be returned by mocked time() function.
          * Null means normal time() behavior.
          */
-        public static $time;
+        public static ?int $time = null;
 
-        /**
-         * @return Manager
-         */
-        private function createManager()
+        private function createManager(): Manager
         {
             $manager = new Manager();
             $manager->storage = new FakeStorage();
@@ -35,7 +32,7 @@ namespace lav45\activityLogger\test\units {
             return $manager;
         }
 
-        public function testDisabled()
+        public function testDisabled(): void
         {
             $manager = $this->createManager();
             $manager->enabled = false;
@@ -55,7 +52,7 @@ namespace lav45\activityLogger\test\units {
 
         private $old_app;
 
-        private function iniApplication()
+        private function iniApplication(): void
         {
             $this->old_app = Yii::$app;
 
@@ -73,12 +70,12 @@ namespace lav45\activityLogger\test\units {
             ]);
         }
 
-        private function resetApplication()
+        private function resetApplication(): void
         {
             Yii::$app = $this->old_app;
         }
 
-        private function createUser()
+        private function createUser(): User
         {
             $user = new User();
             $user->login = 'buster';
@@ -86,22 +83,22 @@ namespace lav45\activityLogger\test\units {
             return $user;
         }
 
-        private function removeUser()
+        private function removeUser(): void
         {
             User::deleteAll();
         }
 
-        private function loginUser(IdentityInterface $user)
+        private function loginUser(IdentityInterface $user): void
         {
             Yii::$app->getUser()->setIdentity($user);
         }
 
-        private function logoutUser()
+        private function logoutUser(): void
         {
             Yii::$app->getUser()->setIdentity(null);
         }
 
-        public function testLogWithUser()
+        public function testLogWithUser(): void
         {
             $this->iniApplication();
             $user = $this->createUser();
@@ -139,7 +136,7 @@ namespace lav45\activityLogger\test\units {
             self::$time = null;
         }
 
-        public function testLogWithOutUser()
+        public function testLogWithOutUser(): void
         {
             $manager = $this->createManager();
 
@@ -169,7 +166,7 @@ namespace lav45\activityLogger\test\units {
             self::$time = null;
         }
 
-        public function testDelete()
+        public function testDelete(): void
         {
             $manager = $this->createManager();
 
@@ -200,7 +197,7 @@ namespace lav45\activityLogger {
      * Mock for the time() function for web classes.
      * @return int
      */
-    function time()
+    function time(): int
     {
         return ManagerTest::$time ?: \time();
     }

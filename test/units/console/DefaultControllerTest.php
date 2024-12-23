@@ -8,10 +8,7 @@ use yii\base\Module;
 
 class DefaultControllerTest extends TestCase
 {
-    /**
-     * @return DefaultController
-     */
-    private function createController()
+    private function createController(): DefaultController
     {
         $module = new Module('console');
         $controller = new DefaultController('logger', $module);
@@ -24,7 +21,7 @@ class DefaultControllerTest extends TestCase
      * @param array $params
      * @param array $result
      */
-    public function testActionClean(array $params, array $result)
+    public function testActionClean(array $params, array $result): void
     {
         $controller = $this->createController();
         $controller->run('clean', $params);
@@ -34,10 +31,7 @@ class DefaultControllerTest extends TestCase
         self::assertEquals($manager->options, $result[0]);
     }
 
-    /**
-     * @return array
-     */
-    public function getActionCleanDataProvider()
+    public function getActionCleanDataProvider(): array
     {
         return [
             'entity-name' => [
@@ -101,7 +95,7 @@ class DefaultControllerTest extends TestCase
         ];
     }
 
-    public function testStdOutActionClean()
+    public function testStdOutActionClean(): void
     {
         $controller = $this->createController();
         $manager = $controller->getLogger();

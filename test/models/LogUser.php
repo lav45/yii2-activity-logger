@@ -1,6 +1,5 @@
 <?php
 
-
 namespace lav45\activityLogger\test\models;
 
 use lav45\activityLogger\ActiveLogBehavior;
@@ -41,40 +40,27 @@ class LogUser extends User
         ];
     }
 
-
-    /**
-     * @inheritdoc
-     */
     public function getOldAttribute($name)
     {
         if ($name === 'arrayStatus') {
             return json_decode(parent::getOldAttribute('_array_status'), true);
         }
-
         return parent::getOldAttribute($name);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getAttribute($name)
     {
         if ($name === 'arrayStatus') {
             return $this->getArrayStatus();
         }
-
         return parent::getAttribute($name);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function isAttributeChanged($name, $identical = true)
+    public function isAttributeChanged($name, $identical = true): bool
     {
         if ($name === 'arrayStatus') {
             return $this->getOldAttribute('arrayStatus') !== $this->getAttribute('arrayStatus');
         }
-
         return parent::isAttributeChanged($name, $identical);
     }
 
