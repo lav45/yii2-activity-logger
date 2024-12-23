@@ -2,14 +2,14 @@
     "name": "lav45/yii2-activity-logger",
     "description": "Tools to store user activity log for Yii2",
     "keywords": ["yii2", "extension", "log", "logger", "activity logger"],
-    "homepage": "https://github.com/LAV45/yii2-activity-logger",
+    "homepage": "https://github.com/lav45/yii2-activity-logger",
     "type": "yii2-extension",
     "license": "BSD-3-Clause",
     "minimum-stability": "dev",
     "prefer-stable": true,
     "authors": [
         {
-            "name": "Alexey Loban",
+            "name": "Aleksey Loban",
             "email": "lav451@gmail.com"
         }
     ],
