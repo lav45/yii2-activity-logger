@@ -386,9 +386,9 @@ $collection->push(); // => true
 # Тестирование
 
 ```
-~$ docker build --pull --build-arg UID=$(id -u) --build-arg GID=$(id -g) --rm -t php74-test .
-~$ ./container composer update --prefer-dist
-~$ ./container vendor/bin/phpunit
+~$ ./build.sh
+~$ ./composer update --prefer-dist
+~$ ./composer phpunit
 ```
 
 # Лицензии

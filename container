@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-docker run --rm --interactive --tty \
-  -u $(id -u):$(id -g) \
-  -v $PWD:/var/www \
-  -w /var/www \
-  php74-test:latest $@

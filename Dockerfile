@@ -1,23 +1,21 @@
-FROM phpdockerio/php74-cli:latest
+FROM alpine:3.15
 
-ARG UID
-ARG GID
+RUN apk upgrade --update-cache --available
 
-RUN usermod --non-unique --uid ${UID} www-data
-RUN groupmod --non-unique --gid ${GID} www-data
-
-RUN apt-get update
-RUN apt-get upgrade -y
-RUN apt-get install -y apt-utils
-
-# php extension
-RUN apt-get install -y php-memcached php-sqlite3 sqlite3
+# php
+RUN apk add --no-cache \
+    php7 \
+    php7-intl \
+    php7-json \
+    php7-mbstring \
+    php7-opcache \
+    php7-dom \
+    php7-xml \
+    php7-tokenizer \
+    php7-pecl-memcached \
+    php7-sqlite3 sqlite \
+    php7-pdo php7-pdo_sqlite
 
 # composer
-RUN apt-get install -y git
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
-# clean
-RUN rm -rf /var/lib/apt/lists/*
-RUN apt-get autoremove -y
-RUN apt-get clean
+RUN apk add --no-cache git php7-phar php7-openssl php7-zip php7-iconv php7-curl
+RUN wget https://getcomposer.org/installer -O - | php -- --with-openssl --install-dir=/usr/local/bin --filename=composer

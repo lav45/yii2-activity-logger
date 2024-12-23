@@ -21,12 +21,15 @@
     ],
     "require": {
         "php": ">=5.5.0",
-        "yiisoft/yii2": "2.0.*"
+        "yiisoft/yii2": ">=2.0.49"
     },
     "require-dev": {
-        "roave/security-advisories": "dev-master",
+        "roave/security-advisories": "dev-latest",
         "phpunit/phpunit": "4.8 - 7.5",
         "ext-sqlite3": "*"
+    },
+    "scripts": {
+        "phpunit": "vendor/bin/phpunit"
     },
     "autoload": {
         "psr-4": {
@@ -41,6 +44,11 @@
     "extra": {
         "branch-alias": {
             "dev-master": "1.8.x-dev"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "yiisoft/yii2-composer": true
         }
     }
 }
