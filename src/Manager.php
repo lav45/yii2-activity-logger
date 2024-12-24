@@ -8,11 +8,11 @@
 
 namespace lav45\activityLogger;
 
-use Exception;
 use Throwable;
 use Yii;
 use yii\base\BaseObject;
 use yii\di\Instance;
+use yii\web\IdentityInterface;
 
 /**
  * Class Manager
@@ -20,35 +20,19 @@ use yii\di\Instance;
  */
 class Manager extends BaseObject
 {
-    /**
-     * @var bool
-     */
-    public $enabled = true;
-    /**
-     * @var string|null
-     */
-    public $user = 'user';
-    /**
-     * @var string
-     */
-    public $userNameAttribute = 'username';
-    /**
-     * @var string
-     */
-    public $userIdPrefix;
-    /**
-     * @var string|array|StorageInterface
-     */
-    public $storage = 'activityLoggerStorage';
-    /**
-     * @var bool
-     */
-    public $debug = YII_DEBUG;
+    public bool $enabled = true;
 
-    /**
-     * @return \yii\web\IdentityInterface|null
-     */
-    protected function getUserIdentity()
+    public string $user = 'user';
+
+    public string $userNameAttribute = 'username';
+
+    public ?string $userIdPrefix = null;
+    /** @var string|array|StorageInterface */
+    public $storage = 'activityLoggerStorage';
+
+    public bool $debug = YII_DEBUG;
+
+    protected function getUserIdentity(): ?IdentityInterface
     {
         /** @var \yii\web\User $user */
         $user = Yii::$app->get($this->user, false);
@@ -58,22 +42,15 @@ class Manager extends BaseObject
         return null;
     }
 
-    /**
-     * @return StorageInterface
-     */
-    protected function getStorage()
+    protected function getStorage(): StorageInterface
     {
-        if (!$this->storage instanceof StorageInterface) {
+        if ($this->storage instanceof StorageInterface === false) {
             $this->storage = Instance::ensure($this->storage, StorageInterface::class);
         }
         return $this->storage;
     }
 
-    /**
-     * @param LogMessageDTO $message
-     * @return bool
-     */
-    public function log(LogMessageDTO $message)
+    public function log(MessageData $message): bool
     {
         if (false === $this->enabled) {
             return false;
@@ -89,41 +66,27 @@ class Manager extends BaseObject
         try {
             $this->getStorage()->save($message);
             return true;
-        } catch (Exception $e) {
-            $this->throwException($e);
         } catch (Throwable $e) {
             $this->throwException($e);
+            return false;
         }
-        return false;
     }
 
-    /**
-     * @param LogMessageDTO $message
-     * @param int|null $old_than
-     * @return bool
-     */
-    public function delete(LogMessageDTO $message, $old_than = null)
+    public function delete(DeleteCommand $command): bool
     {
         if (false === $this->enabled) {
             return false;
         }
-
         try {
-            $this->getStorage()->delete($message, $old_than);
+            $this->getStorage()->delete($command);
             return true;
-        } catch (Exception $e) {
-            $this->throwException($e);
         } catch (Throwable $e) {
             $this->throwException($e);
+            return false;
         }
-        return false;
     }
 
-    /**
-     * @param Exception|Throwable $e
-     * @throws Exception|Throwable
-     */
-    private function throwException($e)
+    private function throwException(Throwable $e): void
     {
         if ($this->debug) {
             throw $e;

@@ -207,7 +207,7 @@ class ActiveLogBehavior extends Behavior
     public function beforeDelete()
     {
         if (false === $this->softDelete) {
-            $this->getLogger()->delete(new LogMessageDTO([
+            $this->getLogger()->delete(new DeleteCommand([
                 'entityName' => $this->getEntityName(),
                 'entityId' => $this->getEntityId(),
             ]));
@@ -371,14 +371,14 @@ class ActiveLogBehavior extends Behavior
      */
     public function addLog($data, $action = null)
     {
+        /** @var MessageData $message */
         $message = Yii::createObject([
-            'class' => LogMessageDTO::class,
+            'class' => MessageData::class,
             'entityName' => $this->getEntityName(),
             'entityId' => $this->getEntityId(),
             'action' => $action,
             'data' => $data,
         ]);
-
         return $this->getLogger()->log($message);
     }
 
@@ -452,7 +452,7 @@ class ActiveLogBehavior extends Behavior
         }
         if (is_array($result)) {
             ksort($result);
-            $result = json_encode($result, 320);
+            $result = json_encode($result, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         }
         return $result;
     }
@@ -465,7 +465,7 @@ class ActiveLogBehavior extends Behavior
      * @return bool whether the value is empty
      * @since 1.5.2
      */
-    public function isEmpty($value)
+    public function isEmpty($value): bool
     {
         if (null !== $this->isEmpty) {
             return call_user_func($this->isEmpty, $value);

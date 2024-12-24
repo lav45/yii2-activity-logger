@@ -61,7 +61,6 @@ return [
          */
         'logger' => [
             'class' => \lav45\activityLogger\modules\Module::class,
-
             // Список моделей которые логировались
             'entityMap' => [
                 'news' => 'common\models\News',
@@ -74,34 +73,22 @@ return [
          */
         'activityLogger' => [
             'class' => \lav45\activityLogger\Manager::class,
-
-            // Включаем логирование для PROD версии
-            'enabled' => YII_ENV_PROD,
-
-            // идентификатор компонента `\yii\web\User`
-            'user' => 'user',
-
+            // Включаем логирование только для PROD версии
+            // 'enabled' => YII_ENV_PROD,
+            // Идентификатор компонента `\yii\web\User`
+            // 'user' => 'user',
             // Поле для отображения имени из модели пользователя
-            'userNameAttribute' => 'username',
-
+            // 'userNameAttribute' => 'username',
             // Префикс нужен для того, чтобы исключить пересечения userId если у вас в проекте авторизуется несколько разных сущностей 
-            'userIdPrefix' => 'u',
-
-            // идентификатор компонента хранилища логов `\lav45\activityLogger\StorageInterface`
-            'storage' => 'activityLoggerStorage',
-        ],
-
-        /**
-         * Компонент принимает и управляет логами
-         */
-        'activityLoggerStorage' => [
-            'class' => \lav45\activityLogger\DbStorage::class,
-
-            // Имя таблицы в которой будут храниться логи
-            'tableName' => '{{%activity_log}}',
-
-            // идентификатор компонента `\yii\db\Connection`
-            'db' => 'db',
+            // 'userIdPrefix' => 'u',
+            // Хранилище для логов, реализует `\lav45\activityLogger\StorageInterface`
+            'storage' => [
+                'class' => \lav45\activityLogger\DbStorage::class,
+                // Имя таблицы в которой будут храниться логи
+                // 'tableName' => '{{%activity_log}}',
+                // Идентификатор компонента `\yii\db\Connection`
+                // 'db' => 'db',
+            ],
         ],
     ]
 ];
@@ -111,7 +98,7 @@ return [
 Для удобства этот код можно разместить в файле `bootstrap.php`
 
 ```php
-Yii::$container->set(\lav45\activityLogger\LogMessageDTO::class, [
+Yii::$container->set(\lav45\activityLogger\MessageData::class, [
     'env' => 'console', // Окружение из которого производилось действие
     'userId' => 'console',
     'userName' => 'Droid R2-D2',
@@ -302,17 +289,17 @@ yii logger/clean --old-than=1y
 
 ### Параметры командной строки
 
-* `--entity-id, -eid`: string. Идентификатор целевого объекта
+* `--entity-id, -eid`: Идентификатор целевого объекта
 
-* `--entity-name, -e`: string. Псевдоним имени целевого объекта
+* `--entity-name, -e`: Псевдоним имени целевого объекта
 
-* `--user-id, -uid`: string. Идентификатор пользователя, который выполнил действие
+* `--user-id, -uid`: Идентификатор пользователя, который выполнил действие
 
-* `--log-action, -a`: string. Действие, которое было произведено над объектом
+* `--log-action, -a`: Действие, которое было произведено над объектом
 
-* `--env`: string. Среда, из которой производилось действие
+* `--env`: Среда, из которой производилось действие
 
-* `--old-than, -o`: string. Удаление старых данных
+* `--old-than, -o`: Удаление старых данных. По умолчанию 1y.
 
   Допустимые значения:
     - 1h - старше 1 часа
@@ -329,10 +316,10 @@ yii logger/clean --old-than=1y
 контроллера и т.д
 
 ```php
-use lav45\activityLogger\LogMessageDTO;
+use lav45\activityLogger\MessageData;
 
 $message = Yii::createObject([
-    'class' => LogMessageDTO::class,
+    'class' => MessageData::class,
 
     // имя сущности
     'entityName' => 'user',

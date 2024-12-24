@@ -16,26 +16,21 @@ use yii\di\Instance;
  */
 trait ManagerTrait
 {
-    /**
-     * @var Manager|string|array
-     */
+    /** @var Manager|string|array */
     private $logger = 'activityLogger';
 
-    /**
-     * @return Manager
-     */
-    public function getLogger()
+    public function getLogger(): Manager
     {
-        if (!$this->logger instanceof Manager) {
+        if ($this->logger instanceof Manager === false) {
             $this->logger = Instance::ensure($this->logger, Manager::class);
         }
         return $this->logger;
     }
 
     /**
-     * @param $data Manager|string|array
+     * @param Manager|string|array $data
      */
-    public function setLogger($data)
+    public function setLogger($data): void
     {
         $this->logger = $data;
     }

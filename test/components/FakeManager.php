@@ -2,7 +2,7 @@
 
 namespace lav45\activityLogger\test\components;
 
-use lav45\activityLogger\LogMessageDTO;
+use lav45\activityLogger\MessageData;
 use lav45\activityLogger\Manager;
 
 /**
@@ -11,16 +11,9 @@ use lav45\activityLogger\Manager;
  */
 class FakeManager extends Manager
 {
-    /**
-     * @var LogMessageDTO
-     */
-    public $message;
+    public MessageData $message;
 
-    /**
-     * @param LogMessageDTO $message
-     * @return bool
-     */
-    public function log(LogMessageDTO $message)
+    public function log(MessageData $message): bool
     {
         $this->message = $message;
         return true;

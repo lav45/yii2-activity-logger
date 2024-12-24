@@ -72,8 +72,7 @@ class DataModel extends BaseObject
     public function getOldValue()
     {
         $values = $this->getValue('old');
-        $values = $this->formattedValue($values);
-        return $values;
+        return $this->formattedValue($values);
     }
 
     /**
@@ -82,8 +81,7 @@ class DataModel extends BaseObject
     public function getNewValue()
     {
         $values = $this->getValue('new');
-        $values = $this->formattedValue($values);
-        return $values;
+        return $this->formattedValue($values);
     }
 
     /**
@@ -121,9 +119,8 @@ class DataModel extends BaseObject
             return $this->formatter->asBoolean($value);
         }
         if (is_array($value)) {
-            $value = json_encode($value, JSON_PRETTY_PRINT);
-            $value = Html::tag('pre', $value);
-            return $value;
+            $value = json_encode($value, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT);
+            return Html::tag('pre', $value);
         }
         return $value;
     }

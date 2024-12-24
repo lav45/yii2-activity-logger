@@ -2,7 +2,8 @@
 
 namespace lav45\activityLogger\test\units {
 
-    use lav45\activityLogger\LogMessageDTO;
+    use lav45\activityLogger\DeleteCommand;
+    use lav45\activityLogger\MessageData;
     use lav45\activityLogger\Manager;
     use lav45\activityLogger\test\components\FakeStorage;
     use lav45\activityLogger\test\models\User;
@@ -39,15 +40,15 @@ namespace lav45\activityLogger\test\units {
             /** @var FakeStorage $storage */
             $storage = $manager->storage;
 
-            $message = new LogMessageDTO([
+            $manager->log(new MessageData([
                 'entityName' => 'test',
-            ]);
-
-            $manager->log($message);
+            ]));
             self::assertNull($storage->message);
 
-            $manager->delete($message);
-            self::assertNull($storage->message);
+            $manager->delete(new DeleteCommand([
+                'entityName' => 'test',
+            ]));
+            self::assertNull($storage->command);
         }
 
         private $old_app;
@@ -112,7 +113,7 @@ namespace lav45\activityLogger\test\units {
             $data = ['test'];
             self::$time = time();
 
-            $message = new LogMessageDTO([
+            $message = new MessageData([
                 'entityName' => $entityName,
                 'data' => $data,
                 'env' => $env,
@@ -120,7 +121,7 @@ namespace lav45\activityLogger\test\units {
 
             $manager->log($message);
 
-            /** @var LogMessageDTO $storageMessage */
+            /** @var MessageData $storageMessage */
             $storageMessage = $manager->storage->message;
 
             self::assertEquals($storageMessage->userId, $user->id);
@@ -145,7 +146,7 @@ namespace lav45\activityLogger\test\units {
             $data = ['test'];
             self::$time = time();
 
-            $message = new LogMessageDTO([
+            $message = new MessageData([
                 'entityName' => $entityName,
                 'data' => $data,
                 'env' => $env,
@@ -153,7 +154,7 @@ namespace lav45\activityLogger\test\units {
 
             $manager->log($message);
 
-            /** @var LogMessageDTO $storageMessage */
+            /** @var MessageData $storageMessage */
             $storageMessage = $manager->storage->message;
 
             self::assertNull($storageMessage->userId);
@@ -170,21 +171,23 @@ namespace lav45\activityLogger\test\units {
         {
             $manager = $this->createManager();
 
-            $message = new LogMessageDTO([
+            $command = new DeleteCommand([
                 'entityName' => 'entityName',
             ]);
-
-            $manager->delete($message);
+            $manager->delete($command);
 
             /** @var FakeStorage $storage */
             $storage = $manager->storage;
-            self::assertEquals($storage->message, $message);
-            self::assertNull($storage->old_than);
+            self::assertEquals($storage->command, $command);
+            self::assertEquals($storage->command->entityName, 'entityName');
+            self::assertNull($storage->command->oldThan);
 
-            $time = time();
-            $manager->delete($message, $time);
-            self::assertEquals($storage->message, $message);
-            self::assertEquals($storage->old_than, $time);
+            $command = new DeleteCommand([
+                'oldThan' => time(),
+            ]);
+            $manager->delete($command);
+            self::assertEquals($storage->command, $command);
+            self::assertEquals($storage->command->oldThan, $command->oldThan);
         }
     }
 }

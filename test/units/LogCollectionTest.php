@@ -3,7 +3,7 @@
 namespace lav45\activityLogger\test\units;
 
 use lav45\activityLogger\LogCollection;
-use lav45\activityLogger\LogMessageDTO;
+use lav45\activityLogger\MessageData;
 use lav45\activityLogger\test\components\FakeManager;
 use PHPUnit\Framework\TestCase;
 use Yii;
@@ -53,7 +53,7 @@ class LogCollectionTest extends TestCase
         $userId = 'console';
         $userName = 'Droid R2-D2';
 
-        Yii::$container->set(LogMessageDTO::class, [
+        Yii::$container->set(MessageData::class, [
             'env' => $ent,
             'userId' => $userId,
             'userName' => $userName,

@@ -19,27 +19,17 @@ use yii\base\BaseObject;
  */
 class DbStorage extends BaseObject implements StorageInterface
 {
-    /**
-     * @var Connection|string|array
-     */
+    /** @var Connection|string|array */
     public $db = 'db';
-    /**
-     * @var string
-     */
-    public $tableName = '{{%activity_log}}';
 
-    /**
-     * Initializes the object.
-     */
-    public function init()
+    public string $tableName = '{{%activity_log}}';
+
+    public function init(): void
     {
         $this->db = Instance::ensure($this->db, Connection::class);
     }
 
-    /**
-     * @param LogMessageDTO $message
-     */
-    public function save(LogMessageDTO $message)
+    public function save(MessageData $message): void
     {
         (new Query)
             ->createCommand($this->db)
@@ -58,29 +48,27 @@ class DbStorage extends BaseObject implements StorageInterface
 
     /**
      * @param array|string $data
-     * @return string
      */
-    private function encode($data)
+    private function encode($data): string
     {
-        return json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        return json_encode($data, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     }
 
-    /**
-     * @param LogMessageDTO $message
-     * @param int|null $old_than
-     */
-    public function delete(LogMessageDTO $message, $old_than = null)
+    public function delete(DeleteCommand $command): void
     {
         $condition = array_filter([
-            'entity_name' => $message->entityName,
-            'entity_id' => $message->entityId,
-            'user_id' => $message->userId,
-            'action' => $message->action,
-            'env' => $message->env,
+            'entity_name' => $command->entityName,
+            'entity_id' => $command->entityId,
+            'user_id' => $command->userId,
+            'action' => $command->action,
+            'env' => $command->env,
         ]);
 
-        if ($old_than) {
-            $condition = ['and', $condition, ['<=', 'created_at', $old_than]];
+        if ($command->oldThan) {
+            if (empty($condition)) {
+                throw new \InvalidArgumentException("Condition can't be empty");
+            }
+            $condition = ['and', $condition, ['<=', 'created_at', $command->oldThan]];
         }
 
         (new Query)

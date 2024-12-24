@@ -31,7 +31,7 @@ use yii\helpers\Url;
     $url = Url::current(['userId' => $model->user_id, 'page' => null]);
     $action = Yii::t('lav45/logger', $model->action);
     ?>
-    <?= Html::a(Html::encode($model->user_name), $url) . ' ' . $action ?>
+    <?= Html::a(Html::encode($model->user_name), $url) . ' ' . Html::encode($action) ?>
 
     <span><?= Yii::$app->getFormatter()->asDatetime($model->created_at) ?></span>
 
@@ -47,18 +47,18 @@ use yii\helpers\Url;
         <?php if (is_string($values)): ?>
             <li>
                 <?php if(is_string($attribute)): ?>
-                    <strong><?= $attribute ?></strong>
+                    <strong><?= Html::encode($attribute) ?></strong>
                 <?php endif; ?>
                 <?= Html::encode(Yii::t('lav45/logger', $values)) ?>
             </li>
         <?php else: ?>
             <li>
-                <?= Yii::t('lav45/logger', '<strong>{attribute}</strong> has been changed', ['attribute' => $attribute]) ?>
+                <?= Yii::t('lav45/logger', '<strong>{attribute}</strong> has been changed', ['attribute' => Html::encode($attribute)]) ?>
 
-                <?= Yii::t('lav45/logger', 'from') ?>
+                <?= Html::encode(Yii::t('lav45/logger', 'from')) ?>
                 <strong><i class="details-text"><?= $values->getOldValue() ?></i></strong>
 
-                <?= Yii::t('lav45/logger', 'to') ?>
+                <?= Html::encode(Yii::t('lav45/logger', 'to')) ?>
                 <strong><i class="details-text"><?= $values->getNewValue() ?></i></strong>
             </li>
         <?php endif; ?>

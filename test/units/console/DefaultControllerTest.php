@@ -2,7 +2,7 @@
 
 namespace lav45\activityLogger\test\console;
 
-use lav45\activityLogger\LogMessageDTO;
+use lav45\activityLogger\DeleteCommand;
 use PHPUnit\Framework\TestCase;
 use yii\base\Module;
 
@@ -26,9 +26,8 @@ class DefaultControllerTest extends TestCase
         $controller = $this->createController();
         $controller->run('clean', $params);
 
-        $manager = $controller->getLogger();
-        self::assertEquals($manager->old_than, $result[1]);
-        self::assertEquals($manager->options, $result[0]);
+        $options = $controller->getLogger()->options;
+        self::assertEquals($options, $result);
     }
 
     public function getActionCleanDataProvider(): array
@@ -36,60 +35,104 @@ class DefaultControllerTest extends TestCase
         return [
             'entity-name' => [
                 ['entity-name' => 'user'],
-                [['entityName' => 'user'], strtotime('-1 year 0:00')],
+                [
+                    'entityName' => 'user',
+                    'oldThan' => strtotime('-1 year 00:00:00')
+                ],
             ],
             'e' => [
                 ['_aliases' => ['e' => 'user']],
-                [['entityName' => 'user'], strtotime('-1 year 0:00')],
+                [
+                    'entityName' => 'user',
+                    'oldThan' => strtotime('-1 year 00:00:00')
+                ],
             ],
             'entity-id' => [
                 ['entity-id' => 10],
-                [['entityId' => 10], strtotime('-1 year 0:00')],
+                [
+                    'entityId' => '10',
+                    'oldThan' => strtotime('-1 year 00:00:00')
+                ],
             ],
             'eid' => [
-                ['_aliases' => ['eid' => 10]],
-                [['entityId' => 10], strtotime('-1 year 0:00')],
+                ['_aliases' => ['eid' => '10']],
+                [
+                    'entityId' => '10',
+                    'oldThan' => strtotime('-1 year 00:00:00')
+                ],
             ],
             'user-id' => [
-                ['user-id' => 100],
-                [['userId' => 100], strtotime('-1 year 0:00')],
+                ['user-id' => '100'],
+                [
+                    'userId' => '100',
+                    'oldThan' => strtotime('-1 year 00:00:00')
+                ],
             ],
             'uid' => [
-                ['_aliases' => ['uid' => 100]],
-                [['userId' => 100], strtotime('-1 year 0:00')],
+                ['_aliases' => ['uid' => '100']],
+                [
+                    'userId' => '100',
+                    'oldThan' => strtotime('-1 year 00:00:00')
+                ],
             ],
             'log-action' => [
                 ['log-action' => 'console'],
-                [['action' => 'console'], strtotime('-1 year 0:00')],
+                [
+                    'action' => 'console',
+                    'oldThan' => strtotime('-1 year 00:00:00')
+                ],
             ],
             'a' => [
                 ['_aliases' => ['a' => 'console']],
-                [['action' => 'console'], strtotime('-1 year 0:00')],
+                [
+                    'action' => 'console',
+                    'oldThan' => strtotime('-1 year 00:00:00')
+                ],
             ],
             'old-than' => [
                 ['old-than' => '2m'],
-                [[], strtotime('-2 month 0:00')],
+                [
+                    'oldThan' => strtotime('-2 month 00:00:00')
+                ],
             ],
-            'o' => [
+            '1h' => [
+                ['_aliases' => ['o' => '1h']],
+                [
+                    'oldThan' => strtotime('-1 hour 00:00:00')
+                ],
+            ],
+            '1d' => [
+                ['_aliases' => ['o' => '1d']],
+                [
+                    'oldThan' => strtotime('-1 day 00:00:00')
+                ],
+            ],
+            '2m' => [
                 ['_aliases' => ['o' => '2m']],
-                [[], strtotime('-2 month 0:00')],
+                [
+                    'oldThan' => strtotime('-2 month 00:00:00')
+                ],
+            ],
+            '3y' => [
+                ['_aliases' => ['o' => '3y']],
+                [
+                    'oldThan' => strtotime('-3 year 00:00:00')
+                ],
             ],
             'all' => [
                 [
                     'entity-name' => 'user',
-                    'entity-id' => 10,
-                    'user-id' => 100,
+                    'entity-id' => '10',
+                    'user-id' => '100',
                     'log-action' => 'console',
                     'old-than' => '2m',
                 ],
                 [
-                    [
-                        'entityName' => 'user',
-                        'entityId' => 10,
-                        'userId' => 100,
-                        'action' => 'console',
-                    ],
-                    strtotime('-2 month 0:00')
+                    'entityName' => 'user',
+                    'entityId' => '10',
+                    'userId' => '100',
+                    'action' => 'console',
+                    'oldThan' => strtotime('-2 month 00:00:00')
                 ],
             ]
         ];
@@ -133,16 +176,13 @@ class DefaultController extends \lav45\activityLogger\console\DefaultController
 
 class Manager extends \lav45\activityLogger\Manager
 {
-    public $result = true;
+    public bool $result = true;
 
-    public $old_than;
+    public array $options;
 
-    public $options;
-
-    public function delete(LogMessageDTO $message, $old_than = null)
+    public function delete(DeleteCommand $command): bool
     {
-        $this->old_than = $old_than;
-        $this->options = array_filter((array)$message);
+        $this->options = array_filter((array)$command);
         return $this->result;
     }
 }

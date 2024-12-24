@@ -8,7 +8,7 @@
 
 namespace lav45\activityLogger\console;
 
-use lav45\activityLogger\LogMessageDTO;
+use lav45\activityLogger\DeleteCommand;
 use lav45\activityLogger\ManagerTrait;
 use yii\console\Controller;
 use yii\helpers\Console;
@@ -21,40 +21,27 @@ class DefaultController extends Controller
 {
     use ManagerTrait;
 
+    /** Target entity name */
+    public ?string $entityName = null;
+    /** Entity target id */
+    public ?string $entityId = null;
+    /** User id who performed the action */
+    public ?string $userId = null;
+    /** Action performed on the object */
+    public ?string $logAction = null;
+    /** Environment, which produced the effect */
+    public ?string $env = null;
     /**
-     * @var string alias name target object
-     */
-    public $entityName;
-    /**
-     * @var string id target object
-     */
-    public $entityId;
-    /**
-     * @var string id user who performed the action
-     */
-    public $userId;
-    /**
-     * @var string the action performed on the object
-     */
-    public $logAction;
-    /**
-     * @var string environment, which produced the effect
-     */
-    public $env;
-    /**
-     * @var string delete old than days
+     * Delete older than
      * Valid values:
      * 1h - 1 hour
      * 2d - 2 days
      * 3m - 3 month
      * 1y - 1 year
      */
-    public $oldThan = '1y';
+    public ?string $oldThan = '1y';
 
-    /**
-     * @inheritdoc
-     */
-    public function options($actionID)
+    public function options($actionID): array
     {
         return array_merge(parent::options($actionID), [
             'entityName',
@@ -66,10 +53,7 @@ class DefaultController extends Controller
         ]);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function optionAliases()
+    public function optionAliases(): array
     {
         return array_merge(parent::optionAliases(), [
             'o' => 'old-than',
@@ -83,46 +67,44 @@ class DefaultController extends Controller
     /**
      * Clean storage activity log
      */
-    public function actionClean()
+    public function actionClean(): void
     {
-        $old_than = $this->parseDate($this->oldThan);
-        if (null === $old_than) {
+        $oldThan = $this->parseDate($this->oldThan);
+        if (null === $oldThan) {
             $this->stderr("Invalid date format\n", Console::FG_RED, Console::UNDERLINE);
             return;
         }
 
-        $message = new LogMessageDTO([
+        $command = new DeleteCommand([
             'entityName' => $this->entityName,
             'entityId' => $this->entityId,
             'userId' => $this->userId,
             'action' => $this->logAction,
             'env' => $this->env,
+            'oldThan' => $oldThan,
         ]);
 
-        if ($this->getLogger()->delete($message, $old_than)) {
+        if ($this->getLogger()->delete($command)) {
             $this->stdout("Successful clearing the logs.\n");
         } else {
             $this->stdout("Error while cleaning the logs.\n");
         }
     }
 
-    /**
-     * @param string $str
-     * @return int|null
-     */
-    private function parseDate($str)
+    private function parseDate(string $str): ?int
     {
-        if (preg_match("/^(\d+)([dmy]{1})$/", $str, $matches)) {
-            $count = $matches[1];
-            $alias = $matches[2];
+        if (preg_match("/^(\d+)([hdmy]+)$/", $str, $matches)) {
+            [$_, $count, $alias] = $matches;
             $aliases = [
+                'h' => 'hour',
                 'd' => 'day',
                 'm' => 'month',
                 'y' => 'year',
             ];
             if (isset($aliases[$alias])) {
-                return strtotime("-{$count} {$aliases[$alias]} 0:00 UTC");
+                return strtotime("-{$count} {$aliases[$alias]} 0:00:00 UTC");
             }
+            throw new \InvalidArgumentException("Invalid date alias: {$alias}. You can use one of the 1h, 2d, 3m or 4y");
         }
         return null;
     }

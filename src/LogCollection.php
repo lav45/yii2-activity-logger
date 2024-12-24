@@ -16,33 +16,17 @@ use Yii;
  */
 class LogCollection
 {
-    /**
-     * @var Manager
-     */
-    private $logger;
-    /**
-     * @var string
-     */
-    private $entityName;
-    /**
-     * @var string|int
-     */
-    private $entityId;
-    /**
-     * @var string
-     */
-    private $action;
-    /**
-     * @var string[]
-     */
-    private $messages = [];
+    private Manager $logger;
 
-    /**
-     * LogCollection constructor.
-     * @param Manager $logger
-     * @param string $entityName
-     */
-    public function __construct(Manager $logger, $entityName)
+    private string $entityName;
+    /** @var string|int|null */
+    private $entityId;
+
+    private ?string $action = null;
+    /** @var string[] */
+    private array $messages = [];
+
+    public function __construct(Manager $logger, string $entityName)
     {
         $this->logger = $logger;
         $this->entityName = $entityName;
@@ -50,28 +34,20 @@ class LogCollection
 
     /**
      * @param string|int $value
-     * @return $this
      */
-    public function setEntityId($value)
+    public function setEntityId($value): self
     {
         $this->entityId = $value;
         return $this;
     }
 
-    /**
-     * @param string $value
-     * @return $this
-     */
-    public function setAction($value)
+    public function setAction(string $value): self
     {
         $this->action = $value;
         return $this;
     }
 
-    /**
-     * @param string $value
-     */
-    public function addMessage($value)
+    public function addMessage(string $value): void
     {
         $this->messages[] = $value;
     }
@@ -79,31 +55,28 @@ class LogCollection
     /**
      * @return string[]
      */
-    private function removeMessages()
+    private function flushMessages(): array
     {
         $messages = $this->messages;
         $this->messages = [];
         return $messages;
     }
 
-    /**
-     * @return bool
-     */
-    public function push()
+    public function push(): bool
     {
-        $messages = $this->removeMessages();
+        $messages = $this->flushMessages();
         if (empty($messages)) {
             return false;
         }
 
+        /** @var MessageData $message */
         $message = Yii::createObject([
-            'class' => LogMessageDTO::class,
+            'class' => MessageData::class,
             'entityName' => $this->entityName,
             'entityId' => $this->entityId,
             'action' => $this->action,
             'data' => $messages,
         ]);
-
         return $this->logger->log($message);
     }
 }

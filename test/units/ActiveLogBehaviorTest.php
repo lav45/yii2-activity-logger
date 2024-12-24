@@ -4,7 +4,8 @@ namespace lav45\activityLogger\test\units;
 
 use lav45\activityLogger\ActiveLogBehavior;
 use lav45\activityLogger\DbStorage;
-use lav45\activityLogger\LogMessageDTO;
+use lav45\activityLogger\DeleteCommand;
+use lav45\activityLogger\MessageData;
 use lav45\activityLogger\Manager;
 use lav45\activityLogger\MessageEvent;
 use lav45\activityLogger\modules\models\ActivityLog;
@@ -59,7 +60,7 @@ class ActiveLogBehaviorTest extends TestCase
         $userId = 'console';
         $userName = 'Droid R2-D2';
 
-        Yii::$container->set(LogMessageDTO::class, [
+        Yii::$container->set(MessageData::class, [
             'env' => $ent,
             'userId' => $userId,
             'userName' => $userName,
@@ -692,7 +693,7 @@ class ActiveLogBehaviorTest extends TestCase
 
         /** @var Manager $logger */
         $logger = Yii::$app->get('activityLogger');
-        $logger->delete(new LogMessageDTO([
+        $logger->delete(new DeleteCommand([
             'entityName' => $model->getEntityName(),
         ]));
         $logger->enabled = false;

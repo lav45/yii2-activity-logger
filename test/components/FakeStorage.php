@@ -2,7 +2,8 @@
 
 namespace lav45\activityLogger\test\components;
 
-use lav45\activityLogger\LogMessageDTO;
+use lav45\activityLogger\DeleteCommand;
+use lav45\activityLogger\MessageData;
 use lav45\activityLogger\StorageInterface;
 
 /**
@@ -11,23 +12,17 @@ use lav45\activityLogger\StorageInterface;
  */
 class FakeStorage implements StorageInterface
 {
-    /**
-     * @var LogMessageDTO
-     */
-    public $message;
-    /**
-     * @var int
-     */
-    public $old_than;
+    public ?MessageData $message = null;
 
-    public function save(LogMessageDTO $message)
+    public ?DeleteCommand $command = null;
+
+    public function save(MessageData $message): void
     {
         $this->message = $message;
     }
 
-    public function delete(LogMessageDTO $message, $old_than = null)
+    public function delete(DeleteCommand $command): void
     {
-        $this->message = $message;
-        $this->old_than = $old_than;
+        $this->command = $command;
     }
 }

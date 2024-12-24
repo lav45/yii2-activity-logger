@@ -14,14 +14,7 @@ namespace lav45\activityLogger;
  */
 interface StorageInterface
 {
-    /**
-     * @param LogMessageDTO $message
-     */
-    public function save(LogMessageDTO $message);
+    public function save(MessageData $message): void;
 
-    /**
-     * @param LogMessageDTO $message
-     * @param int|null $old_than
-     */
-    public function delete(LogMessageDTO $message, $old_than = null);
+    public function delete(DeleteCommand $command): void;
 }
