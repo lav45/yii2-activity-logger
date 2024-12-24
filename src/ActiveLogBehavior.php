@@ -68,27 +68,21 @@ class ActiveLogBehavior extends Behavior
 
     /**
      * @event MessageEvent an event that is triggered before inserting a record.
-     * You may added in to the [[MessageEvent::append]] your custom log message.
+     * You may add in to the [[MessageEvent::append]] your custom log message.
      * @since 1.5.3
      */
-    const EVENT_BEFORE_SAVE_MESSAGE = 'beforeSaveMessage';
+    public const EVENT_BEFORE_SAVE_MESSAGE = 'beforeSaveMessage';
     /**
      * @event Event an event that is triggered after inserting a record.
      * @since 1.5.3
      */
-    const EVENT_AFTER_SAVE_MESSAGE = 'afterSaveMessage';
+    public const EVENT_AFTER_SAVE_MESSAGE = 'afterSaveMessage';
 
+    public bool $softDelete = false;
+    /** @since 1.6.0 */
+    public ?\Closure $beforeSaveMessage = null;
     /**
-     * @var bool
-     */
-    public $softDelete = false;
-    /**
-     * @var \Closure
-     * @since 1.6.0
-     */
-    public $beforeSaveMessage;
-    /**
-     * @var array [
+     * [
      *  // simple attribute
      *  'title',
      *
@@ -108,16 +102,14 @@ class ActiveLogBehavior extends Behavior
      *  ]
      * ]
      */
-    public $attributes = [];
+    public array $attributes = [];
+
+    public bool $identicalAttributes = false;
     /**
-     * @var bool
-     */
-    public $identicalAttributes = false;
-    /**
-     * @var \Closure a PHP callable that replaces the default implementation of [[isEmpty()]].
+     * A PHP callable that replaces the default implementation of [[isEmpty()]].
      * @since 1.5.2
      */
-    public $isEmpty;
+    public ?\Closure $isEmpty = null;
     /**
      * @var \Closure|array|string custom method to getEntityName
      * the callback function must return a string
@@ -130,7 +122,7 @@ class ActiveLogBehavior extends Behavior
     public $getEntityId;
 
     /**
-     * @var array [
+     * [
      *  'title' => [
      *      'new' => ['value' => 'New title'],
      *  ],
@@ -148,39 +140,30 @@ class ActiveLogBehavior extends Behavior
      *  ]
      * ]
      */
-    private $changedAttributes = [];
-    /**
-     * @var string
-     */
-    private $action;
+    private array $changedAttributes = [];
 
-    /**
-     * Initializes the object.
-     */
-    public function init()
+    private string $action;
+
+    public function init(): void
     {
         $this->initAttributes();
     }
 
-    private function initAttributes()
+    private function initAttributes(): void
     {
         foreach ($this->attributes as $key => $value) {
             if (is_int($key)) {
                 unset($this->attributes[$key]);
-                $this->attributes[$value] = null;
+                $this->attributes[$value] = [];
             }
         }
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function events()
+    public function events(): array
     {
         if (false === $this->getLogger()->enabled) {
             return [];
         }
-
         return [
             ActiveRecord::EVENT_BEFORE_INSERT => 'beforeSave',
             ActiveRecord::EVENT_BEFORE_UPDATE => 'beforeSave',
@@ -190,13 +173,13 @@ class ActiveLogBehavior extends Behavior
         ];
     }
 
-    public function beforeSave()
+    public function beforeSave(): void
     {
         $this->changedAttributes = $this->prepareChangedAttributes();
         $this->action = $this->owner->getIsNewRecord() ? 'created' : 'updated';
     }
 
-    public function afterSave()
+    public function afterSave(): void
     {
         if (empty($this->changedAttributes)) {
             return;
@@ -204,7 +187,7 @@ class ActiveLogBehavior extends Behavior
         $this->saveMessage($this->action, $this->changedAttributes);
     }
 
-    public function beforeDelete()
+    public function beforeDelete(): void
     {
         if (false === $this->softDelete) {
             $this->getLogger()->delete(new DeleteCommand([
@@ -215,11 +198,7 @@ class ActiveLogBehavior extends Behavior
         $this->saveMessage('deleted', $this->prepareChangedAttributes(true));
     }
 
-    /**
-     * @param bool $unset
-     * @return array
-     */
-    private function prepareChangedAttributes($unset = false)
+    private function prepareChangedAttributes(bool $unset = false): array
     {
         $result = [];
         foreach ($this->attributes as $attribute => $options) {
@@ -237,11 +216,7 @@ class ActiveLogBehavior extends Behavior
         return $result;
     }
 
-    /**
-     * @param array $data
-     * @return array
-     */
-    private function filterStoreValues(array $data)
+    private function filterStoreValues(array $data): array
     {
         if (isset($data['old']) && !isset($data['old']['value'])) {
             unset($data['old']);
@@ -252,10 +227,8 @@ class ActiveLogBehavior extends Behavior
     /**
      * @param string|int $old_id
      * @param string|int $new_id
-     * @param array $options
-     * @return array
      */
-    protected function resolveStoreValues($old_id, $new_id, $options)
+    protected function resolveStoreValues($old_id, $new_id, array $options): array
     {
         if (isset($options['list'])) {
             $value = $this->resolveListValues($old_id, $new_id, $options['list']);
@@ -270,18 +243,15 @@ class ActiveLogBehavior extends Behavior
     /**
      * @param string|int $old_id
      * @param string|int $new_id
-     * @return array
      */
-    private function resolveSimpleValues($old_id, $new_id)
+    private function resolveSimpleValues($old_id, $new_id): array
     {
         if ($old_id instanceof ArrayExpression || $old_id instanceof JsonExpression) {
             $old_id = $old_id->getValue();
         }
-
         if ($new_id instanceof ArrayExpression || $new_id instanceof JsonExpression) {
             $new_id = $new_id->getValue();
         }
-
         return [
             'old' => ['value' => $old_id],
             'new' => ['value' => $new_id],
@@ -291,10 +261,8 @@ class ActiveLogBehavior extends Behavior
     /**
      * @param string|int|array $old_id
      * @param string|int|array $new_id
-     * @param string $listName
-     * @return array
      */
-    private function resolveListValues($old_id, $new_id, $listName)
+    private function resolveListValues($old_id, $new_id, string $listName): array
     {
         $old['id'] = $old_id;
         $new['id'] = $new_id;
@@ -313,7 +281,6 @@ class ActiveLogBehavior extends Behavior
         } else {
             $new['value'] = ArrayHelper::getValue($this->owner, [$listName, $new_id]);
         }
-
         return [
             'old' => $old,
             'new' => $new
@@ -323,11 +290,8 @@ class ActiveLogBehavior extends Behavior
     /**
      * @param string|int $old_id
      * @param string|int $new_id
-     * @param string $relation
-     * @param string $attribute
-     * @return array
      */
-    private function resolveRelationValues($old_id, $new_id, $relation, $attribute)
+    private function resolveRelationValues($old_id, $new_id, string $relation, string $attribute): array
     {
         $old['id'] = $old_id;
         $new['id'] = $new_id;
@@ -352,11 +316,7 @@ class ActiveLogBehavior extends Behavior
         ];
     }
 
-    /**
-     * @param string $action
-     * @param array $data
-     */
-    protected function saveMessage($action, array $data)
+    protected function saveMessage(string $action, array $data): void
     {
         $data = $this->beforeSaveMessage($data);
         $this->addLog($data, $action);
@@ -365,11 +325,9 @@ class ActiveLogBehavior extends Behavior
 
     /**
      * @param string|array $data
-     * @param string|null $action
-     * @return bool
      * @since 1.7.0
      */
-    public function addLog($data, $action = null)
+    public function addLog($data, string $action = null): bool
     {
         /** @var MessageData $message */
         $message = Yii::createObject([
@@ -384,21 +342,17 @@ class ActiveLogBehavior extends Behavior
     }
 
     /**
-     * @param array $data
-     * @return array
      * @since 1.5.3
      */
-    public function beforeSaveMessage($data)
+    public function beforeSaveMessage(array $data): array
     {
-        $name = self::EVENT_BEFORE_SAVE_MESSAGE;
-
         if (null !== $this->beforeSaveMessage) {
             return call_user_func($this->beforeSaveMessage, $data);
         }
+        $name = self::EVENT_BEFORE_SAVE_MESSAGE;
         if (method_exists($this->owner, $name)) {
             return $this->owner->$name($data);
         }
-
         $event = new MessageEvent();
         $event->logData = $data;
         $this->owner->trigger($name, $event);
@@ -408,10 +362,9 @@ class ActiveLogBehavior extends Behavior
     /**
      * @since 1.5.3
      */
-    public function afterSaveMessage()
+    public function afterSaveMessage(): void
     {
         $name = self::EVENT_AFTER_SAVE_MESSAGE;
-
         if (method_exists($this->owner, $name)) {
             $this->owner->$name();
         } else {
@@ -419,10 +372,7 @@ class ActiveLogBehavior extends Behavior
         }
     }
 
-    /**
-     * @return string
-     */
-    public function getEntityName()
+    public function getEntityName(): string
     {
         if (is_string($this->getEntityName)) {
             return $this->getEntityName;
@@ -436,10 +386,7 @@ class ActiveLogBehavior extends Behavior
         return $this->getEntityName;
     }
 
-    /**
-     * @return string
-     */
-    public function getEntityId()
+    public function getEntityId(): string
     {
         if (null === $this->getEntityId) {
             $result = $this->owner->getPrimaryKey();

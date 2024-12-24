@@ -10,7 +10,9 @@
 
 * Переименован `lav45\activityLogger\LogMessageDTO` => `lav45\activityLogger\MessageData`
 * Доработан `lav45\activityLogger\DeleteCommand`
-* `lav45\activityLogger\MessageData`.`createdAt` указывается сразу при инициализации.
+* `lav45\activityLogger\MessageData::$createdAt` указывается сразу при инициализации.
+* Удалёно свойство `lav45\activityLogger\Manager::$userIdPrefix`. Вместо этого можете настроить
+  `\lav45\activityLogger\ActiveLogBehavior::$getEntityId`
 
 Обновление 2.0.0
 ------------------
