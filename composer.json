@@ -1,6 +1,6 @@
 {
     "name": "lav45/yii2-activity-logger",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "description": "Tools to store user activity log for Yii2",
     "keywords": ["yii2", "extension", "log", "logger", "activity logger"],
     "homepage": "https://github.com/lav45/yii2-activity-logger",

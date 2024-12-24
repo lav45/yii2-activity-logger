@@ -18,18 +18,20 @@ class LogCollection
 {
     private Manager $logger;
 
-    private string $entityName;
-    /** @var string|int|null */
-    private $entityId;
-
-    private ?string $action = null;
+    private MessageData $data;
     /** @var string[] */
     private array $messages = [];
 
     public function __construct(Manager $logger, string $entityName)
     {
         $this->logger = $logger;
-        $this->entityName = $entityName;
+
+        /** @var MessageData $data */
+        $data = Yii::createObject([
+            'class' => MessageData::class,
+            'entityName' => $entityName,
+        ]);
+        $this->data = $data;
     }
 
     /**
@@ -37,13 +39,13 @@ class LogCollection
      */
     public function setEntityId($value): self
     {
-        $this->entityId = $value;
+        $this->data->entityId = $value;
         return $this;
     }
 
     public function setAction(string $value): self
     {
-        $this->action = $value;
+        $this->data->action = $value;
         return $this;
     }
 
@@ -69,15 +71,10 @@ class LogCollection
             return false;
         }
 
-        /** @var MessageData $message */
-        $message = Yii::createObject([
-            'class' => MessageData::class,
-            'entityName' => $this->entityName,
-            'entityId' => $this->entityId,
-            'createdAt' => time(),
-            'action' => $this->action,
-            'data' => $messages,
-        ]);
-        return $this->logger->log($message);
+        $data = clone $this->data;
+        $data->createdAt = time();
+        $data->data = $messages;
+
+        return $this->logger->log($data);
     }
 }
