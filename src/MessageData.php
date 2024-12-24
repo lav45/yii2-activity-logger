@@ -30,6 +30,6 @@ final class MessageData extends BaseObject
     public ?string $action = null;
     /** Environment, which produced the effect */
     public ?string $env = null;
-    /** @var array|string */
+    /** @var array|string|null */
     public $data;
 }
