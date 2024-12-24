@@ -320,16 +320,13 @@ use lav45\activityLogger\MessageData;
 
 $message = Yii::createObject([
     'class' => MessageData::class,
-
+    'createdAt' => time(),
     // имя сущности
     'entityName' => 'user',
-
     // id сущности с которой производится действие
     'entityId' => 10,
-    
     // Действие которое сейчас выполняется
     'action' => 'download',
-
     // текст с описанием действия
     'data' => ['export data'],
 ]);

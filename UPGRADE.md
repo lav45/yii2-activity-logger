@@ -10,6 +10,7 @@
 
 * Переименован `lav45\activityLogger\LogMessageDTO` => `lav45\activityLogger\MessageData`
 * Доработан `lav45\activityLogger\DeleteCommand`
+* `lav45\activityLogger\MessageData`.`createdAt` указывается сразу при инициализации.
 
 Обновление 2.0.0
 ------------------

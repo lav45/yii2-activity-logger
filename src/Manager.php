@@ -56,8 +56,6 @@ class Manager extends BaseObject
             return false;
         }
 
-        $message->createdAt = time();
-
         if ($identity = $this->getUserIdentity()) {
             $message->userId = $this->userIdPrefix . $identity->getId();
             $message->userName = $identity->{$this->userNameAttribute};

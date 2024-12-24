@@ -115,6 +115,7 @@ namespace lav45\activityLogger\test\units {
 
             $message = new MessageData([
                 'entityName' => $entityName,
+                'createdAt' => time(),
                 'data' => $data,
                 'env' => $env,
             ]);
@@ -148,6 +149,7 @@ namespace lav45\activityLogger\test\units {
 
             $message = new MessageData([
                 'entityName' => $entityName,
+                'createdAt' => time(),
                 'data' => $data,
                 'env' => $env,
             ]);

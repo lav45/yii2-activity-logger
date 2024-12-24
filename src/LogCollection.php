@@ -74,6 +74,7 @@ class LogCollection
             'class' => MessageData::class,
             'entityName' => $this->entityName,
             'entityId' => $this->entityId,
+            'createdAt' => time(),
             'action' => $this->action,
             'data' => $messages,
         ]);

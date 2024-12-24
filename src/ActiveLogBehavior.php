@@ -376,6 +376,7 @@ class ActiveLogBehavior extends Behavior
             'class' => MessageData::class,
             'entityName' => $this->getEntityName(),
             'entityId' => $this->getEntityId(),
+            'createdAt' => time(),
             'action' => $action,
             'data' => $data,
         ]);
