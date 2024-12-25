@@ -2,8 +2,8 @@
 
 namespace lav45\activityLogger\test\units {
 
-    use lav45\activityLogger\DeleteCommand;
-    use lav45\activityLogger\MessageData;
+    use lav45\activityLogger\storage\DeleteCommand;
+    use lav45\activityLogger\storage\MessageData;
     use lav45\activityLogger\Manager;
     use lav45\activityLogger\test\components\FakeStorage;
     use lav45\activityLogger\test\models\User;
@@ -13,10 +13,6 @@ namespace lav45\activityLogger\test\units {
     use yii\web\IdentityInterface;
     use yii\web\User as WebUser;
 
-    /**
-     * Class ManagerTest
-     * @package lav45\activityLogger\test\units
-     */
     class ManagerTest extends TestCase
     {
         /**

@@ -8,6 +8,8 @@
 
 namespace lav45\activityLogger;
 
+use lav45\activityLogger\storage\DeleteCommand;
+use lav45\activityLogger\storage\MessageData;
 use Yii;
 use yii\base\Behavior;
 use yii\base\InvalidValueException;
@@ -19,9 +21,6 @@ use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 
 /**
- * Class ActiveLogBehavior
- * @package lav45\activityLogger
- *
  * ======================= Example usage ======================
  *
  *  // Recommended

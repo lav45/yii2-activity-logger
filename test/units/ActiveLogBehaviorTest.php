@@ -3,9 +3,9 @@
 namespace lav45\activityLogger\test\units;
 
 use lav45\activityLogger\ActiveLogBehavior;
-use lav45\activityLogger\DbStorage;
-use lav45\activityLogger\DeleteCommand;
-use lav45\activityLogger\MessageData;
+use lav45\activityLogger\storage\DbStorage;
+use lav45\activityLogger\storage\DeleteCommand;
+use lav45\activityLogger\storage\MessageData;
 use lav45\activityLogger\Manager;
 use lav45\activityLogger\MessageEvent;
 use lav45\activityLogger\modules\models\ActivityLog;
@@ -17,10 +17,6 @@ use Yii;
 use yii\base\Event;
 use yii\base\InvalidValueException;
 
-/**
- * Class ActiveLogBehaviorTest
- * @package lav45\activityLogger\test\units
- */
 class ActiveLogBehaviorTest extends TestCase
 {
     public static function setUpBeforeClass(): void

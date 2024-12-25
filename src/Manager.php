@@ -8,16 +8,15 @@
 
 namespace lav45\activityLogger;
 
+use lav45\activityLogger\storage\DeleteCommand;
+use lav45\activityLogger\storage\MessageData;
+use lav45\activityLogger\storage\StorageInterface;
 use Throwable;
 use Yii;
 use yii\base\BaseObject;
 use yii\di\Instance;
 use yii\web\IdentityInterface;
 
-/**
- * Class Manager
- * @package lav45\activityLogger
- */
 class Manager extends BaseObject
 {
     public bool $enabled = true;

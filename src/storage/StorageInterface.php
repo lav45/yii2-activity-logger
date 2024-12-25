@@ -6,12 +6,8 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-namespace lav45\activityLogger;
+namespace lav45\activityLogger\storage;
 
-/**
- * Interface StorageInterface
- * @package lav45\activityLogger
- */
 interface StorageInterface
 {
     public function save(MessageData $message): void;

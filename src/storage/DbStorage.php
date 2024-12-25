@@ -6,17 +6,13 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-namespace lav45\activityLogger;
+namespace lav45\activityLogger\storage;
 
 use yii\db\Query;
 use yii\db\Connection;
 use yii\di\Instance;
 use yii\base\BaseObject;
 
-/**
- * Class DbStorage
- * @package repository
- */
 class DbStorage extends BaseObject implements StorageInterface
 {
     /** @var Connection|string|array */

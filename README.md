@@ -84,7 +84,7 @@ return [
             // 'userNameAttribute' => 'username',
             // Хранилище для логов, реализует `\lav45\activityLogger\StorageInterface`
             'storage' => [
-                'class' => \lav45\activityLogger\DbStorage::class,
+                'class' => \lav45\activityLogger\storage\DbStorage::class,
                 // Имя таблицы в которой будут храниться логи
                 // 'tableName' => '{{%activity_log}}',
                 // Идентификатор компонента `\yii\db\Connection`
@@ -99,7 +99,7 @@ return [
 Для удобства этот код можно разместить в файле `bootstrap.php`
 
 ```php
-Yii::$container->set(\lav45\activityLogger\MessageData::class, [
+Yii::$container->set(\lav45\activityLogger\storage\MessageData::class, [
     'env' => 'console', // Окружение из которого производилось действие
     'userId' => 'console',
     'userName' => 'Droid R2-D2',
@@ -317,10 +317,8 @@ yii logger/clean --old-than=1y
 контроллера и т.д
 
 ```php
-use lav45\activityLogger\MessageData;
-
 $message = Yii::createObject([
-    'class' => MessageData::class,
+    'class' => \lav45\activityLogger\storage\MessageData::class,
     'createdAt' => time(),
     // имя сущности
     'entityName' => 'user',

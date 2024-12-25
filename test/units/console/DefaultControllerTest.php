@@ -2,7 +2,7 @@
 
 namespace lav45\activityLogger\test\console;
 
-use lav45\activityLogger\DeleteCommand;
+use lav45\activityLogger\storage\DeleteCommand;
 use PHPUnit\Framework\TestCase;
 use yii\base\Module;
 

@@ -8,12 +8,9 @@
 
 namespace lav45\activityLogger;
 
+use lav45\activityLogger\storage\MessageData;
 use Yii;
 
-/**
- * Class LogCollection
- * @package lav45\activityLogger
- */
 class LogCollection
 {
     private Manager $logger;

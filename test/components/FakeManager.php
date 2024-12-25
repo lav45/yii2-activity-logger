@@ -2,13 +2,9 @@
 
 namespace lav45\activityLogger\test\components;
 
-use lav45\activityLogger\MessageData;
+use lav45\activityLogger\storage\MessageData;
 use lav45\activityLogger\Manager;
 
-/**
- * Class FakeManager
- * @package lav45\activityLogger\test\models
- */
 class FakeManager extends Manager
 {
     public MessageData $message;

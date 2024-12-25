@@ -6,14 +6,10 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-namespace lav45\activityLogger;
+namespace lav45\activityLogger\storage;
 
 use yii\base\BaseObject;
 
-/**
- * Class MessageData this is a data transfer object
- * @package lav45\activityLogger
- */
 final class MessageData extends BaseObject
 {
     /** Alias name target object */

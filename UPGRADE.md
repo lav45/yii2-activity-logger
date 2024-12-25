@@ -5,10 +5,18 @@
 стараемся обеспечить обратную совместимость, насколько это возможно, иногда это не возможно, или приводит к
 существенному снижению производительности. Так же вы сможете следить за всеми критическими изменениями в нашем проекте.
 
+Обновление 2.1.0
+------------------
+
+* Переместил `\lav45\activityLogger\DbStorage` -> `\lav45\activityLogger\storage\DbStorage`
+* Переместил `\lav45\activityLogger\StorageInterface` -> `\lav45\activityLogger\storage\StorageInterface`
+* Переместил `\lav45\activityLogger\DeleteCommand` -> `\lav45\activityLogger\storage\DeleteCommand`
+* Переместил `\lav45\activityLogger\MessageData` -> `\lav45\activityLogger\storage\MessageData`
+
 Обновление 2.0.1
 ------------------
 
-* Переименован `lav45\activityLogger\LogMessageDTO` => `lav45\activityLogger\MessageData`
+* Переименован `lav45\activityLogger\LogMessageDTO` -> `lav45\activityLogger\MessageData`
 * Доработан `lav45\activityLogger\DeleteCommand`
 * `lav45\activityLogger\MessageData::$createdAt` указывается сразу при инициализации.
 * Удалёно свойство `lav45\activityLogger\Manager::$userIdPrefix`. Вместо этого можете настроить

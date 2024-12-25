@@ -2,14 +2,10 @@
 
 namespace lav45\activityLogger\test\components;
 
-use lav45\activityLogger\DeleteCommand;
-use lav45\activityLogger\MessageData;
-use lav45\activityLogger\StorageInterface;
+use lav45\activityLogger\storage\DeleteCommand;
+use lav45\activityLogger\storage\MessageData;
+use lav45\activityLogger\storage\StorageInterface;
 
-/**
- * Class FakeStorage
- * @package lav45\activityLogger\test\components
- */
 class FakeStorage implements StorageInterface
 {
     public ?MessageData $message = null;

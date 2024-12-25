@@ -8,15 +8,11 @@
 
 namespace lav45\activityLogger\console;
 
-use lav45\activityLogger\DeleteCommand;
+use lav45\activityLogger\storage\DeleteCommand;
 use lav45\activityLogger\ManagerTrait;
 use yii\console\Controller;
 use yii\helpers\Console;
 
-/**
- * Class DefaultController
- * @package lav45\activityLogger\console
- */
 class DefaultController extends Controller
 {
     use ManagerTrait;
