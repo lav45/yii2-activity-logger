@@ -45,38 +45,29 @@ class LogInfoBehavior extends Behavior
      */
     public $template;
     /**
-     * @var bool add log data to start
+     * add log data to start
      */
-    public $prepend = true;
+    public bool $prepend = true;
 
-    /**
-     * @inheritdoc
-     */
-    public function events()
+    public function events(): array
     {
         return [
             ActiveLogBehavior::EVENT_BEFORE_SAVE_MESSAGE => 'beforeSave',
         ];
     }
 
-    /**
-     * @param MessageEvent $event
-     */
-    public function beforeSave(MessageEvent $event)
+    public function beforeSave(MessageEvent $event): void
     {
         if ($data = $this->getInfoData()) {
             if (true === $this->prepend) {
-                $event->logData = [$data] + $event->logData;
+                array_unshift($event->logData, $data);
             } else {
                 $event->logData[] = $data;
             }
         }
     }
 
-    /**
-     * @return string|null
-     */
-    protected function getInfoData()
+    protected function getInfoData(): ?string
     {
         if (null === $this->template) {
             return null;
@@ -84,11 +75,9 @@ class LogInfoBehavior extends Behavior
         if (is_callable($this->template)) {
             return call_user_func($this->template);
         }
-
         $callback = function ($matches) {
             return ArrayHelper::getValue($this->owner, $matches[1]);
         };
-
         return preg_replace_callback('/\\{([\w\._]+)\\}/', $callback, $this->template);
     }
 }
