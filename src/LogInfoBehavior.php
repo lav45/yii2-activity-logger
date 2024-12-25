@@ -66,7 +66,7 @@ class LogInfoBehavior extends Behavior
     {
         if ($data = $this->getInfoData()) {
             if (true === $this->prepend) {
-                $event->logData = [$data] + $event->logData;
+                array_unshift($event->logData, $data);
             } else {
                 $event->logData[] = $data;
             }

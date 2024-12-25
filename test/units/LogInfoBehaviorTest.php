@@ -66,7 +66,10 @@ class LogInfoBehaviorTest extends TestCase
         $event = new MessageEvent();
         $event->logData = ['first log action'];
 
-        $expected = ["{$model->username} ({$model->profile['email']})"] + $event->logData;
+        $expected = [
+            "{$model->username} ({$model->profile['email']})",
+            'first log action',
+        ];
 
         $model->trigger(ActiveLogBehavior::EVENT_BEFORE_SAVE_MESSAGE, $event);
         self::assertEquals($expected, $event->logData);
@@ -74,8 +77,10 @@ class LogInfoBehaviorTest extends TestCase
         $behavior->prepend = false;
         $event->logData = ['first log action'];
 
-        $expected = $event->logData;
-        $expected[] = "{$model->username} ({$model->profile['email']})";
+        $expected = [
+            'first log action',
+            "{$model->username} ({$model->profile['email']})",
+        ];
 
         $model->trigger(ActiveLogBehavior::EVENT_BEFORE_SAVE_MESSAGE, $event);
         self::assertEquals($expected, $event->logData);
