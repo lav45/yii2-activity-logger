@@ -14,7 +14,8 @@ RUN apk add --no-cache \
     php7-tokenizer \
     php7-pecl-memcached \
     php7-sqlite3 sqlite \
-    php7-pdo php7-pdo_sqlite
+    php7-pdo php7-pdo_sqlite \
+    php7-xdebug
 
 # composer
 RUN apk add --no-cache git php7-phar php7-openssl php7-zip php7-iconv php7-curl

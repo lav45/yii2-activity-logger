@@ -32,7 +32,8 @@
         "ext-pdo_sqlite": "*"
     },
     "scripts": {
-        "phpunit": "vendor/bin/phpunit"
+        "phpunit": "vendor/bin/phpunit --verbose",
+        "coverage": "XDEBUG_MODE=coverage php -d zend_extension=xdebug.so vendor/bin/phpunit --verbose --coverage-html test/coverage"
     },
     "autoload": {
         "psr-4": {

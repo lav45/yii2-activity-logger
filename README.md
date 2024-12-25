@@ -14,9 +14,12 @@
 </table>
 
 
-[![Latest Stable Version](https://poser.pugx.org/lav45/yii2-activity-logger/v/stable)](https://packagist.org/packages/lav45/yii2-activity-logger)
+[![Latest Stable Version](https://poser.pugx.org/lav45/yii2-activity-logger/v/stable?cache=clear)](https://packagist.org/packages/lav45/yii2-activity-logger)
 [![License](https://poser.pugx.org/lav45/yii2-activity-logger/license)](https://github.com/lav45/yii2-activity-logger/blob/master/LICENSE.md)
 [![Total Downloads](https://poser.pugx.org/lav45/yii2-activity-logger/downloads)](https://packagist.org/packages/lav45/yii2-activity-logger)
+[![Test Status](https://github.com/lav45/yii2-activity-logger/workflows/test/badge.svg)](https://github.com/lav45/yii2-activity-logger/actions)
+[![Code Coverage](https://scrutinizer-ci.com/g/lav45/yii2-activity-logger/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/lav45/yii2-activity-logger/)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/lav45/yii2-activity-logger/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/lav45/yii2-activity-logger/)
 
 ## Установка расширения
 

@@ -4,17 +4,22 @@ on:
   push:
     branches:
       - '**'
-    paths-ignore:
-      - 'README.md'
-      - 'LICENSE.md'
-      - '.gitattributes'
-      - '.gitignore'
+    paths:
+      - 'src/**'
+      - 'test/**'
+      - 'migrations/**'
+      - '.github/workflows/test.yml'
+      - 'composer.json'
+      - 'phpunit.xml.dist'
+
   pull_request:
     paths-ignore:
-      - 'README.md'
-      - 'LICENSE.md'
-      - '.gitattributes'
-      - '.gitignore'
+      - 'src/**'
+      - 'test/**'
+      - 'migrations/**'
+      - '.github/workflows/test.yml'
+      - 'composer.json'
+      - 'phpunit.xml.dist'
 
 jobs:
   test:
@@ -23,7 +28,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
         php: [7.4, 8.0, 8.1, 8.2, 8.3, 8.4]
 
     steps:
@@ -35,7 +39,7 @@ jobs:
       - name: Install PHP with extensions
         uses: shivammathur/setup-php@v2
         with:
-          extensions: curl, intl, pdo, pdo_sqlite, memcached
+          extensions: curl, intl, pdo, pdo_sqlite, sqlite3, memcached
           php-version: ${{ matrix.php }}
           tools: composer:v2
 

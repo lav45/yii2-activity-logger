@@ -1,4 +1,6 @@
 # Ignore all test and documentation for archive
+/.github            export-ignore
+/.scrutinizer.yml   export-ignore
 /test               export-ignore
 /phpunit.xml.dist   export-ignore
 /.gitattributes     export-ignore

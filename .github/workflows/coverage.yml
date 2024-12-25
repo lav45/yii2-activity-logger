@@ -1,0 +1,40 @@
+name: coverage
+
+on:
+  push:
+    branches:
+      - 'master'
+    paths:
+      - 'src/**'
+      - 'test/**'
+      - '.github/workflows/coverage.yml'
+      - '.codeclimate.yml'
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Install PHP with extensions
+        uses: shivammathur/setup-php@v2
+        with:
+          extensions: curl, intl, pdo, pdo_sqlite, sqlite3, memcached
+          php-version: 8.4
+          tools: composer:v2
+
+      - name: Install composer with dev dependencies
+        run: composer update --optimize-autoloader --classmap-authoritative --prefer-dist --no-progress --no-interaction --ansi
+
+      - name: Run PHPUnit tests and generate coverage.
+        run: vendor/bin/phpunit --coverage-clover=coverage.xml
+
+      - name: Upload Scrutinizer coverage
+        uses: sudo-bot/action-scrutinizer@latest
+        if: github.repository == 'lav45/yii2-activity-logger'
+        with:
+          cli-args: "--format=php-clover coverage.xml --revision=${{ github.sha }}"
