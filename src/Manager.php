@@ -14,10 +14,9 @@ use lav45\activityLogger\storage\StorageInterface;
 use Throwable;
 use Yii;
 use yii\base\BaseObject;
-use yii\di\Instance;
 use yii\web\IdentityInterface;
 
-class Manager extends BaseObject
+class Manager extends BaseObject implements ManagerInterface
 {
     public bool $enabled = true;
 
@@ -25,10 +24,18 @@ class Manager extends BaseObject
 
     public string $userNameAttribute = 'username';
 
-    /** @var string|array|StorageInterface */
-    public $storage = 'activityLoggerStorage';
-
     public bool $debug = YII_DEBUG;
+
+    private StorageInterface $storage;
+
+    public function __construct(
+        StorageInterface $storage,
+        array            $config = []
+    )
+    {
+        parent::__construct($config);
+        $this->storage = $storage;
+    }
 
     protected function getUserIdentity(): ?IdentityInterface
     {
@@ -40,17 +47,14 @@ class Manager extends BaseObject
         return null;
     }
 
-    protected function getStorage(): StorageInterface
+    public function isEnabled(): bool
     {
-        if ($this->storage instanceof StorageInterface === false) {
-            $this->storage = Instance::ensure($this->storage, StorageInterface::class);
-        }
-        return $this->storage;
+        return $this->enabled;
     }
 
     public function log(MessageData $message): bool
     {
-        if (false === $this->enabled) {
+        if (false === $this->isEnabled()) {
             return false;
         }
 
@@ -60,7 +64,7 @@ class Manager extends BaseObject
         }
 
         try {
-            $this->getStorage()->save($message);
+            $this->storage->save($message);
             return true;
         } catch (Throwable $e) {
             $this->throwException($e);
@@ -70,11 +74,11 @@ class Manager extends BaseObject
 
     public function delete(DeleteCommand $command): bool
     {
-        if (false === $this->enabled) {
+        if (false === $this->isEnabled()) {
             return false;
         }
         try {
-            $this->getStorage()->delete($command);
+            $this->storage->delete($command);
             return true;
         } catch (Throwable $e) {
             $this->throwException($e);

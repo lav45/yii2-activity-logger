@@ -3,12 +3,14 @@
 namespace lav45\activityLogger\test\units;
 
 use lav45\activityLogger\ActiveLogBehavior;
+use lav45\activityLogger\ManagerInterface;
 use lav45\activityLogger\storage\DbStorage;
 use lav45\activityLogger\storage\DeleteCommand;
 use lav45\activityLogger\storage\MessageData;
 use lav45\activityLogger\Manager;
 use lav45\activityLogger\MessageEvent;
 use lav45\activityLogger\modules\models\ActivityLog;
+use lav45\activityLogger\storage\StorageInterface;
 use lav45\activityLogger\test\models\LogUser as User;
 use lav45\activityLogger\test\models\TestEntityName;
 use lav45\activityLogger\test\models\UserEventMethod;
@@ -16,16 +18,21 @@ use PHPUnit\Framework\TestCase;
 use Yii;
 use yii\base\Event;
 use yii\base\InvalidValueException;
+use yii\di\Instance;
 
 class ActiveLogBehaviorTest extends TestCase
 {
     public static function setUpBeforeClass(): void
     {
+        Yii::$container->setDefinitions([
+            ManagerInterface::class => static fn() => Instance::ensure('activityLogger'),
+            StorageInterface::class => static fn() => Instance::ensure('activityLoggerStorage'),
+        ]);
         Yii::$app->set('activityLogger', [
-            'class' => Manager::class,
+            '__class' => Manager::class,
         ]);
         Yii::$app->set('activityLoggerStorage', [
-            'class' => DbStorage::class,
+            '__class' => DbStorage::class,
         ]);
     }
 
@@ -679,7 +686,7 @@ class ActiveLogBehaviorTest extends TestCase
 
         // Reset component settings
         Yii::$app->set('activityLogger', [
-            'class' => Manager::class,
+            '__class' => Manager::class,
         ]);
     }
 
@@ -703,7 +710,7 @@ class ActiveLogBehaviorTest extends TestCase
 
         // Reset component settings
         Yii::$app->set('activityLogger', [
-            'class' => Manager::class,
+            '__class' => Manager::class,
         ]);
     }
 

@@ -107,7 +107,7 @@ class LogInfoModel extends Model
     {
         return [
             'logInfo' => [
-                'class' => LogInfoBehavior::class,
+                '__class' => LogInfoBehavior::class,
             ]
         ];
     }

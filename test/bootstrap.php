@@ -15,11 +15,11 @@ new Application([
     'basePath' => __DIR__,
     'components' => [
         'cache' => [
-            'class' => MemCache::class,
+            '__class' => MemCache::class,
             'useMemcached' => extension_loaded('memcached'),
         ],
         'db' => [
-            'class' => Connection::class,
+            '__class' => Connection::class,
             'dsn' => 'sqlite::memory:',
         ]
     ]

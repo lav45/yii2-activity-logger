@@ -21,20 +21,21 @@ namespace lav45\activityLogger\test\units {
          */
         public static ?int $time = null;
 
-        private function createManager(): Manager
+        /**
+         * @return array{Manager, FakeStorage}
+         */
+        private function createManager(): array
         {
-            $manager = new Manager();
-            $manager->storage = new FakeStorage();
+            $storage = new FakeStorage();
+            $manager = new Manager($storage);
             $manager->enabled = true;
-            return $manager;
+            return [$manager, $storage];
         }
 
         public function testDisabled(): void
         {
-            $manager = $this->createManager();
+            [$manager, $storage] = $this->createManager();
             $manager->enabled = false;
-            /** @var FakeStorage $storage */
-            $storage = $manager->storage;
 
             $manager->log(new MessageData([
                 'entityName' => 'test',
@@ -60,7 +61,7 @@ namespace lav45\activityLogger\test\units {
                     'cache' => $this->old_app->getCache(),
                     'db' => $this->old_app->getDb(),
                     'user' => [
-                        'class' => WebUser::class,
+                        '__class' => WebUser::class,
                         'identityClass' => User::class,
                     ]
                 ]
@@ -101,7 +102,7 @@ namespace lav45\activityLogger\test\units {
             $user = $this->createUser();
             $this->loginUser($user);
 
-            $manager = $this->createManager();
+            [$manager, $storage] = $this->createManager();
             $manager->userNameAttribute = 'login';
 
             $env = 'console test 1';
@@ -118,8 +119,7 @@ namespace lav45\activityLogger\test\units {
 
             $manager->log($message);
 
-            /** @var MessageData $storageMessage */
-            $storageMessage = $manager->storage->message;
+            $storageMessage = $storage->message;
 
             self::assertEquals($storageMessage->userId, $user->id);
             self::assertEquals($storageMessage->userName, $user->login);
@@ -136,7 +136,7 @@ namespace lav45\activityLogger\test\units {
 
         public function testLogWithOutUser(): void
         {
-            $manager = $this->createManager();
+            [$manager, $storage] = $this->createManager();
 
             $env = 'console test 2';
             $entityName = 'test';
@@ -152,8 +152,7 @@ namespace lav45\activityLogger\test\units {
 
             $manager->log($message);
 
-            /** @var MessageData $storageMessage */
-            $storageMessage = $manager->storage->message;
+            $storageMessage = $storage->message;
 
             self::assertNull($storageMessage->userId);
             self::assertNull($storageMessage->userName);
@@ -167,15 +166,13 @@ namespace lav45\activityLogger\test\units {
 
         public function testDelete(): void
         {
-            $manager = $this->createManager();
+            [$manager, $storage] = $this->createManager();
 
             $command = new DeleteCommand([
                 'entityName' => 'entityName',
             ]);
             $manager->delete($command);
 
-            /** @var FakeStorage $storage */
-            $storage = $manager->storage;
             self::assertEquals($storage->command, $command);
             self::assertEquals($storage->command->entityName, 'entityName');
             self::assertNull($storage->command->oldThan);

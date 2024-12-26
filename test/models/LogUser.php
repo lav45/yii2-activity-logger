@@ -17,7 +17,7 @@ class LogUser extends User
     {
         return [
             'logger' => [
-                'class' => ActiveLogBehavior::class,
+                '__class' => ActiveLogBehavior::class,
                 'getEntityName' => 'user',
                 'attributes' => [
                     'login',

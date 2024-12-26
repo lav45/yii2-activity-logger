@@ -20,7 +20,7 @@ use yii\helpers\ArrayHelper;
  *  {
  *      return [
  *          [
- *              'class' => 'lav45\activityLogger\LogInfoBehavior',
+ *              '__class' => 'lav45\activityLogger\LogInfoBehavior',
  *              'template' => '{username} ({profile.email})',
  *              // OR
  *              //'template' => function() {

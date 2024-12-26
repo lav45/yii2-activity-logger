@@ -8,15 +8,14 @@
 
 namespace lav45\activityLogger\console;
 
+use lav45\activityLogger\ManagerInterface;
 use lav45\activityLogger\storage\DeleteCommand;
-use lav45\activityLogger\ManagerTrait;
+use yii\base\Module;
 use yii\console\Controller;
 use yii\helpers\Console;
 
 class DefaultController extends Controller
 {
-    use ManagerTrait;
-
     /** Target entity name */
     public ?string $entityName = null;
     /** Entity target id */
@@ -36,6 +35,19 @@ class DefaultController extends Controller
      * 1y - 1 year
      */
     public ?string $oldThan = '1y';
+
+    private ManagerInterface $logger;
+
+    public function __construct(
+        string           $id,
+        Module           $module,
+        ManagerInterface $logger,
+        array            $config = []
+    )
+    {
+        parent::__construct($id, $module, $config);
+        $this->logger = $logger;
+    }
 
     public function options($actionID): array
     {
@@ -80,7 +92,7 @@ class DefaultController extends Controller
             'oldThan' => $oldThan,
         ]);
 
-        if ($this->getLogger()->delete($command)) {
+        if ($this->logger->delete($command)) {
             $this->stdout("Successful clearing the logs.\n");
         } else {
             $this->stdout("Error while cleaning the logs.\n");

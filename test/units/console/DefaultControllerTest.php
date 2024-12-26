@@ -2,18 +2,23 @@
 
 namespace lav45\activityLogger\test\console;
 
+use lav45\activityLogger\ManagerInterface;
 use lav45\activityLogger\storage\DeleteCommand;
+use lav45\activityLogger\storage\MessageData;
 use PHPUnit\Framework\TestCase;
 use yii\base\Module;
 
 class DefaultControllerTest extends TestCase
 {
-    private function createController(): DefaultController
+    /**
+     * @return array{DefaultController, Manager}
+     */
+    private function createController(): array
     {
+        $logger = new Manager();
         $module = new Module('console');
-        $controller = new DefaultController('logger', $module);
-        $controller->setLogger(new Manager);
-        return $controller;
+        $controller = new DefaultController('logger', $module, $logger);
+        return [$controller, $logger];
     }
 
     /**
@@ -23,11 +28,10 @@ class DefaultControllerTest extends TestCase
      */
     public function testActionClean(array $params, array $result): void
     {
-        $controller = $this->createController();
+        [$controller, $logger] = $this->createController();
         $controller->run('clean', $params);
 
-        $options = $controller->getLogger()->options;
-        self::assertEquals($options, $result);
+        self::assertEquals($logger->options, $result);
     }
 
     public function getActionCleanDataProvider(): array
@@ -140,8 +144,7 @@ class DefaultControllerTest extends TestCase
 
     public function testStdOutActionClean(): void
     {
-        $controller = $this->createController();
-        $manager = $controller->getLogger();
+        [$controller, $manager] = $this->createController();
 
         $manager->result = true;
         $controller->runAction('clean');
@@ -174,7 +177,7 @@ class DefaultController extends \lav45\activityLogger\console\DefaultController
     }
 }
 
-class Manager extends \lav45\activityLogger\Manager
+class Manager implements ManagerInterface
 {
     public bool $result = true;
 
@@ -184,5 +187,15 @@ class Manager extends \lav45\activityLogger\Manager
     {
         $this->options = array_filter((array)$command);
         return $this->result;
+    }
+
+    public function log(MessageData $message): bool
+    {
+        return $this->result;
+    }
+
+    public function isEnabled(): bool
+    {
+        return true;
     }
 }

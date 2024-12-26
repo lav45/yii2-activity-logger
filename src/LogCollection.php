@@ -13,19 +13,19 @@ use Yii;
 
 class LogCollection
 {
-    private Manager $logger;
+    private ManagerInterface $logger;
 
     private MessageData $data;
     /** @var string[] */
     private array $messages = [];
 
-    public function __construct(Manager $logger, string $entityName)
+    public function __construct(ManagerInterface $logger, string $entityName)
     {
         $this->logger = $logger;
 
         /** @var MessageData $data */
         $data = Yii::createObject([
-            'class' => MessageData::class,
+            '__class' => MessageData::class,
             'entityName' => $entityName,
         ]);
         $this->data = $data;

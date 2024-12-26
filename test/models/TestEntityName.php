@@ -16,7 +16,7 @@ class TestEntityName extends ActiveRecord
     {
         return [
             'logger' => [
-                'class' => ActiveLogBehavior::class,
+                '__class' => ActiveLogBehavior::class,
             ],
         ];
     }

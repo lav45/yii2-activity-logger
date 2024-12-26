@@ -5,15 +5,23 @@
 стараемся обеспечить обратную совместимость, насколько это возможно, иногда это не возможно, или приводит к
 существенному снижению производительности. Так же вы сможете следить за всеми критическими изменениями в нашем проекте.
 
-Обновление 2.1.0
+Обновление 2.1
 ------------------
 
 * Переместил `\lav45\activityLogger\DbStorage` -> `\lav45\activityLogger\storage\DbStorage`
 * Переместил `\lav45\activityLogger\StorageInterface` -> `\lav45\activityLogger\storage\StorageInterface`
 * Переместил `\lav45\activityLogger\DeleteCommand` -> `\lav45\activityLogger\storage\DeleteCommand`
 * Переместил `\lav45\activityLogger\MessageData` -> `\lav45\activityLogger\storage\MessageData`
+* Удалён `\lav45\activityLogger\ManagerTrait`
+* Необходимо настроить DI container
+  ```php
+  Yii::$container->setDefinitions([
+      \lav45\activityLogger\ManagerInterface::class => static fn() => Instance::ensure('activityLogger'),
+      \lav45\activityLogger\storage\StorageInterface::class => static fn() => Instance::ensure('activityLoggerStorage'),
+  ]);
+  ```
 
-Обновление 2.0.1
+Обновление 2.0
 ------------------
 
 * Переименован `lav45\activityLogger\LogMessageDTO` -> `lav45\activityLogger\MessageData`
@@ -21,13 +29,9 @@
 * `lav45\activityLogger\MessageData::$createdAt` указывается сразу при инициализации.
 * Удалёно свойство `lav45\activityLogger\Manager::$userIdPrefix`. Вместо этого можете настроить
   `\lav45\activityLogger\ActiveLogBehavior::$getEntityId`
-
-Обновление 2.0.0
-------------------
-
 * php >= 7.4
 
-Обновление 1.8.0
+Обновление 1.8
 ------------------
 
 * В классе `\lav45\activityLogger\modules\models\ActivityLogSearch` удалены методы `setEntityMap()`, `getEntityMap()`,
@@ -36,19 +40,16 @@
 * Удалён `src/modules/views/default/_search.php`
 * Доработан `\lav45\activityLogger\StorageInterface` и `\lav45\activityLogger\DbStorage`
 * Переименован и доработан класс `\lav45\activityLogger\LogMessage` => `LogMessageDTO`
-* Удалено свойство `\lav45\activityLogger\Manager::$messageClass`
+* Удалено свойство `\lav45\activityLogger\Manager::$messageClass` настройки можно передать через `Yii::$container`
+  ```php
+  Yii::$container->set(\lav45\activityLogger\LogMessageDTO::class, [
+      'env' => 'console', // Окружение из которого производилось действие
+      'userId' => 'console',
+      'userName' => 'Droid R2-D2',
+  ]);
+  ```
 
-Настройки из свойство `Manager::$messageClass` можно передать через `Yii::$container`
-
-```php
-Yii::$container->set(\lav45\activityLogger\LogMessageDTO::class, [
-    'env' => 'console', // Окружение из которого производилось действие
-    'userId' => 'console',
-    'userName' => 'Droid R2-D2',
-]);
-```
-
-Обновление 1.7.0
+Обновление 1.7
 ------------------
 
 * Удалено свойство `\lav45\activityLogger\Manager::$deleteOldThanDays`. Вместо него можно использовать параметр
@@ -56,7 +57,7 @@ Yii::$container->set(\lav45\activityLogger\LogMessageDTO::class, [
 * Удалено свойство `\lav45\activityLogger\ActiveLogBehavior::$actionLabels`. Изменения коснулись только стандартных
   действий если вы использовали произвольные имена действий то они будут отображаться как есть.
 
-Обновление 1.6.0
+Обновление 1.6
 ------------------
 
 * Доработан метод `\lav45\activityLogger\ActiveLogBehavior::beforeSaveMessage()` и событие
@@ -64,7 +65,7 @@ Yii::$container->set(\lav45\activityLogger\LogMessageDTO::class, [
   Все данные которые будут сохранены, передаются всем кто подписан на событие чтобы пользователь мог добавить или
   изменить некоторые данные по своему усмотрению
 
-Обновление 1.5.3
+Обновление 1.5
 ------------------
 
 * Класс `\lav45\activityLogger\ActiveRecordBehavior` был переименован в `\lav45\activityLogger\ActiveLogBehavior`
@@ -76,10 +77,6 @@ Yii::$container->set(\lav45\activityLogger\LogMessageDTO::class, [
 * `\lav45\activityLogger\ActiveRecordBehavior` не будет писать в лог пустые значения. За проверку наличия непустых
   данных отвечает метод `ActiveRecordBehavior::isEmpty()`, работу которого можно скорректировать с помощью свойства
   `ActiveRecordBehavior::$isEmpty` передав ему свою функцию.
-
-Обновление 1.5.2
-------------------
-
 * Удалены методы `\lav45\activityLogger\LogMessage`
     * getEntityName()
     * setEntityName()
@@ -98,38 +95,30 @@ Yii::$container->set(\lav45\activityLogger\LogMessageDTO::class, [
 
   В место этого будут использоваться публичные свойства.
 
-Обновление 1.5.1
-------------------
-
 * Для того чтобы переопределить метод `\lav45\activityLogger\ActiveRecordBehavior::getEntityName()` используйте параметр
   `\lav45\activityLogger\ActiveRecordBehavior::$getEntityName`. Пользовательская функция должна возвращать строку.
 * Для того чтобы переопределить метод `\lav45\activityLogger\ActiveRecordBehavior::getEntityId()` используйте параметр
   `\lav45\activityLogger\ActiveRecordBehavior::$getEntityId`. Пользовательская функция должна возвращать строку или
   массив.
-
-```php
-    public function behaviors()
-    {
-        return [
-            [
-                'class' => 'lav45\activityLogger\ActiveRecordBehavior',
-             
-                // Если необхадимо изменить стандартное значение `entityName`
-                'getEntityName' => function () {
-                    return 'global_news';
-                },
-                // Если необхадимо изменить стандартное значение `entityId`
-                'getEntityId' => function () {
-                    return $this->global_news_id;
-                }
-            ]
-        ];
-    }
-```
-
-Обновление 1.5.0
-------------------
-
+  ```php
+      public function behaviors()
+      {
+          return [
+              [
+                  '__class' => 'lav45\activityLogger\ActiveRecordBehavior',
+               
+                  // Если необхадимо изменить стандартное значение `entityName`
+                  'getEntityName' => function () {
+                      return 'global_news';
+                  },
+                  // Если необхадимо изменить стандартное значение `entityId`
+                  'getEntityId' => function () {
+                      return $this->global_news_id;
+                  }
+              ]
+          ];
+      }
+  ```
 * `\lav45\activityLogger\DbStorage`
     * Удалён метод `clean($date)`, а также из интерфейса `\lav45\activityLogger\StorageInterface::clean($date)`
     * Метод `delete($entityName, $entityId)` теперь принимает `delete(\lav45\activityLogger\LogMessage $message)`
@@ -144,12 +133,12 @@ Yii::$container->set(\lav45\activityLogger\LogMessageDTO::class, [
         ])
         ->save();
     ```
-  В место него был добавлен доработан более простой аналог `log()`
+  Вместо него был добавлен доработан более простой аналог `log()`
     ```php
     Yii::$app->activityLogger->log($entityName, $messageText, $action, $entityId);
     ```
 
-Обновление 1.4.0
+Обновление 1.4
 ------------------
 
 * Данные для `\lav45\activityLogger\modules\models\DataModel` теперь передаются через метод `setData(array $value)`
@@ -160,13 +149,13 @@ Yii::$container->set(\lav45\activityLogger\LogMessageDTO::class, [
     ```
 * Для таблицы `activity_log` было добавлено поле `'id' => $this->bigPrimaryKey()`
 
-Обновление 1.3.0
+Обновление 1.3
 ------------------
 
 * `\lav45\activityLogger\DbStorage` теперь должен быть зарегистрирован в списке компонентов под именем
   `activityLoggerStorage` и реализовывать интерфейс `\lav45\activityLogger\StorageInterface`
 
-Обновление 1.2.0
+Обновление 1.2
 ------------------
 
 * `\lav45\activityLogger\modules\models\ActivityLogViewModel::getUserName()` генерирует ссылку для текущей страницы
@@ -182,7 +171,7 @@ Yii::$container->set(\lav45\activityLogger\LogMessageDTO::class, [
 * Параметр `\lav45\activityLogger\Manager::$user` может принимать только имя компонента зарегистрированного в приложении
   и соответствующего классу `\yii\web\User`
 
-Обновление 1.1.0
+Обновление 1.1
 ------------------
 
 * Удалены интерфейсы `\lav45\activityLogger\contracts\ManagerInterface` и

@@ -35,7 +35,7 @@ use yii\helpers\StringHelper;
  *  {
  *      return [
  *          [
- *              'class' => 'lav45\activityLogger\ActiveLogBehavior',
+ *              '__class' => 'lav45\activityLogger\ActiveLogBehavior',
  *              'attributes' => [
  *                  // simple attribute
  *                  'title',
@@ -63,8 +63,6 @@ use yii\helpers\StringHelper;
  */
 class ActiveLogBehavior extends Behavior
 {
-    use ManagerTrait;
-
     /**
      * @event MessageEvent an event that is triggered before inserting a record.
      * You may add in to the [[MessageEvent::append]] your custom log message.
@@ -119,7 +117,6 @@ class ActiveLogBehavior extends Behavior
      * the callback function can return a string or array
      */
     public $getEntityId;
-
     /**
      * [
      *  'title' => [
@@ -143,6 +140,17 @@ class ActiveLogBehavior extends Behavior
 
     private string $action;
 
+    private ManagerInterface $logger;
+
+    public function __construct(
+        ManagerInterface $logger,
+        array            $config = []
+    )
+    {
+        parent::__construct($config);
+        $this->logger = $logger;
+    }
+
     public function init(): void
     {
         $this->initAttributes();
@@ -160,7 +168,7 @@ class ActiveLogBehavior extends Behavior
 
     public function events(): array
     {
-        if (false === $this->getLogger()->enabled) {
+        if (false === $this->logger->isEnabled()) {
             return [];
         }
         return [
@@ -189,7 +197,7 @@ class ActiveLogBehavior extends Behavior
     public function beforeDelete(): void
     {
         if (false === $this->softDelete) {
-            $this->getLogger()->delete(new DeleteCommand([
+            $this->logger->delete(new DeleteCommand([
                 'entityName' => $this->getEntityName(),
                 'entityId' => $this->getEntityId(),
             ]));
@@ -273,7 +281,7 @@ class ActiveLogBehavior extends Behavior
         if (is_array($old_id)) {
             $old['value'] = array_intersect_key($list, array_flip($old_id));
         } else {
-            $old['value'] = ($old_id === null) ? null: ArrayHelper::getValue($this->owner, [$listName, $old_id]);
+            $old['value'] = ($old_id === null) ? null : ArrayHelper::getValue($this->owner, [$listName, $old_id]);
         }
         if (is_array($new_id)) {
             $new['value'] = array_intersect_key($list, array_flip($new_id));
@@ -306,7 +314,7 @@ class ActiveLogBehavior extends Behavior
             ->limit(count($targetId))
             ->all();
 
-        $old['value'] = ($old_id === null) ? null: ArrayHelper::getValue($relationModels, [$old_id, $attribute]);
+        $old['value'] = ($old_id === null) ? null : ArrayHelper::getValue($relationModels, [$old_id, $attribute]);
         $new['value'] = ArrayHelper::getValue($relationModels, [$new_id, $attribute]);
 
         return [
@@ -330,14 +338,14 @@ class ActiveLogBehavior extends Behavior
     {
         /** @var MessageData $message */
         $message = Yii::createObject([
-            'class' => MessageData::class,
+            '__class' => MessageData::class,
             'entityName' => $this->getEntityName(),
             'entityId' => $this->getEntityId(),
             'createdAt' => time(),
             'action' => $action,
             'data' => $data,
         ]);
-        return $this->getLogger()->log($message);
+        return $this->logger->log($message);
     }
 
     /**

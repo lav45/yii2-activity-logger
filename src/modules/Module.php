@@ -9,6 +9,7 @@
 namespace lav45\activityLogger\modules;
 
 use Yii;
+use yii\i18n\PhpMessageSource;
 
 /**
  * Class Module
@@ -23,7 +24,7 @@ class Module extends \yii\base\Module
      * Если `entityName` не будет найдена в списке то имена полей будут выводится без преобразования
      * @see Model::getAttributeLabel()
      */
-    public $entityMap = [];
+    public array $entityMap = [];
 
     /**
      * Initializes the module.
@@ -38,7 +39,7 @@ class Module extends \yii\base\Module
     protected function initTranslations()
     {
         Yii::$app->i18n->translations['lav45/logger'] = [
-            'class' => 'yii\i18n\PhpMessageSource',
+            '__class' => PhpMessageSource::class,
             'basePath' => __DIR__ . '/messages',
         ];
     }

@@ -36,7 +36,7 @@ composer require --prefer-dist lav45/yii2-activity-logger
 return [
     'controllerMap' => [
         'migrate' => [
-            'class' => \yii\console\controllers\MigrateController::class,
+            '__class' => \yii\console\controllers\MigrateController::class,
             'migrationPath' => [
                 '@app/migrations',
                 '@vendor/lav45/yii2-activity-logger/migrations',
@@ -57,13 +57,18 @@ yii migrate
 Необходимо добавить в конфигурационный файл
 
 ```php
+Yii::$container->setDefinitions([
+    \lav45\activityLogger\ManagerInterface::class => static fn() => Instance::ensure('activityLogger'),
+    \lav45\activityLogger\storage\StorageInterface::class => static fn() => Instance::ensure('activityLoggerStorage'),
+]);
+
 return [
     'modules' => [
         /**
          * Модуль будет использоваться для просмотра логов
          */
         'logger' => [
-            'class' => \lav45\activityLogger\modules\Module::class,
+            '__class' => \lav45\activityLogger\modules\Module::class,
             // Список моделей которые логировались
             'entityMap' => [
                 'news' => 'common\models\News',
@@ -75,7 +80,7 @@ return [
          * Компонент принимает и управляет логами
          */
         'activityLogger' => [
-            'class' => \lav45\activityLogger\Manager::class,
+            '__class' => \lav45\activityLogger\Manager::class,
             // Включаем логирование только для PROD версии
             // 'enabled' => YII_ENV_PROD,
             // Идентификатор компонента `\yii\web\User`
@@ -83,13 +88,17 @@ return [
             // Поле для отображения имени из модели пользователя
             // 'userNameAttribute' => 'username',
             // Хранилище для логов, реализует `\lav45\activityLogger\StorageInterface`
-            'storage' => [
-                'class' => \lav45\activityLogger\storage\DbStorage::class,
-                // Имя таблицы в которой будут храниться логи
-                // 'tableName' => '{{%activity_log}}',
-                // Идентификатор компонента `\yii\db\Connection`
-                // 'db' => 'db',
-            ],
+        ],
+
+        /**
+         * Хранилище для логов, реализует `\lav45\activityLogger\StorageInterface`
+         */
+        'activityLoggerStorage' => [
+            '__class' => \lav45\activityLogger\storage\DbStorage::class,
+            // Имя таблицы в которой будут храниться логи
+            // 'tableName' => '{{%activity_log}}',
+            // Идентификатор компонента `\yii\db\Connection`
+            // 'db' => 'db',
         ],
     ]
 ];
@@ -142,7 +151,7 @@ class News extends ActiveRecord
     {
         return [
             [
-                'class' => \lav45\activityLogger\ActiveLogBehavior::class,
+                '__class' => \lav45\activityLogger\ActiveLogBehavior::class,
              
                 // Если необходимо изменить стандартное значение `entityName`
                 'getEntityName' => function () {
@@ -186,7 +195,7 @@ class News extends ActiveRecord
                  * Если на странице выводятся история изменения всех пользователей,  
                  * не всегда понятно, у кого именно изменился статус, день рождения или другие данные
                  */
-                'class' => \lav45\activityLogger\LogInfoBehavior::class,
+                '__class' => \lav45\activityLogger\LogInfoBehavior::class,
                 'template' => '{username} ({profile.email})',
             ],
         ];
@@ -275,7 +284,7 @@ class News extends ActiveRecord
 return [
     'controllerMap' => [
         'logger' => [
-            'class' => \lav45\activityLogger\console\DefaultController::class
+            '__class' => \lav45\activityLogger\console\DefaultController::class
         ]
     ],
 ];
@@ -318,7 +327,7 @@ yii logger/clean --old-than=1y
 
 ```php
 $message = Yii::createObject([
-    'class' => \lav45\activityLogger\storage\MessageData::class,
+    '__class' => \lav45\activityLogger\storage\MessageData::class,
     'createdAt' => time(),
     // имя сущности
     'entityName' => 'user',
