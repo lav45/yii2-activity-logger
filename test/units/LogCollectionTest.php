@@ -3,15 +3,11 @@
 namespace lav45\activityLogger\test\units;
 
 use lav45\activityLogger\LogCollection;
-use lav45\activityLogger\MessageData;
+use lav45\activityLogger\storage\MessageData;
 use lav45\activityLogger\test\components\FakeManager;
 use PHPUnit\Framework\TestCase;
 use Yii;
 
-/**
- * Class LogCollectionTest
- * @package lav45\activityLogger\test\units
- */
 class LogCollectionTest extends TestCase
 {
     public function testSetEntityId(): void
@@ -46,18 +42,19 @@ class LogCollectionTest extends TestCase
 
     public function testAddAndPushMessage(): void
     {
-        $logger = new FakeManager();
-        $collection = new LogCollection($logger, 'test');
-
         $ent = 'console';
         $userId = 'console';
         $userName = 'Droid R2-D2';
 
+        $oldContainer = clone Yii::$container;
         Yii::$container->set(MessageData::class, [
             'env' => $ent,
             'userId' => $userId,
             'userName' => $userName,
         ]);
+
+        $logger = new FakeManager();
+        $collection = new LogCollection($logger, 'test');
 
         $messages = [
             'Created: 100',
@@ -76,5 +73,7 @@ class LogCollectionTest extends TestCase
         self::assertEquals($userId, $logger->message->userId);
         self::assertEquals($userName, $logger->message->userName);
         self::assertEquals($messages, $logger->message->data);
+
+        Yii::$container = $oldContainer;
     }
 }

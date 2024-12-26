@@ -63,6 +63,7 @@ class ActiveLogBehaviorTest extends TestCase
         $userId = 'console';
         $userName = 'Droid R2-D2';
 
+        $oldContainer = clone Yii::$container;
         Yii::$container->set(MessageData::class, [
             'env' => $ent,
             'userId' => $userId,
@@ -93,6 +94,8 @@ class ActiveLogBehaviorTest extends TestCase
         self::assertEquals($userId, $activityLog->user_id);
         self::assertEquals($userName, $activityLog->user_name);
         self::assertEquals('created', $activityLog->action);
+
+        Yii::$container = $oldContainer;
     }
 
     public function testIsEmpty(): void
