@@ -20,6 +20,8 @@
       \lav45\activityLogger\storage\StorageInterface::class => static fn() => Instance::ensure('activityLoggerStorage'),
   ]);
   ```
+* Вместо свойства `\lav45\activityLogger\Manager::$enabled` следует использовать
+  `\lav45\activityLogger\Manager::isEnabled()`
 
 Обновление 2.0
 ------------------
@@ -160,9 +162,9 @@
 
 * `\lav45\activityLogger\modules\models\ActivityLogViewModel::getUserName()` генерирует ссылку для текущей страницы
   используя метод `Url::current()`
-* Изменилась фраза `'The setting <strong>{attribute}</strong> has ben changed'` на
+* Изменилась фраза `The setting <strong>{attribute}</strong> has ben changed` на
   `<strong>{attribute}</strong> has ben changed`
-* В файле представления `src/modules/views/default/_item.php` добавлено отображение ссылки для фильтрации фогов по
+* В файле представления `src/modules/views/default/_item.php` добавлено отображение ссылки для фильтрации по
   конкретному пользователю `$model->getEntityName()`
 * Была переименована папка `migrates` в `migrations`
 * Метод `\lav45\activityLogger\modules\models\ActivityLog::getData()` теперь всегда будет возвращать массив

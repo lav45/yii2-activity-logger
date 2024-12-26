@@ -18,13 +18,13 @@ use yii\web\IdentityInterface;
 
 class Manager extends BaseObject implements ManagerInterface
 {
-    public bool $enabled = true;
-
     public string $user = 'user';
 
     public string $userNameAttribute = 'username';
 
     public bool $debug = YII_DEBUG;
+
+    private bool $enabled = true;
 
     private StorageInterface $storage;
 
@@ -45,6 +45,11 @@ class Manager extends BaseObject implements ManagerInterface
             return $user->getIdentity();
         }
         return null;
+    }
+
+    public function setEnabled(bool $enabled): void
+    {
+        $this->enabled = $enabled;
     }
 
     public function isEnabled(): bool
