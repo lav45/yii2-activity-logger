@@ -3,13 +3,13 @@
 namespace lav45\activityLogger\test\units;
 
 use lav45\activityLogger\ActiveLogBehavior;
-use lav45\activityLogger\ManagerInterface;
-use lav45\activityLogger\storage\DbStorage;
-use lav45\activityLogger\storage\DeleteCommand;
-use lav45\activityLogger\storage\MessageData;
+use lav45\activityLogger\DummyManager;
 use lav45\activityLogger\Manager;
+use lav45\activityLogger\ManagerInterface;
 use lav45\activityLogger\MessageEvent;
 use lav45\activityLogger\modules\models\ActivityLog;
+use lav45\activityLogger\storage\DbStorage;
+use lav45\activityLogger\storage\MessageData;
 use lav45\activityLogger\storage\StorageInterface;
 use lav45\activityLogger\test\models\LogUser as User;
 use lav45\activityLogger\test\models\TestEntityName;
@@ -614,7 +614,7 @@ class ActiveLogBehaviorTest extends TestCase
         self::assertEquals('user', $logger->getEntityName());
 
         $new_entity_name = 'custom entity name';
-        $logger->getEntityName = function () use ($new_entity_name) {
+        $logger->getEntityName = static function () use ($new_entity_name) {
             return $new_entity_name;
         };
 
@@ -675,9 +675,8 @@ class ActiveLogBehaviorTest extends TestCase
 
     public function testDisabledLoggerBeforeStart(): void
     {
-        /** @var Manager $logger */
-        $logger = Yii::$app->get('activityLogger');
-        $logger->enabled = false;
+        $oldLogger = Yii::$app->get('activityLogger');
+        Yii::$app->set('activityLogger', new DummyManager());
 
         $model = $this->createModel();
         $model->setAttributes([
@@ -688,33 +687,7 @@ class ActiveLogBehaviorTest extends TestCase
         self::assertNull($model->getLastActivityLog());
 
         // Reset component settings
-        Yii::$app->set('activityLogger', [
-            '__class' => Manager::class,
-        ]);
-    }
-
-    public function testDisabledLoggerAfterStart(): void
-    {
-        $model = $this->createModel();
-
-        /** @var Manager $logger */
-        $logger = Yii::$app->get('activityLogger');
-        $logger->delete(new DeleteCommand([
-            'entityName' => $model->getEntityName(),
-        ]));
-        $logger->enabled = false;
-
-        $model->setAttributes([
-            'company_id' => 2,
-            'salary' => 150.3
-        ]);
-        self::assertTrue($model->save());
-        self::assertNull($model->getLastActivityLog());
-
-        // Reset component settings
-        Yii::$app->set('activityLogger', [
-            '__class' => Manager::class,
-        ]);
+        Yii::$app->set('activityLogger', $oldLogger);
     }
 
     public function testEventSaveMessage(): void

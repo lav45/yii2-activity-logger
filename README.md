@@ -81,13 +81,17 @@ return [
          */
         'activityLogger' => [
             '__class' => \lav45\activityLogger\Manager::class,
-            // Включаем логирование только для PROD версии
-            // 'enabled' => YII_ENV_PROD,
+
+            // Если необходимо отключить логирование, можете использовать заглушку
+            // '__class' => YII_ENV_PROD ?
+            //      \lav45\activityLogger\Manager::class :
+            //      \lav45\activityLogger\DummyManager::class,
+
             // Идентификатор компонента `\yii\web\User`
             // 'user' => 'user',
+
             // Поле для отображения имени из модели пользователя
             // 'userNameAttribute' => 'username',
-            // Хранилище для логов, реализует `\lav45\activityLogger\StorageInterface`
         ],
 
         /**
@@ -95,8 +99,10 @@ return [
          */
         'activityLoggerStorage' => [
             '__class' => \lav45\activityLogger\storage\DbStorage::class,
+
             // Имя таблицы в которой будут храниться логи
             // 'tableName' => '{{%activity_log}}',
+
             // Идентификатор компонента `\yii\db\Connection`
             // 'db' => 'db',
         ],

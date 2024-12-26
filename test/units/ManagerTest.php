@@ -2,9 +2,9 @@
 
 namespace lav45\activityLogger\test\units {
 
+    use lav45\activityLogger\Manager;
     use lav45\activityLogger\storage\DeleteCommand;
     use lav45\activityLogger\storage\MessageData;
-    use lav45\activityLogger\Manager;
     use lav45\activityLogger\test\components\FakeStorage;
     use lav45\activityLogger\test\models\User;
     use PHPUnit\Framework\TestCase;
@@ -28,49 +28,7 @@ namespace lav45\activityLogger\test\units {
         {
             $storage = new FakeStorage();
             $manager = new Manager($storage);
-            $manager->enabled = true;
             return [$manager, $storage];
-        }
-
-        public function testDisabled(): void
-        {
-            [$manager, $storage] = $this->createManager();
-            $manager->enabled = false;
-
-            $manager->log(new MessageData([
-                'entityName' => 'test',
-            ]));
-            self::assertNull($storage->message);
-
-            $manager->delete(new DeleteCommand([
-                'entityName' => 'test',
-            ]));
-            self::assertNull($storage->command);
-        }
-
-        private $old_app;
-
-        private function iniApplication(): void
-        {
-            $this->old_app = Yii::$app;
-
-            Yii::$app = new Application([
-                'id' => 'test',
-                'basePath' => __DIR__,
-                'components' => [
-                    'cache' => $this->old_app->getCache(),
-                    'db' => $this->old_app->getDb(),
-                    'user' => [
-                        '__class' => WebUser::class,
-                        'identityClass' => User::class,
-                    ]
-                ]
-            ]);
-        }
-
-        private function resetApplication(): void
-        {
-            Yii::$app = $this->old_app;
         }
 
         private function createUser(): User
@@ -98,7 +56,20 @@ namespace lav45\activityLogger\test\units {
 
         public function testLogWithUser(): void
         {
-            $this->iniApplication();
+            $oldApp = clone Yii::$app;
+            Yii::$app = new Application([
+                'id' => 'test',
+                'basePath' => __DIR__,
+                'components' => [
+                    'cache' => $oldApp->getCache(),
+                    'db' => $oldApp->getDb(),
+                    'user' => [
+                        '__class' => WebUser::class,
+                        'identityClass' => User::class,
+                    ]
+                ]
+            ]);
+
             $user = $this->createUser();
             $this->loginUser($user);
 
@@ -130,7 +101,7 @@ namespace lav45\activityLogger\test\units {
 
             $this->removeUser();
             $this->logoutUser();
-            $this->resetApplication();
+            Yii::$app = $oldApp;
             self::$time = null;
         }
 

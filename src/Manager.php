@@ -24,8 +24,6 @@ class Manager extends BaseObject implements ManagerInterface
 
     public bool $debug = YII_DEBUG;
 
-    private bool $enabled = true;
-
     private StorageInterface $storage;
 
     public function __construct(
@@ -47,22 +45,13 @@ class Manager extends BaseObject implements ManagerInterface
         return null;
     }
 
-    public function setEnabled(bool $enabled): void
-    {
-        $this->enabled = $enabled;
-    }
-
     public function isEnabled(): bool
     {
-        return $this->enabled;
+        return true;
     }
 
     public function log(MessageData $message): bool
     {
-        if (false === $this->isEnabled()) {
-            return false;
-        }
-
         if ($identity = $this->getUserIdentity()) {
             $message->userId = $identity->getId();
             $message->userName = $identity->{$this->userNameAttribute};
@@ -79,9 +68,6 @@ class Manager extends BaseObject implements ManagerInterface
 
     public function delete(DeleteCommand $command): bool
     {
-        if (false === $this->isEnabled()) {
-            return false;
-        }
         try {
             $this->storage->delete($command);
             return true;

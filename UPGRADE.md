@@ -22,6 +22,7 @@
   ```
 * Вместо свойства `\lav45\activityLogger\Manager::$enabled` следует использовать
   `\lav45\activityLogger\Manager::isEnabled()`
+* Если необходимо отключить логирование, используйте компонент заглушку `\lav45\activityLogger\DummyManager`
 
 Обновление 2.0
 ------------------
