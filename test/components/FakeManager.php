@@ -8,7 +8,7 @@ use lav45\activityLogger\storage\MessageData;
 
 class FakeManager implements ManagerInterface
 {
-    public MessageData $message;
+    public ?MessageData $message = null;
 
     public function log(MessageData $message): bool
     {

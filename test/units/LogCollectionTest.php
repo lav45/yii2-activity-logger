@@ -17,13 +17,13 @@ class LogCollectionTest extends TestCase
         $collection = new LogCollection($logger, $entityName);
 
         $entityId = 10;
-        self::assertEquals($collection, $collection->setEntityId($entityId));
+        $this->assertEquals($collection, $collection->setEntityId($entityId));
 
         $collection->addMessage('test message');
         $collection->push();
 
-        self::assertEquals($entityId, $logger->message->entityId);
-        self::assertEquals($entityName, $logger->message->entityName);
+        $this->assertEquals($entityId, $logger->message->entityId);
+        $this->assertEquals($entityName, $logger->message->entityName);
     }
 
     public function testSetAction(): void
@@ -32,12 +32,12 @@ class LogCollectionTest extends TestCase
         $collection = new LogCollection($logger, 'test');
 
         $action = 'sync';
-        self::assertEquals($collection, $collection->setAction($action));
+        $this->assertEquals($collection, $collection->setAction($action));
 
         $collection->addMessage('Updated: 100500');
         $collection->push();
 
-        self::assertEquals($action, $logger->message->action);
+        $this->assertEquals($action, $logger->message->action);
     }
 
     public function testAddAndPushMessage(): void
@@ -66,13 +66,13 @@ class LogCollectionTest extends TestCase
             $collection->addMessage($message);
         }
 
-        self::assertTrue($collection->push());
-        self::assertFalse($collection->push());
+        $this->assertTrue($collection->push());
+        $this->assertFalse($collection->push());
 
-        self::assertEquals($ent, $logger->message->env);
-        self::assertEquals($userId, $logger->message->userId);
-        self::assertEquals($userName, $logger->message->userName);
-        self::assertEquals($messages, $logger->message->data);
+        $this->assertEquals($ent, $logger->message->env);
+        $this->assertEquals($userId, $logger->message->userId);
+        $this->assertEquals($userName, $logger->message->userName);
+        $this->assertEquals($messages, $logger->message->data);
 
         Yii::$container = $oldContainer;
     }

@@ -8,10 +8,6 @@ use lav45\activityLogger\ActiveLogBehavior;
 use lav45\activityLogger\LogInfoBehavior;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Class LogInfoBehaviorTest
- * @package lav45\activityLogger\test\units
- */
 class LogInfoBehaviorTest extends TestCase
 {
     public function testEmptyTemplate(): void
@@ -21,7 +17,7 @@ class LogInfoBehaviorTest extends TestCase
 
         $expected = $event->logData;
         $model->trigger(ActiveLogBehavior::EVENT_BEFORE_SAVE_MESSAGE, $event);
-        self::assertEquals($expected, $event->logData);
+        $this->assertEquals($expected, $event->logData);
     }
 
     public function testStringTemplate(): void
@@ -36,7 +32,7 @@ class LogInfoBehaviorTest extends TestCase
         $event = new MessageEvent();
         $model->trigger(ActiveLogBehavior::EVENT_BEFORE_SAVE_MESSAGE, $event);
 
-        self::assertEquals($expected, $event->logData);
+        $this->assertEquals($expected, $event->logData);
     }
 
     public function testClosureTemplate(): void
@@ -53,7 +49,7 @@ class LogInfoBehaviorTest extends TestCase
         $event = new MessageEvent();
         $model->trigger(ActiveLogBehavior::EVENT_BEFORE_SAVE_MESSAGE, $event);
 
-        self::assertEquals($expected, $event->logData);
+        $this->assertEquals($expected, $event->logData);
     }
 
     public function testAppendPrependLog(): void
@@ -72,7 +68,7 @@ class LogInfoBehaviorTest extends TestCase
         ];
 
         $model->trigger(ActiveLogBehavior::EVENT_BEFORE_SAVE_MESSAGE, $event);
-        self::assertEquals($expected, $event->logData);
+        $this->assertEquals($expected, $event->logData);
 
         $behavior->prepend = false;
         $event->logData = ['first log action'];
@@ -83,7 +79,7 @@ class LogInfoBehaviorTest extends TestCase
         ];
 
         $model->trigger(ActiveLogBehavior::EVENT_BEFORE_SAVE_MESSAGE, $event);
-        self::assertEquals($expected, $event->logData);
+        $this->assertEquals($expected, $event->logData);
     }
 }
 

@@ -149,8 +149,8 @@ class ActiveLogBehavior extends Behavior
         array            $config = []
     )
     {
-        parent::__construct($config);
         $this->logger = $logger;
+        parent::__construct($config);
     }
 
     public function init(): void
@@ -174,11 +174,11 @@ class ActiveLogBehavior extends Behavior
             return [];
         }
         return [
-            ActiveRecord::EVENT_BEFORE_INSERT => 'beforeSave',
-            ActiveRecord::EVENT_BEFORE_UPDATE => 'beforeSave',
-            ActiveRecord::EVENT_BEFORE_DELETE => 'beforeDelete',
-            ActiveRecord::EVENT_AFTER_INSERT => 'afterSave',
-            ActiveRecord::EVENT_AFTER_UPDATE => 'afterSave',
+            ActiveRecord::EVENT_BEFORE_INSERT => [$this, 'beforeSave'],
+            ActiveRecord::EVENT_BEFORE_UPDATE => [$this, 'beforeSave'],
+            ActiveRecord::EVENT_BEFORE_DELETE => [$this, 'beforeDelete'],
+            ActiveRecord::EVENT_AFTER_INSERT => [$this, 'afterSave'],
+            ActiveRecord::EVENT_AFTER_UPDATE => [$this, 'afterSave'],
         ];
     }
 

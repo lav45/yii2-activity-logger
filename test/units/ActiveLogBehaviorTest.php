@@ -71,7 +71,7 @@ class ActiveLogBehaviorTest extends TestCase
         ]);
 
         $model = new User();
-        self::assertTrue($model->save());
+        $this->assertTrue($model->save());
 
         $expected = [
             'status' => [
@@ -96,11 +96,11 @@ class ActiveLogBehaviorTest extends TestCase
 
         $activityLog = $model->getLastActivityLog();
 
-        self::assertEquals($expected, $activityLog->getData());
-        self::assertEquals($ent, $activityLog->env);
-        self::assertEquals($userId, $activityLog->user_id);
-        self::assertEquals($userName, $activityLog->user_name);
-        self::assertEquals('created', $activityLog->action);
+        $this->assertEquals($expected, $activityLog->getData());
+        $this->assertEquals($ent, $activityLog->env);
+        $this->assertEquals($userId, $activityLog->user_id);
+        $this->assertEquals($userName, $activityLog->user_name);
+        $this->assertEquals('created', $activityLog->action);
 
         Yii::$container = $oldContainer;
     }
@@ -114,7 +114,7 @@ class ActiveLogBehaviorTest extends TestCase
             return empty($value);
         };
 
-        self::assertTrue($model->save());
+        $this->assertTrue($model->save());
 
         $expected = [
             'status' => [
@@ -129,7 +129,7 @@ class ActiveLogBehaviorTest extends TestCase
             ],
         ];
 
-        self::assertEquals($expected, $model->getLastActivityLog()->getData());
+        $this->assertEquals($expected, $model->getLastActivityLog()->getData());
     }
 
     public function testCreateModelWithCustomOptions(): void
@@ -137,10 +137,10 @@ class ActiveLogBehaviorTest extends TestCase
         $model = $this->createModel();
         $logData = $model->getLastActivityLog();
 
-        self::assertTrue($logData->created_at > 0);
-        self::assertEquals('created', $logData->action);
-        self::assertEquals('user', $logData->entity_name);
-        self::assertEquals($model->getPrimaryKey(), $logData->entity_id);
+        $this->assertTrue($logData->created_at > 0);
+        $this->assertEquals('created', $logData->action);
+        $this->assertEquals('user', $logData->entity_name);
+        $this->assertEquals($model->getPrimaryKey(), $logData->entity_id);
 
         $expected = [
             'status' => [
@@ -205,7 +205,7 @@ class ActiveLogBehaviorTest extends TestCase
             ]
         ];
 
-        self::assertEquals($expected, $logData->getData());
+        $this->assertEquals($expected, $logData->getData());
     }
 
     public function testSaveWithoutUpdateAttributes(): void
@@ -216,7 +216,7 @@ class ActiveLogBehaviorTest extends TestCase
         $model->save();
         $newLogs = $model->getLastActivityLog()->getData();
 
-        self::assertEquals($oldLogs, $newLogs);
+        $this->assertEquals($oldLogs, $newLogs);
     }
 
     /**
@@ -228,10 +228,10 @@ class ActiveLogBehaviorTest extends TestCase
     {
         $model = $this->createModel();
         $model->setAttributes($values);
-        self::assertTrue($model->save());
+        $this->assertTrue($model->save());
         $logModel = $model->getLastActivityLog();
-        self::assertEquals('updated', $logModel->action);
-        self::assertEquals($expected, $logModel->getData());
+        $this->assertEquals('updated', $logModel->action);
+        $this->assertEquals($expected, $logModel->getData());
     }
 
     public function updateModelDataProvider(): array
@@ -364,9 +364,9 @@ class ActiveLogBehaviorTest extends TestCase
     public function testDeleteModel(): void
     {
         $model = $this->createModel();
-        self::assertEquals(1, $model->delete());
+        $this->assertEquals(1, $model->delete());
 
-        self::assertNotNull($model->company);
+        $this->assertNotNull($model->company);
 
         /** @var array $logModels */
         $logModels = ActivityLog::findAll([
@@ -374,7 +374,7 @@ class ActiveLogBehaviorTest extends TestCase
             'entity_id' => $model->getEntityId(),
         ]);
 
-        self::assertCount(1, $logModels);
+        $this->assertCount(1, $logModels);
 
         $expected = [
             'status' => [
@@ -438,8 +438,8 @@ class ActiveLogBehaviorTest extends TestCase
                 ]
             ]
         ];
-        self::assertEquals($expected, $logModels[0]->getData());
-        self::assertEquals('deleted', $logModels[0]->action);
+        $this->assertEquals($expected, $logModels[0]->getData());
+        $this->assertEquals('deleted', $logModels[0]->action);
     }
 
     public function testSoftDelete(): void
@@ -449,7 +449,7 @@ class ActiveLogBehaviorTest extends TestCase
         $logger = $model->getBehavior('logger');
         $logger->softDelete = true;
 
-        self::assertEquals(1, $model->delete());
+        $this->assertEquals(1, $model->delete());
 
         /** @var array $logModels */
         $logModels = ActivityLog::find()
@@ -460,7 +460,7 @@ class ActiveLogBehaviorTest extends TestCase
             ->orderBy(['id' => SORT_ASC])
             ->all();
 
-        self::assertCount(2, $logModels);
+        $this->assertCount(2, $logModels);
 
         $expected = [
             'status' => [
@@ -524,8 +524,8 @@ class ActiveLogBehaviorTest extends TestCase
                 ]
             ]
         ];
-        self::assertEquals($expected, $logModels[0]->getData());
-        self::assertEquals('created', $logModels[0]->action);
+        $this->assertEquals($expected, $logModels[0]->getData());
+        $this->assertEquals('created', $logModels[0]->action);
 
         $expected = [
             'status' => [
@@ -589,15 +589,15 @@ class ActiveLogBehaviorTest extends TestCase
                 ]
             ]
         ];
-        self::assertEquals($expected, $logModels[1]->getData());
-        self::assertEquals('deleted', $logModels[1]->action);
+        $this->assertEquals($expected, $logModels[1]->getData());
+        $this->assertEquals('deleted', $logModels[1]->action);
     }
 
     public function testLogEmptyAttributeAfterDeleteModel(): void
     {
         $model = new User();
         $model->birthday = '01.01.2005';
-        self::assertTrue($model->save());
+        $this->assertTrue($model->save());
 
         $expected = [
             'birthday' => [
@@ -628,9 +628,9 @@ class ActiveLogBehaviorTest extends TestCase
             ],
         ];
 
-        self::assertEquals($expected, $model->getLastActivityLog()->getData());
+        $this->assertEquals($expected, $model->getLastActivityLog()->getData());
 
-        self::assertEquals(1, $model->delete());
+        $this->assertEquals(1, $model->delete());
 
         /** @var ActivityLog[]|\Countable $logModels */
         $logModels = ActivityLog::findAll([
@@ -638,7 +638,7 @@ class ActiveLogBehaviorTest extends TestCase
             'entity_id' => $model->getEntityId(),
         ]);
 
-        self::assertCount(1, $logModels);
+        $this->assertCount(1, $logModels);
 
         $expected = [
             'birthday' => [
@@ -669,7 +669,7 @@ class ActiveLogBehaviorTest extends TestCase
             ],
         ];
 
-        self::assertEquals($expected, $logModels[0]->getData());
+        $this->assertEquals($expected, $logModels[0]->getData());
     }
 
     public function testGetEntityName(): void
@@ -678,17 +678,17 @@ class ActiveLogBehaviorTest extends TestCase
         /** @var ActiveLogBehavior $logger */
         $logger = $model->getBehavior('logger');
 
-        self::assertEquals('user', $logger->getEntityName());
+        $this->assertEquals('user', $logger->getEntityName());
 
         $new_entity_name = 'custom entity name';
         $logger->getEntityName = static function () use ($new_entity_name) {
             return $new_entity_name;
         };
 
-        self::assertEquals($new_entity_name, $logger->getEntityName());
+        $this->assertEquals($new_entity_name, $logger->getEntityName());
 
         $testModel = new TestEntityName();
-        self::assertEquals('test_entity_name', $testModel->getEntityName());
+        $this->assertEquals('test_entity_name', $testModel->getEntityName());
     }
 
     public function testDefaultGetEntityId(): void
@@ -697,7 +697,7 @@ class ActiveLogBehaviorTest extends TestCase
         /** @var ActiveLogBehavior $logger */
         $logger = $model->getBehavior('logger');
 
-        self::assertEquals($model->getPrimaryKey(), $logger->getEntityId());
+        $this->assertEquals($model->getPrimaryKey(), $logger->getEntityId());
     }
 
     public function testExceptionGetEntityId(): void
@@ -722,7 +722,7 @@ class ActiveLogBehaviorTest extends TestCase
             return $custom_entity_id;
         };
 
-        self::assertEquals($result_entity_id, $logger->getEntityId());
+        $this->assertEquals($result_entity_id, $logger->getEntityId());
     }
 
     public function customGetEntityIdDataProvider(): array
@@ -750,8 +750,8 @@ class ActiveLogBehaviorTest extends TestCase
             'company_id' => 2,
             'salary' => 150.3
         ]);
-        self::assertTrue($model->save());
-        self::assertNull($model->getLastActivityLog());
+        $this->assertTrue($model->save());
+        $this->assertNull($model->getLastActivityLog());
 
         // Reset component settings
         Yii::$app->set('activityLogger', $oldLogger);
@@ -772,15 +772,15 @@ class ActiveLogBehaviorTest extends TestCase
 
         $model->on(ActiveLogBehavior::EVENT_AFTER_SAVE_MESSAGE,
             function ($event) use (&$afterSaveFlag) {
-                self::assertInstanceOf(Event::class, $event);
+                $this->assertInstanceOf(Event::class, $event);
                 $afterSaveFlag = true;
             });
 
         $beforeSaveFlag = false;
         $afterSaveFlag = false;
-        self::assertTrue($model->save());
-        self::assertTrue($afterSaveFlag);
-        self::assertTrue($beforeSaveFlag);
+        $this->assertTrue($model->save());
+        $this->assertTrue($afterSaveFlag);
+        $this->assertTrue($beforeSaveFlag);
 
         $expected = [
             'info' => 'Custom info',
@@ -813,17 +813,17 @@ class ActiveLogBehaviorTest extends TestCase
             'action' => 'Custom action',
         ];
 
-        self::assertNotNull($model->getLastActivityLog());
-        self::assertEquals($expected, $model->getLastActivityLog()->getData());
+        $this->assertNotNull($model->getLastActivityLog());
+        $this->assertEquals($expected, $model->getLastActivityLog()->getData());
 
         // Update
         $model->login = 'buster2';
 
         $beforeSaveFlag = false;
         $afterSaveFlag = false;
-        self::assertTrue($model->save());
-        self::assertTrue($afterSaveFlag);
-        self::assertTrue($beforeSaveFlag);
+        $this->assertTrue($model->save());
+        $this->assertTrue($afterSaveFlag);
+        $this->assertTrue($beforeSaveFlag);
 
         $expected = [
             'info' => 'Custom info',
@@ -838,14 +838,14 @@ class ActiveLogBehaviorTest extends TestCase
             'action' => 'Custom action',
         ];
 
-        self::assertEquals($expected, $model->getLastActivityLog()->getData());
+        $this->assertEquals($expected, $model->getLastActivityLog()->getData());
 
         // Save without change
         $beforeSaveFlag = false;
         $afterSaveFlag = false;
-        self::assertTrue($model->save());
-        self::assertFalse($afterSaveFlag);
-        self::assertFalse($beforeSaveFlag);
+        $this->assertTrue($model->save());
+        $this->assertFalse($afterSaveFlag);
+        $this->assertFalse($beforeSaveFlag);
     }
 
     public function testEventSaveMessageMethod(): void
@@ -860,9 +860,9 @@ class ActiveLogBehaviorTest extends TestCase
 
         $model->beforeSaveFlag = false;
         $model->afterSaveFlag = false;
-        self::assertTrue($model->save());
-        self::assertTrue($model->afterSaveFlag);
-        self::assertTrue($model->beforeSaveFlag);
+        $this->assertTrue($model->save());
+        $this->assertTrue($model->afterSaveFlag);
+        $this->assertTrue($model->beforeSaveFlag);
 
         $expected = [
             'status' => [
@@ -896,17 +896,17 @@ class ActiveLogBehaviorTest extends TestCase
 
         $activityLog = $model->getLastActivityLog();
 
-        self::assertNotNull($activityLog);
-        self::assertEquals($expected, $activityLog->getData());
+        $this->assertNotNull($activityLog);
+        $this->assertEquals($expected, $activityLog->getData());
 
         // Update
         $model->login = 'buster2';
 
         $model->beforeSaveFlag = false;
         $model->afterSaveFlag = false;
-        self::assertTrue($model->save());
-        self::assertTrue($model->afterSaveFlag);
-        self::assertTrue($model->beforeSaveFlag);
+        $this->assertTrue($model->save());
+        $this->assertTrue($model->afterSaveFlag);
+        $this->assertTrue($model->beforeSaveFlag);
 
         $expected = [
             'login' => [
@@ -920,14 +920,14 @@ class ActiveLogBehaviorTest extends TestCase
             'event' => 'save message',
         ];
 
-        self::assertEquals($expected, $model->getLastActivityLog()->getData());
+        $this->assertEquals($expected, $model->getLastActivityLog()->getData());
 
         // Save without change
         $model->beforeSaveFlag = false;
         $model->afterSaveFlag = false;
-        self::assertTrue($model->save());
-        self::assertFalse($model->afterSaveFlag);
-        self::assertFalse($model->beforeSaveFlag);
+        $this->assertTrue($model->save());
+        $this->assertFalse($model->afterSaveFlag);
+        $this->assertFalse($model->beforeSaveFlag);
     }
 
     public function testEventSaveMessageCallback(): void
@@ -972,11 +972,11 @@ class ActiveLogBehaviorTest extends TestCase
             return ['test' => 'test'] + $data;
         };
 
-        self::assertTrue($model->save());
+        $this->assertTrue($model->save());
 
         $activityLog = $model->getLastActivityLog();
-        self::assertNotNull($activityLog);
-        self::assertEquals($expected, $activityLog->getData());
+        $this->assertNotNull($activityLog);
+        $this->assertEquals($expected, $activityLog->getData());
 
         // Update
         $model->login = 'buster2';
@@ -985,7 +985,7 @@ class ActiveLogBehaviorTest extends TestCase
             return ['test' => 'test'] + $data + ['action' => 'Custom action'];
         };
 
-        self::assertTrue($model->save());
+        $this->assertTrue($model->save());
 
         $expected = [
             'test' => 'test',
@@ -1000,10 +1000,10 @@ class ActiveLogBehaviorTest extends TestCase
             'action' => 'Custom action',
         ];
 
-        self::assertEquals($expected, $model->getLastActivityLog()->getData());
+        $this->assertEquals($expected, $model->getLastActivityLog()->getData());
 
         // Save without change
-        self::assertTrue($model->save());
+        $this->assertTrue($model->save());
     }
 
     public function testArrayListValues(): void
@@ -1015,7 +1015,7 @@ class ActiveLogBehaviorTest extends TestCase
             User::STATUS_DRAFT,
         ];
 
-        self::assertTrue($model->save(false));
+        $this->assertTrue($model->save(false));
 
         $statusList = $model->getStatusList();
 
@@ -1038,14 +1038,14 @@ class ActiveLogBehaviorTest extends TestCase
             ]
         ];
 
-        self::assertEquals($expected, $model->getLastActivityLog()->getData());
+        $this->assertEquals($expected, $model->getLastActivityLog()->getData());
 
         // Update
         $model->arrayStatus = [
             User::STATUS_ACTIVE,
         ];
 
-        self::assertTrue($model->save(false));
+        $this->assertTrue($model->save(false));
 
         $expected = [
             'arrayStatus' => [
@@ -1070,10 +1070,10 @@ class ActiveLogBehaviorTest extends TestCase
             ]
         ];
 
-        self::assertEquals($expected, $model->getLastActivityLog()->getData());
+        $this->assertEquals($expected, $model->getLastActivityLog()->getData());
 
         // Delete
-        self::assertEquals(1, $model->delete());
+        $this->assertEquals(1, $model->delete());
 
         /** @var ActivityLog[]|\Countable $logModels */
         $logModels = ActivityLog::findAll([
@@ -1098,6 +1098,6 @@ class ActiveLogBehaviorTest extends TestCase
             ]
         ];
 
-        self::assertEquals($expected, $logModels[0]->getData());
+        $this->assertEquals($expected, $logModels[0]->getData());
     }
 }

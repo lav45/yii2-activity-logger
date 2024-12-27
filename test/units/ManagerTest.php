@@ -92,12 +92,12 @@ namespace lav45\activityLogger\test\units {
 
             $storageMessage = $storage->message;
 
-            self::assertEquals($storageMessage->userId, $user->id);
-            self::assertEquals($storageMessage->userName, $user->login);
-            self::assertEquals($storageMessage->entityName, $entityName);
-            self::assertEquals($storageMessage->data, $data);
-            self::assertEquals($storageMessage->createdAt, self::$time);
-            self::assertEquals($storageMessage->env, $env);
+            $this->assertEquals($storageMessage->userId, $user->id);
+            $this->assertEquals($storageMessage->userName, $user->login);
+            $this->assertEquals($storageMessage->entityName, $entityName);
+            $this->assertEquals($storageMessage->data, $data);
+            $this->assertEquals($storageMessage->createdAt, self::$time);
+            $this->assertEquals($storageMessage->env, $env);
 
             $this->removeUser();
             $this->logoutUser();
@@ -125,12 +125,12 @@ namespace lav45\activityLogger\test\units {
 
             $storageMessage = $storage->message;
 
-            self::assertNull($storageMessage->userId);
-            self::assertNull($storageMessage->userName);
-            self::assertEquals($storageMessage->entityName, $entityName);
-            self::assertEquals($storageMessage->data, $data);
-            self::assertEquals($storageMessage->createdAt, self::$time);
-            self::assertEquals($storageMessage->env, $env);
+            $this->assertNull($storageMessage->userId);
+            $this->assertNull($storageMessage->userName);
+            $this->assertEquals($storageMessage->entityName, $entityName);
+            $this->assertEquals($storageMessage->data, $data);
+            $this->assertEquals($storageMessage->createdAt, self::$time);
+            $this->assertEquals($storageMessage->env, $env);
 
             self::$time = null;
         }
@@ -144,16 +144,16 @@ namespace lav45\activityLogger\test\units {
             ]);
             $manager->delete($command);
 
-            self::assertEquals($storage->command, $command);
-            self::assertEquals($storage->command->entityName, 'entityName');
-            self::assertNull($storage->command->oldThan);
+            $this->assertEquals($storage->command, $command);
+            $this->assertEquals($storage->command->entityName, 'entityName');
+            $this->assertNull($storage->command->oldThan);
 
             $command = new DeleteCommand([
                 'oldThan' => time(),
             ]);
             $manager->delete($command);
-            self::assertEquals($storage->command, $command);
-            self::assertEquals($storage->command->oldThan, $command->oldThan);
+            $this->assertEquals($storage->command, $command);
+            $this->assertEquals($storage->command->oldThan, $command->oldThan);
         }
     }
 }

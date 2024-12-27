@@ -31,7 +31,7 @@ class DefaultControllerTest extends TestCase
         [$controller, $logger] = $this->createController();
         $controller->run('clean', $params);
 
-        self::assertEquals($logger->options, $result);
+        $this->assertEquals($logger->options, $result);
     }
 
     public function getActionCleanDataProvider(): array
@@ -148,15 +148,15 @@ class DefaultControllerTest extends TestCase
 
         $manager->result = true;
         $controller->runAction('clean');
-        self::assertEquals("Successful clearing the logs.\n", $controller->stdout);
+        $this->assertEquals("Successful clearing the logs.\n", $controller->stdout);
 
         $manager->result = false;
         $controller->runAction('clean');
-        self::assertEquals("Error while cleaning the logs.\n", $controller->stdout);
+        $this->assertEquals("Error while cleaning the logs.\n", $controller->stdout);
 
         $manager->result = false;
         $controller->runAction('clean', ['old-than' => '12']);
-        self::assertEquals("Invalid date format\n", $controller->stderr);
+        $this->assertEquals("Invalid date format\n", $controller->stderr);
     }
 }
 
