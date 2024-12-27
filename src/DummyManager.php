@@ -13,12 +13,6 @@ use lav45\activityLogger\storage\MessageData;
 
 class DummyManager implements ManagerInterface
 {
-    public string $user = 'user';
-
-    public string $userNameAttribute = 'username';
-
-    public bool $debug = YII_DEBUG;
-
     public function isEnabled(): bool
     {
         return false;
@@ -30,6 +24,20 @@ class DummyManager implements ManagerInterface
     }
 
     public function delete(DeleteCommand $command): bool
+    {
+        return false;
+    }
+
+    public function __get(string $name)
+    {
+        return null;
+    }
+
+    public function __set(string $name, $value): void
+    {
+    }
+
+    public function __isset(string $name)
     {
         return false;
     }
