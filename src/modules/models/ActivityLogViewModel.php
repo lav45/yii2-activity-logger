@@ -10,10 +10,6 @@ namespace lav45\activityLogger\modules\models;
 
 use Yii;
 
-/**
- * Class ActivityLogViewModel
- * @package lav45\activityLogger\modules\models
- */
 class ActivityLogViewModel extends ActivityLog
 {
     /**
@@ -21,13 +17,11 @@ class ActivityLogViewModel extends ActivityLog
      */
     public $dataModel = DataModel::class;
     /**
-     * @var array [ entity_name => Entity::class ]
+     * [ entity_name => Entity::class ]
      */
-    public $entityMap = [];
-    /**
-     * @var array
-     */
-    private $entityModel = [];
+    public array $entityMap = [];
+
+    private array $entityModel = [];
 
     /**
      * @param array $row
@@ -50,10 +44,9 @@ class ActivityLogViewModel extends ActivityLog
     }
 
     /**
-     * @param string $id
      * @return false|\yii\base\Model
      */
-    private function getEntityObject($id)
+    private function getEntityObject(string $id)
     {
         if (isset($this->entityMap[$id]) === false) {
             return false;
@@ -66,7 +59,7 @@ class ActivityLogViewModel extends ActivityLog
     /**
      * @return \Generator|DataModel[]
      */
-    public function getData()
+    public function getData(): iterable
     {
         foreach (parent::getData() as $attribute => $values) {
             if (is_string($values)) {
@@ -82,10 +75,7 @@ class ActivityLogViewModel extends ActivityLog
         }
     }
 
-    /**
-     * @return DataModel
-     */
-    protected function getDataModel()
+    protected function getDataModel(): DataModel
     {
         if (!is_object($this->dataModel)) {
             $this->dataModel = Yii::createObject($this->dataModel);
@@ -93,11 +83,7 @@ class ActivityLogViewModel extends ActivityLog
         return $this->dataModel;
     }
 
-    /**
-     * @param string $attribute
-     * @return string
-     */
-    protected function getEntityAttributeLabel($attribute)
+    protected function getEntityAttributeLabel(string $attribute): string
     {
         if ($entityModel = $this->getEntityModel()) {
             return $entityModel->getAttributeLabel($attribute);
@@ -105,10 +91,7 @@ class ActivityLogViewModel extends ActivityLog
         return $this->generateAttributeLabel($attribute);
     }
 
-    /**
-     * @return array
-     */
-    protected function getEntityAttributeFormats()
+    protected function getEntityAttributeFormats(): array
     {
         $entityModel = $this->getEntityModel();
         if (null !== $entityModel && method_exists($entityModel, 'attributeFormats')) {
@@ -117,13 +100,9 @@ class ActivityLogViewModel extends ActivityLog
         return [];
     }
 
-    /**
-     * @param string $attribute
-     * @return string|null
-     */
-    protected function getAttributeFormat($attribute)
+    protected function getAttributeFormat(string $attribute): ?string
     {
         $formats = $this->getEntityAttributeFormats();
-        return isset($formats[$attribute]) ? $formats[$attribute] : null;
+        return $formats[$attribute] ?? null;
     }
 }

@@ -18,7 +18,7 @@ use yii\helpers\Url;
         'entityId' => null,
         'page' => null
     ])) ?>
-    <?php if($model->entity_id): ?>
+    <?php if ($model->entity_id): ?>
         <?= ':' . Html::a(Html::encode($model->entity_id), Url::current([
             'entityName' => $model->entity_name,
             'entityId' => $model->entity_id,
@@ -46,7 +46,7 @@ use yii\helpers\Url;
     <?php foreach ($model->getData() as $attribute => $values): ?>
         <?php if (is_string($values)): ?>
             <li>
-                <?php if(is_string($attribute)): ?>
+                <?php if (is_string($attribute)): ?>
                     <strong><?= Html::encode($attribute) ?></strong>
                 <?php endif; ?>
                 <?= Html::encode(Yii::t('lav45/logger', $values)) ?>

@@ -9,7 +9,9 @@
 namespace lav45\activityLogger\modules\models;
 
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\db\ActiveRecord;
+use yii\db\Connection;
 
 /**
  * Class ActivityLogger
@@ -28,39 +30,32 @@ use yii\db\ActiveRecord;
 class ActivityLog extends ActiveRecord
 {
     /**
-     * @var string
      * @since 1.7.0
      */
-    public static $db;
+    public static ?string $db = null;
     /**
-     * @var string
      * @since 1.7.0
      */
-    public static $tableName = '{{%activity_log}}';
+    public static string $tableName = '{{%activity_log}}';
 
-    /**
-     * @return string the table name
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
         return static::$tableName ?: parent::tableName();
     }
 
-    /**
-     * @return \yii\db\Connection
-     */
-    public static function getDb()
+    public static function getDb(): Connection
     {
         if (static::$db) {
-            return Yii::$app->get(static::$db);
+            $db = Yii::$app->get(static::$db);
+            if ($db instanceof Connection) {
+                return $db;
+            }
+            throw new InvalidConfigException('Invalid db connection');
         }
         return parent::getDb();
     }
 
-    /**
-     * @return array
-     */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => Yii::t('lav45/logger', 'ID'),
@@ -75,11 +70,11 @@ class ActivityLog extends ActiveRecord
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function getData()
+    public function getData(): iterable
     {
-        return json_decode($this->data, true);
+        if ($this->data) {
+            return json_decode($this->data, true, 512, JSON_THROW_ON_ERROR);
+        }
+        return [];
     }
 }

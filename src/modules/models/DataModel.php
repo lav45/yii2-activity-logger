@@ -14,10 +14,6 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\i18n\Formatter;
 
-/**
- * Class DataModel
- * @package lav45\activityLogger\modules\models
- */
 class DataModel extends BaseObject
 {
     /**
@@ -25,7 +21,7 @@ class DataModel extends BaseObject
      */
     private $data;
     /**
-     * @var string|\Closure|null
+     * @var string|\Closure
      */
     private $format;
     /**
@@ -33,7 +29,7 @@ class DataModel extends BaseObject
      */
     public $formatter = 'formatter';
 
-    public function init()
+    public function init(): void
     {
         $this->formatter = Instance::ensure($this->formatter, Formatter::class);
     }
@@ -57,7 +53,7 @@ class DataModel extends BaseObject
     }
 
     /**
-     * @param string|\Closure|null $value
+     * @param string|\Closure $value
      * @return $this
      */
     public function setFormat($value)
@@ -90,15 +86,12 @@ class DataModel extends BaseObject
      */
     protected function formattedValue($value)
     {
-        if (is_string($this->format)) {
+        if ($this->format && is_string($this->format)) {
             return $this->formatter->format($value, $this->format);
         }
-        if (is_callable($this->format)) {
+        if ($this->format && is_callable($this->format)) {
             $value = call_user_func($this->format, $value);
-            if (null === $value) {
-                return $this->formatter->nullDisplay;
-            }
-            return $value;
+            return $value ?? $this->formatter->nullDisplay;
         }
         if (null === $value) {
             return $this->formatter->nullDisplay;
@@ -126,10 +119,9 @@ class DataModel extends BaseObject
     }
 
     /**
-     * @param string $tag
      * @return mixed
      */
-    protected function getValue($tag)
+    protected function getValue(string $tag)
     {
         return ArrayHelper::getValue($this->data, [$tag, 'value']);
     }

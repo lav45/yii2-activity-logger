@@ -37,7 +37,7 @@ class Manager extends BaseObject implements ManagerInterface
 
     protected function getUserIdentity(): ?IdentityInterface
     {
-        /** @var \yii\web\User $user */
+        /** @var \yii\web\User|null $user */
         $user = Yii::$app->get($this->user, false);
         if ($user) {
             return $user->getIdentity();

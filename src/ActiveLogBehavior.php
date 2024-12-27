@@ -296,7 +296,7 @@ class ActiveLogBehavior extends Behavior
         $new['id'] = $new_id;
 
         $relationQuery = clone $this->owner->getRelation($relation);
-        if ($relationQuery instanceof ActiveQueryInterface === false || count($relationQuery->link) > 1) {
+        if (count($relationQuery->link) > 1) {
             throw new InvalidConfigException('Relation model can only be linked through one primary key.');
         }
         $relationQuery->primaryModel = null;
