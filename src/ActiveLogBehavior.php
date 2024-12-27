@@ -12,7 +12,9 @@ use lav45\activityLogger\storage\DeleteCommand;
 use lav45\activityLogger\storage\MessageData;
 use Yii;
 use yii\base\Behavior;
+use yii\base\InvalidConfigException;
 use yii\base\InvalidValueException;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\db\ArrayExpression;
 use yii\db\JsonExpression;
@@ -302,6 +304,12 @@ class ActiveLogBehavior extends Behavior
         $new['id'] = $new_id;
 
         $relationQuery = clone $this->owner->getRelation($relation);
+        if ($relationQuery instanceof ActiveQuery === false) {
+            throw new InvalidConfigException('Relation must be an instance of ' . ActiveQuery::class);
+        }
+        if (count($relationQuery->link) > 1) {
+            throw new InvalidConfigException('Relation model can only be linked through one primary key.');
+        }
         $relationQuery->primaryModel = null;
         $idAttribute = array_keys($relationQuery->link)[0];
         $targetId = array_filter([$old_id, $new_id]);
@@ -312,8 +320,16 @@ class ActiveLogBehavior extends Behavior
             ->limit(count($targetId))
             ->all();
 
-        $old['value'] = ($old_id === null) ? null : ArrayHelper::getValue($relationModels, [$old_id, $attribute]);
-        $new['value'] = ArrayHelper::getValue($relationModels, [$new_id, $attribute]);
+        if ($old_id) {
+            $old['value'] = ArrayHelper::getValue($relationModels, [$old_id, $attribute]);
+        } else {
+            $old['value'] = null;
+        }
+        if ($new_id) {
+            $new['value'] = ArrayHelper::getValue($relationModels, [$new_id, $attribute]);
+        } else {
+            $new['value'] = null;
+        }
 
         return [
             'old' => $old,
