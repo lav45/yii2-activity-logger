@@ -23,6 +23,7 @@
 * Вместо свойства `\lav45\activityLogger\Manager::$enabled` следует использовать
   `\lav45\activityLogger\Manager::isEnabled()`
 * Если необходимо отключить логирование, используйте компонент заглушку `\lav45\activityLogger\DummyManager`
+* Из консольного контроллера `logger/clean` был удалён параметр `--old-than=1y`, который был выставлен по умолчанию!
 
 Обновление 2.0
 ------------------

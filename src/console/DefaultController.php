@@ -12,7 +12,6 @@ use lav45\activityLogger\ManagerInterface;
 use lav45\activityLogger\storage\DeleteCommand;
 use yii\base\Module;
 use yii\console\Controller;
-use yii\helpers\Console;
 
 class DefaultController extends Controller
 {
@@ -34,7 +33,7 @@ class DefaultController extends Controller
      * 3m - 3 month
      * 1y - 1 year
      */
-    public ?string $oldThan = '1y';
+    public ?string $oldThan = null;
 
     private ManagerInterface $logger;
 
@@ -95,8 +94,11 @@ class DefaultController extends Controller
         }
     }
 
-    private function parseDate(string $str): int
+    private function parseDate(?string $str): ?int
     {
+        if (empty($str)) {
+            return null;
+        }
         if (preg_match("/^(\d+)([hdmy]+)$/", $str, $matches)) {
             [$_, $count, $alias] = $matches;
             $aliases = [

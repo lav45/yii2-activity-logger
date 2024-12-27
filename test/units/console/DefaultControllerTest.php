@@ -72,59 +72,35 @@ class DefaultControllerTest extends TestCase
         return [
             'entity-name' => [
                 ['entity-name' => 'user'],
-                [
-                    'entityName' => 'user',
-                    'oldThan' => strtotime('-1 year 00:00:00')
-                ],
+                ['entityName' => 'user'],
             ],
             'e' => [
                 ['_aliases' => ['e' => 'user']],
-                [
-                    'entityName' => 'user',
-                    'oldThan' => strtotime('-1 year 00:00:00')
-                ],
+                ['entityName' => 'user'],
             ],
             'entity-id' => [
                 ['entity-id' => 10],
-                [
-                    'entityId' => '10',
-                    'oldThan' => strtotime('-1 year 00:00:00')
-                ],
+                ['entityId' => '10'],
             ],
             'eid' => [
                 ['_aliases' => ['eid' => '10']],
-                [
-                    'entityId' => '10',
-                    'oldThan' => strtotime('-1 year 00:00:00')
-                ],
+                ['entityId' => '10'],
             ],
             'user-id' => [
                 ['user-id' => '100'],
-                [
-                    'userId' => '100',
-                    'oldThan' => strtotime('-1 year 00:00:00')
-                ],
+                ['userId' => '100'],
             ],
             'uid' => [
                 ['_aliases' => ['uid' => '100']],
-                [
-                    'userId' => '100',
-                    'oldThan' => strtotime('-1 year 00:00:00')
-                ],
+                ['userId' => '100'],
             ],
             'log-action' => [
                 ['log-action' => 'console'],
-                [
-                    'action' => 'console',
-                    'oldThan' => strtotime('-1 year 00:00:00')
-                ],
+                ['action' => 'console'],
             ],
             'a' => [
                 ['_aliases' => ['a' => 'console']],
-                [
-                    'action' => 'console',
-                    'oldThan' => strtotime('-1 year 00:00:00')
-                ],
+                ['action' => 'console'],
             ],
             'old-than' => [
                 ['old-than' => '2m'],
