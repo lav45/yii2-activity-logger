@@ -78,10 +78,6 @@ class DefaultController extends Controller
     public function actionClean(): void
     {
         $oldThan = $this->parseDate($this->oldThan);
-        if (null === $oldThan) {
-            $this->stderr("Invalid date format\n", Console::FG_RED, Console::UNDERLINE);
-            return;
-        }
 
         $command = new DeleteCommand([
             'entityName' => $this->entityName,
@@ -99,7 +95,7 @@ class DefaultController extends Controller
         }
     }
 
-    private function parseDate(string $str): ?int
+    private function parseDate(string $str): int
     {
         if (preg_match("/^(\d+)([hdmy]+)$/", $str, $matches)) {
             [$_, $count, $alias] = $matches;
@@ -109,11 +105,8 @@ class DefaultController extends Controller
                 'm' => 'month',
                 'y' => 'year',
             ];
-            if (isset($aliases[$alias])) {
-                return strtotime("-{$count} {$aliases[$alias]} 0:00:00 UTC");
-            }
-            throw new \InvalidArgumentException("Invalid date alias: {$alias}. You can use one of the 1h, 2d, 3m or 4y");
+            return strtotime("-{$count} {$aliases[$alias]} 0:00:00 UTC");
         }
-        return null;
+        throw new \InvalidArgumentException("Invalid old-than value: '{$str}'. You can use one of the 1h, 2d, 3m or 4y");
     }
 }

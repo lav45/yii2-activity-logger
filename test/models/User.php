@@ -20,6 +20,8 @@ use yii\web\IdentityInterface;
  * @property int $status
  * @property int $company_id
  * @property string $_array_status internal json data
+ * @property int $fail_relation
+ * @property int $fail_link
  *
  * @property array $arrayStatus
  *

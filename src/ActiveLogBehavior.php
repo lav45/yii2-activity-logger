@@ -14,10 +14,8 @@ use Yii;
 use yii\base\Behavior;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidValueException;
-use yii\db\ActiveQuery;
+use yii\db\ActiveQueryInterface;
 use yii\db\ActiveRecord;
-use yii\db\ArrayExpression;
-use yii\db\JsonExpression;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
@@ -242,17 +240,11 @@ class ActiveLogBehavior extends Behavior
     }
 
     /**
-     * @param string|int|null|ArrayExpression|JsonExpression $old_id
-     * @param string|int|null|ArrayExpression|JsonExpression $new_id
+     * @param string|int|null $old_id
+     * @param string|int|null $new_id
      */
     private function resolveSimpleValues($old_id, $new_id): array
     {
-        if ($old_id instanceof ArrayExpression || $old_id instanceof JsonExpression) {
-            $old_id = $old_id->getValue();
-        }
-        if ($new_id instanceof ArrayExpression || $new_id instanceof JsonExpression) {
-            $new_id = $new_id->getValue();
-        }
         return [
             'old' => ['value' => $old_id],
             'new' => ['value' => $new_id],
@@ -304,10 +296,7 @@ class ActiveLogBehavior extends Behavior
         $new['id'] = $new_id;
 
         $relationQuery = clone $this->owner->getRelation($relation);
-        if ($relationQuery instanceof ActiveQuery === false) {
-            throw new InvalidConfigException('Relation must be an instance of ' . ActiveQuery::class);
-        }
-        if (count($relationQuery->link) > 1) {
+        if ($relationQuery instanceof ActiveQueryInterface === false || count($relationQuery->link) > 1) {
             throw new InvalidConfigException('Relation model can only be linked through one primary key.');
         }
         $relationQuery->primaryModel = null;

@@ -2,7 +2,9 @@
 
 namespace lav45\activityLogger\test\console;
 
+use lav45\activityLogger\Manager;
 use lav45\activityLogger\ManagerInterface;
+use lav45\activityLogger\storage\DbStorage;
 use lav45\activityLogger\storage\DeleteCommand;
 use lav45\activityLogger\storage\MessageData;
 use PHPUnit\Framework\TestCase;
@@ -11,14 +13,45 @@ use yii\base\Module;
 class DefaultControllerTest extends TestCase
 {
     /**
-     * @return array{DefaultController, Manager}
+     * @return array{DefaultController, FakeManager}
      */
     private function createController(): array
     {
-        $logger = new Manager();
+        $logger = new FakeManager();
         $module = new Module('console');
         $controller = new DefaultController('logger', $module, $logger);
         return [$controller, $logger];
+    }
+
+    public function testFailRun(): void
+    {
+        $storage = new DbStorage();
+        $logger = new Manager($storage);
+        $module = new Module('console');
+        $controller = new DefaultController('logger', $module, $logger);
+
+        try {
+            $controller->run('clean', ['old-than' => '2k']);
+            $this->fail();
+        } catch (\Exception $e) {
+            $this->assertEquals("Invalid old-than value: '2k'. You can use one of the 1h, 2d, 3m or 4y", $e->getMessage());
+        }
+
+        try {
+            $controller->run('clean', ['old-than' => '2m']);
+            $this->fail();
+        } catch (\Exception $e) {
+            $this->assertEquals("Condition can't be empty", $e->getMessage());
+        }
+
+        try {
+            $controller->run('clean', [
+                'entity-name' => 'user',
+                'old-than' => '2m',
+            ]);
+        } catch (\Exception $e) {
+            $this->fail($e->getMessage());
+        }
     }
 
     /**
@@ -154,9 +187,12 @@ class DefaultControllerTest extends TestCase
         $controller->runAction('clean');
         $this->assertEquals("Error while cleaning the logs.\n", $controller->stdout);
 
-        $manager->result = false;
-        $controller->runAction('clean', ['old-than' => '12']);
-        $this->assertEquals("Invalid date format\n", $controller->stderr);
+        try {
+            $manager->result = false;
+            $controller->runAction('clean', ['old-than' => '12']);
+        } catch (\Exception $e) {
+            $this->assertEquals("Invalid old-than value: '12'. You can use one of the 1h, 2d, 3m or 4y", $e->getMessage());
+        }
     }
 }
 
@@ -177,7 +213,7 @@ class DefaultController extends \lav45\activityLogger\console\DefaultController
     }
 }
 
-class Manager implements ManagerInterface
+class FakeManager implements ManagerInterface
 {
     public bool $result = true;
 

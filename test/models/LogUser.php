@@ -3,6 +3,8 @@
 namespace lav45\activityLogger\test\models;
 
 use lav45\activityLogger\ActiveLogBehavior;
+use yii\base\Model;
+use yii\db\ActiveQuery;
 
 /**
  * Class LogUser
@@ -10,10 +12,7 @@ use lav45\activityLogger\ActiveLogBehavior;
  */
 class LogUser extends User
 {
-    /**
-     * @inheritdoc
-     */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             'logger' => [
@@ -35,15 +34,40 @@ class LogUser extends User
                         'relation' => 'company',
                         'attribute' => 'name',
                     ],
+                    'fail_relation' => [
+                        'relation' => 'failRelation',
+                        'attribute' => 'name',
+                    ],
+                    'fail_link' => [
+                        'relation' => 'failLink',
+                        'attribute' => 'name',
+                    ],
                 ],
             ],
         ];
     }
 
+    public function getFailLink(): ActiveQuery
+    {
+        return $this->hasOne(Company::class, [
+            'id' => 'company_id',
+            'name' => 'login',
+        ]);
+    }
+
+    public function getFailRelation(): Model
+    {
+        return new Model();
+    }
+
     public function getOldAttribute($name)
     {
         if ($name === 'arrayStatus') {
-            return json_decode(parent::getOldAttribute('_array_status'), true);
+            $value = parent::getOldAttribute('_array_status');
+            if ($value) {
+                return json_decode($value, true, 512, JSON_THROW_ON_ERROR);
+            }
+            return null;
         }
         return parent::getOldAttribute($name);
     }
@@ -64,19 +88,16 @@ class LogUser extends User
         return parent::isAttributeChanged($name, $identical);
     }
 
-    /**
-     * @return array
-     */
-    public function getArrayStatus()
+    public function getArrayStatus(): ?array
     {
-        return json_decode($this->_array_status, true);
+        if ($this->_array_status) {
+            return json_decode($this->_array_status, true, 512, JSON_THROW_ON_ERROR);
+        }
+        return null;
     }
 
-    /**
-     * @param array $data
-     */
-    public function setArrayStatus(array $data)
+    public function setArrayStatus(array $data): void
     {
-        $this->_array_status = json_encode($data);
+        $this->_array_status = json_encode($data, JSON_THROW_ON_ERROR);
     }
 }

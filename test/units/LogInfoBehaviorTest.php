@@ -2,10 +2,10 @@
 
 namespace lav45\activityLogger\test\units;
 
-use yii\base\Model;
-use lav45\activityLogger\MessageEvent;
 use lav45\activityLogger\ActiveLogBehavior;
 use lav45\activityLogger\LogInfoBehavior;
+use lav45\activityLogger\MessageEvent;
+use lav45\activityLogger\test\models\LogInfoModel;
 use PHPUnit\Framework\TestCase;
 
 class LogInfoBehaviorTest extends TestCase
@@ -80,31 +80,5 @@ class LogInfoBehaviorTest extends TestCase
 
         $model->trigger(ActiveLogBehavior::EVENT_BEFORE_SAVE_MESSAGE, $event);
         $this->assertEquals($expected, $event->logData);
-    }
-}
-
-/**
- * Class LogInfoModel
- * @package lav45\activityLogger\test\units
- * @property array $profile
- */
-class LogInfoModel extends Model
-{
-    public string $username = 'David';
-
-    public function getProfile(): array
-    {
-        return [
-            'email' => 'david@gmail.com'
-        ];
-    }
-
-    public function behaviors(): array
-    {
-        return [
-            'logInfo' => [
-                '__class' => LogInfoBehavior::class,
-            ]
-        ];
     }
 }

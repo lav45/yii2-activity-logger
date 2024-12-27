@@ -25,6 +25,7 @@ class DummyManagerTest extends TestCase
         $this->assertNull($manager->userNameAttribute);
         $this->assertNull($manager->debug);
         $this->assertNull($manager->aaaa);
+        $this->assertFalse(isset($manager->aaaa));
 
         $this->assertFalse($manager->log(new MessageData()));
         $this->assertFalse($manager->delete(new DeleteCommand()));

@@ -698,6 +698,9 @@ class ActiveLogBehaviorTest extends TestCase
         $logger = $model->getBehavior('logger');
 
         $this->assertEquals($model->getPrimaryKey(), $logger->getEntityId());
+
+        $logger->getEntityId = 123;
+        $this->assertEquals(123, $logger->getEntityId());
     }
 
     public function testExceptionGetEntityId(): void
@@ -710,7 +713,7 @@ class ActiveLogBehaviorTest extends TestCase
     /**
      * @dataProvider customGetEntityIdDataProvider
      * @param string|int|array $custom_entity_id
-     * @param string $result_entity_id
+     * @param string|int $result_entity_id
      */
     public function testCustomGetEntityId($custom_entity_id, $result_entity_id): void
     {
@@ -1099,5 +1102,33 @@ class ActiveLogBehaviorTest extends TestCase
         ];
 
         $this->assertEquals($expected, $logModels[0]->getData());
+    }
+
+    public function testFailRelation(): void
+    {
+        $model = new User();
+        $model->fail_relation = 1;
+
+        try {
+            $model->save(false);
+            $result = true;
+        } catch (\Exception $e) {
+            $result = false;
+        }
+        $this->assertFalse($result);
+    }
+
+    public function testFailLink(): void
+    {
+        $model = new User();
+        $model->fail_link = 1;
+
+        try {
+            $model->save(false);
+            $result = true;
+        } catch (\Exception $e) {
+            $result = false;
+        }
+        $this->assertFalse($result);
     }
 }

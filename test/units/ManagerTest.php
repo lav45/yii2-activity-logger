@@ -5,6 +5,7 @@ namespace lav45\activityLogger\test\units {
     use lav45\activityLogger\Manager;
     use lav45\activityLogger\storage\DeleteCommand;
     use lav45\activityLogger\storage\MessageData;
+    use lav45\activityLogger\test\components\ExceptionStorage;
     use lav45\activityLogger\test\components\FakeStorage;
     use lav45\activityLogger\test\models\User;
     use PHPUnit\Framework\TestCase;
@@ -154,6 +155,34 @@ namespace lav45\activityLogger\test\units {
             $manager->delete($command);
             $this->assertEquals($storage->command, $command);
             $this->assertEquals($storage->command->oldThan, $command->oldThan);
+        }
+
+        public function testException(): void
+        {
+            $storage = new ExceptionStorage();
+            $manager = new Manager($storage);
+
+            $manager->debug = false;
+            $this->assertFalse($manager->log(new MessageData()));
+            $this->assertFalse($manager->delete(new DeleteCommand()));
+
+            $manager->debug = true;
+
+            try {
+                $manager->log(new MessageData());
+                $result = false;
+            } catch (\Exception $e) {
+                $result = true;
+            }
+            $this->assertTrue($result);
+
+            try {
+                $manager->delete(new DeleteCommand());
+                $result = false;
+            } catch (\Exception $e) {
+                $result = true;
+            }
+            $this->assertTrue($result);
         }
     }
 }
