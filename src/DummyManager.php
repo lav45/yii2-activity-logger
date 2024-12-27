@@ -13,6 +13,12 @@ use lav45\activityLogger\storage\MessageData;
 
 class DummyManager implements ManagerInterface
 {
+    public string $user = 'user';
+
+    public string $userNameAttribute = 'username';
+
+    public bool $debug = YII_DEBUG;
+
     public function isEnabled(): bool
     {
         return false;
