@@ -223,17 +223,9 @@ class ActiveLogBehavior extends Behavior
         return $result;
     }
 
-    private function filterStoreValues(array $data): array
-    {
-        if (isset($data['old']) && !isset($data['old']['value'])) {
-            unset($data['old']);
-        }
-        return $data;
-    }
-
     /**
-     * @param string|int $old_id
-     * @param string|int $new_id
+     * @param string|int|null $old_id
+     * @param string|int|null $new_id
      */
     protected function resolveStoreValues($old_id, $new_id, array $options): array
     {
@@ -244,12 +236,12 @@ class ActiveLogBehavior extends Behavior
         } else {
             $value = $this->resolveSimpleValues($old_id, $new_id);
         }
-        return $this->filterStoreValues($value);
+        return $value;
     }
 
     /**
-     * @param string|int $old_id
-     * @param string|int $new_id
+     * @param string|int|null|ArrayExpression|JsonExpression $old_id
+     * @param string|int|null|ArrayExpression|JsonExpression $new_id
      */
     private function resolveSimpleValues($old_id, $new_id): array
     {
@@ -266,11 +258,12 @@ class ActiveLogBehavior extends Behavior
     }
 
     /**
-     * @param string|int|array $old_id
-     * @param string|int|array $new_id
+     * @param string|int|array|null $old_id
+     * @param string|int|array|null $new_id
      */
     private function resolveListValues($old_id, $new_id, string $listName): array
     {
+        $old = $new = [];
         $old['id'] = $old_id;
         $new['id'] = $new_id;
         $list = [];
@@ -280,13 +273,17 @@ class ActiveLogBehavior extends Behavior
         }
         if (is_array($old_id)) {
             $old['value'] = array_intersect_key($list, array_flip($old_id));
+        } elseif ($old_id) {
+            $old['value'] = ArrayHelper::getValue($this->owner, [$listName, $old_id]);
         } else {
-            $old['value'] = ($old_id === null) ? null : ArrayHelper::getValue($this->owner, [$listName, $old_id]);
+            $old['value'] = null;
         }
         if (is_array($new_id)) {
             $new['value'] = array_intersect_key($list, array_flip($new_id));
-        } else {
+        } elseif ($new_id) {
             $new['value'] = ArrayHelper::getValue($this->owner, [$listName, $new_id]);
+        } else {
+            $new['value'] = null;
         }
         return [
             'old' => $old,
@@ -295,11 +292,12 @@ class ActiveLogBehavior extends Behavior
     }
 
     /**
-     * @param string|int $old_id
-     * @param string|int $new_id
+     * @param string|int|null $old_id
+     * @param string|int|null $new_id
      */
     private function resolveRelationValues($old_id, $new_id, string $relation, string $attribute): array
     {
+        $old = $new = [];
         $old['id'] = $old_id;
         $new['id'] = $new_id;
 

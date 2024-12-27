@@ -75,12 +75,19 @@ class ActiveLogBehaviorTest extends TestCase
 
         $expected = [
             'status' => [
+                'old' => [
+                    'id' => null,
+                    'value' => null,
+                ],
                 'new' => [
                     'id' => 10,
                     'value' => 'Active'
                 ]
             ],
             'is_hidden' => [
+                'old' => [
+                    'value' => null,
+                ],
                 'new' => [
                     'value' => false
                 ]
@@ -111,6 +118,10 @@ class ActiveLogBehaviorTest extends TestCase
 
         $expected = [
             'status' => [
+                'old' => [
+                    'id' => null,
+                    'value' => null,
+                ],
                 'new' => [
                     'id' => 10,
                     'value' => 'Active'
@@ -133,37 +144,60 @@ class ActiveLogBehaviorTest extends TestCase
 
         $expected = [
             'status' => [
+                'old' => [
+                    'id' => null,
+                    'value' => null,
+                ],
                 'new' => [
                     'id' => 10,
                     'value' => 'Active'
                 ]
             ],
             'login' => [
+                'old' => [
+                    'value' => null,
+                ],
                 'new' => [
                     'value' => 'buster'
                 ]
             ],
             'is_hidden' => [
+                'old' => [
+                    'value' => null,
+                ],
                 'new' => [
                     'value' => false
                 ]
             ],
             'friend_count' => [
+                'old' => [
+                    'value' => null,
+                ],
                 'new' => [
                     'value' => 5
                 ]
             ],
             'salary' => [
+                'old' => [
+                    'value' => null,
+                ],
                 'new' => [
                     'value' => 100.5
                 ]
             ],
             'birthday' => [
+                'old' => [
+                    'value' => null,
+                ],
                 'new' => [
                     'value' => '01.01.2005'
                 ]
             ],
             'company_id' => [
+                'old' => [
+                    'id' => null,
+                    'value' => null,
+                ],
                 'new' => [
                     'value' => 'Asus',
                     'id' => 1
@@ -430,38 +464,61 @@ class ActiveLogBehaviorTest extends TestCase
 
         $expected = [
             'status' => [
+                'old' => [
+                    'id' => null,
+                    'value' => null,
+                ],
                 'new' => [
                     'id' => 10,
                     'value' => 'Active'
                 ]
             ],
             'company_id' => [
+                'old' => [
+                    'id' => null,
+                    'value' => null,
+                ],
                 'new' => [
                     'id' => 1,
                     'value' => 'Asus'
                 ]
             ],
             'login' => [
+                'old' => [
+                    'value' => null,
+                ],
                 'new' => [
                     'value' => 'buster'
                 ]
             ],
             'is_hidden' => [
+                'old' => [
+                    'value' => null,
+                ],
                 'new' => [
                     'value' => false
                 ]
             ],
             'friend_count' => [
+                'old' => [
+                    'value' => null,
+                ],
                 'new' => [
                     'value' => 5
                 ]
             ],
             'salary' => [
+                'old' => [
+                    'value' => null,
+                ],
                 'new' => [
                     'value' => 100.5
                 ]
             ],
             'birthday' => [
+                'old' => [
+                    'value' => null,
+                ],
                 'new' => [
                     'value' => '01.01.2005'
                 ]
@@ -544,17 +601,27 @@ class ActiveLogBehaviorTest extends TestCase
 
         $expected = [
             'birthday' => [
+                'old' => [
+                    'value' => null,
+                ],
                 'new' => [
                     'value' => '01.01.2005'
                 ]
             ],
             'status' => [
+                'old' => [
+                    'id' => null,
+                    'value' => null,
+                ],
                 'new' => [
                     'id' => 10,
                     'value' => 'Active'
                 ]
             ],
             'is_hidden' => [
+                'old' => [
+                    'value' => null,
+                ],
                 'new' => [
                     'value' => false
                 ]
@@ -718,17 +785,27 @@ class ActiveLogBehaviorTest extends TestCase
         $expected = [
             'info' => 'Custom info',
             'status' => [
+                'old' => [
+                    'id' => null,
+                    'value' => null,
+                ],
                 'new' => [
                     'id' => 10,
                     'value' => 'Active'
                 ]
             ],
             'is_hidden' => [
+                'old' => [
+                    'value' => null,
+                ],
                 'new' => [
                     'value' => false
                 ]
             ],
             'login' => [
+                'old' => [
+                    'value' => null,
+                ],
                 'new' => [
                     'value' => 'buster'
                 ]
@@ -789,17 +866,27 @@ class ActiveLogBehaviorTest extends TestCase
 
         $expected = [
             'status' => [
+                'old' => [
+                    'id' => null,
+                    'value' => null,
+                ],
                 'new' => [
                     'id' => 10,
                     'value' => 'Active'
                 ]
             ],
             'is_hidden' => [
+                'old' => [
+                    'value' => null,
+                ],
                 'new' => [
                     'value' => false
                 ]
             ],
             'login' => [
+                'old' => [
+                    'value' => null,
+                ],
                 'new' => [
                     'value' => 'buster'
                 ]
@@ -852,17 +939,27 @@ class ActiveLogBehaviorTest extends TestCase
         $expected = [
             'test' => 'test',
             'status' => [
+                'old' => [
+                    'id' => null,
+                    'value' => null,
+                ],
                 'new' => [
                     'id' => 10,
                     'value' => 'Active',
                 ],
             ],
             'login' => [
+                'old' => [
+                    'value' => null,
+                ],
                 'new' => [
                     'value' => 'John',
                 ],
             ],
             'is_hidden' => [
+                'old' => [
+                    'value' => null,
+                ],
                 'new' => [
                     'value' => false,
                 ],
@@ -924,6 +1021,10 @@ class ActiveLogBehaviorTest extends TestCase
 
         $expected = [
             'arrayStatus' => [
+                'old' => [
+                    'id' => null,
+                    'value' => null,
+                ],
                 'new' => [
                     'id' => [
                         User::STATUS_ACTIVE,
