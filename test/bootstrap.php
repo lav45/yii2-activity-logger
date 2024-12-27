@@ -1,6 +1,6 @@
 <?php
 
-use yii\caching\MemCache;
+use yii\caching\DbCache;
 use yii\console\Application;
 use yii\db\Connection;
 
@@ -15,8 +15,7 @@ new Application([
     'basePath' => __DIR__,
     'components' => [
         'cache' => [
-            '__class' => MemCache::class,
-            'useMemcached' => extension_loaded('memcached'),
+            '__class' => DbCache::class,
         ],
         'db' => [
             '__class' => Connection::class,
@@ -25,6 +24,10 @@ new Application([
     ]
 ]);
 
+Yii::$app->runAction('migrate/up', [
+    'migrationPath' => __DIR__ . '/../vendor/yiisoft/yii2/caching/migrations',
+    'interactive' => 0
+]);
 Yii::$app->runAction('migrate/up', [
     'migrationPath' => __DIR__ . '/../migrations',
     'interactive' => 0

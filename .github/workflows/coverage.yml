@@ -23,7 +23,7 @@ jobs:
       - name: Install PHP with extensions
         uses: shivammathur/setup-php@v2
         with:
-          extensions: curl, intl, pdo, pdo_sqlite, sqlite3, memcached
+          extensions: intl, pdo, pdo_sqlite, sqlite3
           php-version: 8.4
           tools: composer:v2
 

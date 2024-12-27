@@ -12,7 +12,6 @@ RUN apk add --no-cache \
     php7-dom \
     php7-xml php7-xmlwriter \
     php7-tokenizer \
-    php7-pecl-memcached \
     php7-sqlite3 sqlite \
     php7-pdo php7-pdo_sqlite \
     php7-xdebug
