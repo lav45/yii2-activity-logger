@@ -1,7 +1,7 @@
 <?php
 /**
  * @var $this yii\web\View
- * @var $model lav45\activityLogger\modules\models\ActivityLogViewModel
+ * @var $model lav45\activityLogger\module\models\ActivityLogViewModel
  * @var $key string
  * @var $index integer
  * @var $widget yii\widgets\ListView

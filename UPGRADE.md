@@ -37,6 +37,7 @@
   ```
 * Удалён `\lav45\activityLogger\DummyManager`. Вместо него добавлен `\lav45\activityLogger\storage\ArrayStorage`.
 * Удалён `\lav45\activityLogger\ManagerInterface::isEnabled()`
+* Переименован namespace `\lav45\activityLogger\modules` -> `\lav45\activityLogger\module`
 
 Обновление 2.1
 ------------------

@@ -6,7 +6,7 @@
 return [
     'modules' => [
         'logger' => [
-            '__class' => \lav45\activityLogger\modules\Module::class,
+            '__class' => \lav45\activityLogger\module\Module::class,
             // Список моделей которые логировались
             'entityMap' => [
                 'news' => 'common\models\News',

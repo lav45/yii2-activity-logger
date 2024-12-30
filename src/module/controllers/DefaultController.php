@@ -6,18 +6,15 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-namespace lav45\activityLogger\modules\controllers;
+namespace lav45\activityLogger\module\controllers;
 
 use Yii;
 use yii\web\Controller;
-use lav45\activityLogger\modules\models\ActivityLogSearch;
-use lav45\activityLogger\modules\models\ActivityLogViewModel;
+use lav45\activityLogger\module\models\ActivityLogSearch;
+use lav45\activityLogger\module\models\ActivityLogViewModel;
 
 /**
- * Class DefaultController
- * @package lav45\activityLogger\modules\controllers
- *
- * @property \lav45\activityLogger\modules\Module $module
+ * @property \lav45\activityLogger\module\Module $module
  */
 class DefaultController extends Controller
 {

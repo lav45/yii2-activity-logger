@@ -9,7 +9,7 @@ use lav45\activityLogger\MessageEvent;
 use lav45\activityLogger\middlewares\EnvironmentMiddleware;
 use lav45\activityLogger\middlewares\UserInterface;
 use lav45\activityLogger\middlewares\UserMiddleware;
-use lav45\activityLogger\modules\models\ActivityLog;
+use lav45\activityLogger\module\models\ActivityLog;
 use lav45\activityLogger\storage\ArrayStorage;
 use lav45\activityLogger\storage\DbStorage;
 use lav45\activityLogger\storage\StorageInterface;

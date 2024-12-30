@@ -4,14 +4,11 @@ namespace lav45\activityLogger\test\models;
 
 use lav45\activityLogger\ActiveLogBehavior;
 use lav45\activityLogger\middlewares\UserInterface;
-use lav45\activityLogger\modules\models\ActivityLog;
+use lav45\activityLogger\module\models\ActivityLog;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
 /**
- * Class News
- * @package lav45\activityLogger\test\models
- *
  * @property int $id
  * @property string $login
  * @property boolean $is_hidden

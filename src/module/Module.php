@@ -6,15 +6,11 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-namespace lav45\activityLogger\modules;
+namespace lav45\activityLogger\module;
 
 use Yii;
 use yii\i18n\PhpMessageSource;
 
-/**
- * Class Module
- * @package lav45\activityLogger\modules
- */
 class Module extends \yii\base\Module
 {
     /**

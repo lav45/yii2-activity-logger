@@ -6,7 +6,7 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-namespace lav45\activityLogger\modules\models;
+namespace lav45\activityLogger\module\models;
 
 use yii\base\BaseObject;
 use yii\di\Instance;

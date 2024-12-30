@@ -6,7 +6,7 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-namespace lav45\activityLogger\modules\models;
+namespace lav45\activityLogger\module\models;
 
 use Yii;
 use yii\base\InvalidConfigException;
@@ -14,9 +14,6 @@ use yii\db\ActiveRecord;
 use yii\db\Connection;
 
 /**
- * Class ActivityLogger
- * @package lav45\activityLogger
- *
  * @property int $id
  * @property string $entity_name
  * @property string $entity_id
