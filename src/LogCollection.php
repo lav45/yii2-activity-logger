@@ -8,27 +8,18 @@
 
 namespace lav45\activityLogger;
 
-use lav45\activityLogger\storage\MessageData;
-use Yii;
-
 class LogCollection
 {
     private ManagerInterface $logger;
 
-    private MessageData $data;
+    private MessageBuilderInterface $builder;
     /** @var string[] */
-    private array $messages = [];
+    private array $data = [];
 
     public function __construct(ManagerInterface $logger, string $entityName)
     {
         $this->logger = $logger;
-
-        /** @var MessageData $data */
-        $data = Yii::createObject([
-            '__class' => MessageData::class,
-            'entityName' => $entityName,
-        ]);
-        $this->data = $data;
+        $this->builder = $logger->createMessageBuilder($entityName);
     }
 
     /**
@@ -36,42 +27,42 @@ class LogCollection
      */
     public function setEntityId($value): self
     {
-        $this->data->entityId = $value;
+        $this->builder = $this->builder->withEntityId($value);
         return $this;
     }
 
     public function setAction(string $value): self
     {
-        $this->data->action = $value;
+        $this->builder = $this->builder->withAction($value);
         return $this;
     }
 
     public function addMessage(string $value): void
     {
-        $this->messages[] = $value;
+        $this->data[] = $value;
     }
 
     /**
      * @return string[]
      */
-    private function flushMessages(): array
+    private function flushData(): array
     {
-        $messages = $this->messages;
-        $this->messages = [];
-        return $messages;
+        $data = $this->data;
+        $this->data = [];
+        return $data;
     }
 
     public function push(): bool
     {
-        $messages = $this->flushMessages();
-        if (empty($messages)) {
+        $data = $this->flushData();
+        if (empty($data)) {
             return false;
         }
 
-        $data = clone $this->data;
-        $data->createdAt = time();
-        $data->data = $messages;
+        $message = $this->builder
+            ->withData($data)
+            ->build(time());
 
-        return $this->logger->log($data);
+        return $this->logger->log($message);
     }
 }

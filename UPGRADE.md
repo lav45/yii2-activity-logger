@@ -5,6 +5,37 @@
 стараемся обеспечить обратную совместимость, насколько это возможно, иногда это не возможно, или приводит к
 существенному снижению производительности. Так же вы сможете следить за всеми критическими изменениями в нашем проекте.
 
+Обновление 2.2
+------------------
+
+* Удалены `\lav45\activityLogger\Manager::$user`
+* Удалены `\lav45\activityLogger\Manager::$userNameAttribute`
+* Добавлен `\lav45\activityLogger\middlewares\UserInterface` для `User` модели
+  ```php
+  Yii::$container->setDefinitions([
+      \lav45\activityLogger\middlewares\UserInterface::class => static fn() => Yii::$app->getUser()->getIdentity(),
+  ]);
+  ```
+* Добавлен `\lav45\activityLogger\Manager::$middlewares` которые будут заполнять данные для `\lav45\activityLogger\MessageData`
+  ```php
+  return [
+      'components' => [
+          'activityLogger' => [
+              '__class' => \lav45\activityLogger\Manager::class,
+              'middlewares' => [
+                  [
+                      '__class' => \lav45\activityLogger\middlewares\UserMiddleware::class,
+                  ],up
+                  [
+                      '__class' => \lav45\activityLogger\middlewares\EnvironmentMiddleware::class,
+                      '__construct()' => [ 'env' => 'api' ],
+                  ]
+              ],
+          ],
+      ],
+  ];
+  ```
+
 Обновление 2.1
 ------------------
 
@@ -16,8 +47,8 @@
 * Необходимо настроить DI container
   ```php
   Yii::$container->setDefinitions([
-      \lav45\activityLogger\ManagerInterface::class => static fn() => Instance::ensure('activityLogger'),
-      \lav45\activityLogger\storage\StorageInterface::class => static fn() => Instance::ensure('activityLoggerStorage'),
+      \lav45\activityLogger\ManagerInterface::class => static fn() => Yii::$app->get('activityLogger'),
+      \lav45\activityLogger\storage\StorageInterface::class => static fn() => Yii::$app->get('activityLoggerStorage'),
   ]);
   ```
 * Вместо свойства `\lav45\activityLogger\Manager::$enabled` следует использовать

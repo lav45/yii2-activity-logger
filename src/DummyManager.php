@@ -41,4 +41,9 @@ class DummyManager implements ManagerInterface
     {
         return false;
     }
+
+    public function createMessageBuilder(string $entityName): MessageBuilderInterface
+    {
+        return new MessageBuilder($entityName);
+    }
 }

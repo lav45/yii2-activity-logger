@@ -8,21 +8,21 @@
 
 namespace lav45\activityLogger;
 
+use lav45\activityLogger\middlewares\Middleware;
+use lav45\activityLogger\middlewares\MiddlewarePipeline;
 use lav45\activityLogger\storage\DeleteCommand;
 use lav45\activityLogger\storage\MessageData;
 use lav45\activityLogger\storage\StorageInterface;
 use Throwable;
 use Yii;
 use yii\base\BaseObject;
-use yii\web\IdentityInterface;
 
 class Manager extends BaseObject implements ManagerInterface
 {
-    public string $user = 'user';
-
-    public string $userNameAttribute = 'username';
-
     public bool $debug = YII_DEBUG;
+
+    /** @var Middleware[] */
+    private array $middlewares = [];
 
     private StorageInterface $storage;
 
@@ -35,14 +35,37 @@ class Manager extends BaseObject implements ManagerInterface
         $this->storage = $storage;
     }
 
-    protected function getUserIdentity(): ?IdentityInterface
+    /**
+     * @param array{string, array, Middleware} $middlewares
+     * @return void
+     */
+    public function setMiddlewares(array $middlewares): void
     {
-        /** @var \yii\web\User|null $user */
-        $user = Yii::$app->get($this->user, false);
-        if ($user) {
-            return $user->getIdentity();
+        $result = [];
+        foreach ($middlewares as $middleware) {
+            $result[] = $this->createMiddleware($middleware);
         }
-        return null;
+        $this->middlewares = $result;
+    }
+
+    /**
+     * @param string|array|Middleware $middleware
+     * @return Middleware
+     */
+    protected function createMiddleware($middleware): Middleware
+    {
+        if (is_object($middleware)) {
+            return $middleware;
+        }
+        /** @var Middleware */
+        return Yii::createObject($middleware);
+    }
+
+    public function createMessageBuilder(string $entityName): MessageBuilderInterface
+    {
+        $pipeline = new MiddlewarePipeline(...$this->middlewares);
+        $builder = new MessageBuilder($entityName);
+        return $pipeline->handle($builder);
     }
 
     public function isEnabled(): bool
@@ -52,11 +75,6 @@ class Manager extends BaseObject implements ManagerInterface
 
     public function log(MessageData $message): bool
     {
-        if ($identity = $this->getUserIdentity()) {
-            $message->userId = $identity->getId();
-            $message->userName = $identity->{$this->userNameAttribute};
-        }
-
         try {
             $this->storage->save($message);
             return true;

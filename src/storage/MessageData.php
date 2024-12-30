@@ -8,9 +8,7 @@
 
 namespace lav45\activityLogger\storage;
 
-use yii\base\BaseObject;
-
-final class MessageData extends BaseObject
+final class MessageData
 {
     /** Alias name target object */
     public string $entityName;

@@ -3,6 +3,7 @@
 namespace lav45\activityLogger\test\models;
 
 use lav45\activityLogger\ActiveLogBehavior;
+use lav45\activityLogger\middlewares\UserInterface;
 use lav45\activityLogger\modules\models\ActivityLog;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
@@ -30,7 +31,7 @@ use yii\web\IdentityInterface;
  *
  * @mixin ActiveLogBehavior
  */
-class User extends ActiveRecord implements IdentityInterface
+class User extends ActiveRecord implements IdentityInterface, UserInterface
 {
     public const STATUS_ACTIVE = 10;
     public const STATUS_DISABLED = 1;
@@ -157,7 +158,7 @@ class User extends ActiveRecord implements IdentityInterface
         return null;
     }
 
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }
@@ -170,5 +171,10 @@ class User extends ActiveRecord implements IdentityInterface
     public function validateAuthKey($authKey)
     {
         return false;
+    }
+
+    public function getName(): string
+    {
+        return $this->login;
     }
 }

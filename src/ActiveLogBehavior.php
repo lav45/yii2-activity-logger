@@ -9,12 +9,9 @@
 namespace lav45\activityLogger;
 
 use lav45\activityLogger\storage\DeleteCommand;
-use lav45\activityLogger\storage\MessageData;
-use Yii;
 use yii\base\Behavior;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidValueException;
-use yii\db\ActiveQueryInterface;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
@@ -197,10 +194,7 @@ class ActiveLogBehavior extends Behavior
     public function beforeDelete(): void
     {
         if (false === $this->softDelete) {
-            $this->logger->delete(new DeleteCommand([
-                'entityName' => $this->getEntityName(),
-                'entityId' => $this->getEntityId(),
-            ]));
+            $this->deleteEntity();
         }
         $this->saveMessage('deleted', $this->prepareChangedAttributes(true));
     }
@@ -319,11 +313,18 @@ class ActiveLogBehavior extends Behavior
         } else {
             $new['value'] = null;
         }
-
         return [
             'old' => $old,
             'new' => $new
         ];
+    }
+
+    protected function deleteEntity(): void
+    {
+        $this->logger->delete(new DeleteCommand([
+            'entityName' => $this->getEntityName(),
+            'entityId' => $this->getEntityId(),
+        ]));
     }
 
     protected function saveMessage(string $action, array $data): void
@@ -339,15 +340,12 @@ class ActiveLogBehavior extends Behavior
      */
     public function addLog($data, string $action = null): bool
     {
-        /** @var MessageData $message */
-        $message = Yii::createObject([
-            '__class' => MessageData::class,
-            'entityName' => $this->getEntityName(),
-            'entityId' => $this->getEntityId(),
-            'createdAt' => time(),
-            'action' => $action,
-            'data' => $data,
-        ]);
+        $message = $this->logger->createMessageBuilder($this->getEntityName())
+            ->withEntityId($this->getEntityId())
+            ->withAction($action)
+            ->withData($data)
+            ->build(time());
+
         return $this->logger->log($message);
     }
 

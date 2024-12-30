@@ -4,6 +4,8 @@ namespace lav45\activityLogger\test\console;
 
 use lav45\activityLogger\Manager;
 use lav45\activityLogger\ManagerInterface;
+use lav45\activityLogger\MessageBuilder;
+use lav45\activityLogger\MessageBuilderInterface;
 use lav45\activityLogger\storage\DbStorage;
 use lav45\activityLogger\storage\DeleteCommand;
 use lav45\activityLogger\storage\MessageData;
@@ -209,5 +211,10 @@ class FakeManager implements ManagerInterface
     public function isEnabled(): bool
     {
         return true;
+    }
+
+    public function createMessageBuilder(string $entityName): MessageBuilderInterface
+    {
+        return new MessageBuilder($entityName);
     }
 }

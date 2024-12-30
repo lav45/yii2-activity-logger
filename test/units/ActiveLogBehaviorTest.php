@@ -7,9 +7,11 @@ use lav45\activityLogger\DummyManager;
 use lav45\activityLogger\Manager;
 use lav45\activityLogger\ManagerInterface;
 use lav45\activityLogger\MessageEvent;
+use lav45\activityLogger\middlewares\EnvironmentMiddleware;
+use lav45\activityLogger\middlewares\UserInterface;
+use lav45\activityLogger\middlewares\UserMiddleware;
 use lav45\activityLogger\modules\models\ActivityLog;
 use lav45\activityLogger\storage\DbStorage;
-use lav45\activityLogger\storage\MessageData;
 use lav45\activityLogger\storage\StorageInterface;
 use lav45\activityLogger\test\models\LogUser as User;
 use lav45\activityLogger\test\models\TestEntityName;
@@ -18,18 +20,37 @@ use PHPUnit\Framework\TestCase;
 use Yii;
 use yii\base\Event;
 use yii\base\InvalidValueException;
-use yii\di\Instance;
 
 class ActiveLogBehaviorTest extends TestCase
 {
-    public static function setUpBeforeClass(): void
+    protected function setUp(): void
     {
+        $user = new class implements UserInterface {
+            public function getId(): string
+            {
+                return '1';
+            }
+
+            public function getName(): string
+            {
+                return 'user';
+            }
+        };
+
         Yii::$container->setDefinitions([
-            ManagerInterface::class => static fn() => Instance::ensure('activityLogger'),
-            StorageInterface::class => static fn() => Instance::ensure('activityLoggerStorage'),
+            ManagerInterface::class => static fn() => Yii::$app->get('activityLogger'),
+            StorageInterface::class => static fn() => Yii::$app->get('activityLoggerStorage'),
+            UserInterface::class => $user,
         ]);
         Yii::$app->set('activityLogger', [
             '__class' => Manager::class,
+            'middlewares' => [
+                UserMiddleware::class,
+                [
+                    '__class' => EnvironmentMiddleware::class,
+                    '__construct()' => [ 'env' => 'test' ],
+                ],
+            ]
         ]);
         Yii::$app->set('activityLoggerStorage', [
             '__class' => DbStorage::class,
@@ -51,23 +72,37 @@ class ActiveLogBehaviorTest extends TestCase
         return $model;
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         User::deleteAll();
         ActivityLog::deleteAll();
+
+        Yii::$app->set('activityLogger', null);
+        Yii::$app->set('activityLoggerStorage', null);
     }
 
     public function testCreateModelWithDefaultOptions(): void
     {
         $ent = 'console';
-        $userId = 'console';
-        $userName = 'Droid R2-D2';
 
-        $oldContainer = clone Yii::$container;
-        Yii::$container->set(MessageData::class, [
-            'env' => $ent,
-            'userId' => $userId,
-            'userName' => $userName,
+        $user = new class implements UserInterface {
+            public function getId(): string
+            {
+                return 'console';
+            }
+
+            public function getName(): string
+            {
+                return 'Droid R2-D2';
+            }
+        };
+
+        Yii::$app->set('activityLogger', [
+            '__class' => Manager::class,
+            'middlewares' => [
+                new UserMiddleware($user),
+                new EnvironmentMiddleware($ent),
+            ]
         ]);
 
         $model = new User();
@@ -98,11 +133,9 @@ class ActiveLogBehaviorTest extends TestCase
 
         $this->assertEquals($expected, $activityLog->getData());
         $this->assertEquals($ent, $activityLog->env);
-        $this->assertEquals($userId, $activityLog->user_id);
-        $this->assertEquals($userName, $activityLog->user_name);
+        $this->assertEquals($user->getId(), $activityLog->user_id);
+        $this->assertEquals($user->getName(), $activityLog->user_name);
         $this->assertEquals('created', $activityLog->action);
-
-        Yii::$container = $oldContainer;
     }
 
     public function testIsEmpty(): void

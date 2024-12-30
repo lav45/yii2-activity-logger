@@ -3,10 +3,11 @@
 namespace lav45\activityLogger\test\units;
 
 use lav45\activityLogger\LogCollection;
-use lav45\activityLogger\storage\MessageData;
+use lav45\activityLogger\middlewares\EnvironmentMiddleware;
+use lav45\activityLogger\middlewares\UserInterface;
+use lav45\activityLogger\middlewares\UserMiddleware;
 use lav45\activityLogger\test\components\FakeManager;
 use PHPUnit\Framework\TestCase;
-use Yii;
 
 class LogCollectionTest extends TestCase
 {
@@ -20,7 +21,7 @@ class LogCollectionTest extends TestCase
         $this->assertEquals($collection, $collection->setEntityId($entityId));
 
         $collection->addMessage('test message');
-        $collection->push();
+        $this->assertTrue($collection->push());
 
         $this->assertEquals($entityId, $logger->message->entityId);
         $this->assertEquals($entityName, $logger->message->entityName);
@@ -35,7 +36,7 @@ class LogCollectionTest extends TestCase
         $this->assertEquals($collection, $collection->setAction($action));
 
         $collection->addMessage('Updated: 100500');
-        $collection->push();
+        $this->assertTrue($collection->push());
 
         $this->assertEquals($action, $logger->message->action);
     }
@@ -43,17 +44,24 @@ class LogCollectionTest extends TestCase
     public function testAddAndPushMessage(): void
     {
         $ent = 'console';
-        $userId = 'console';
-        $userName = 'Droid R2-D2';
+        $user = new class implements UserInterface {
+            public function getId(): string
+            {
+                return 'console';
+            }
 
-        $oldContainer = clone Yii::$container;
-        Yii::$container->set(MessageData::class, [
-            'env' => $ent,
-            'userId' => $userId,
-            'userName' => $userName,
-        ]);
+            public function getName(): string
+            {
+                return 'Droid R2-D2';
+            }
+        };
 
         $logger = new FakeManager();
+        $logger->middlewares = [
+            new UserMiddleware($user),
+            new EnvironmentMiddleware($ent),
+        ];
+
         $collection = new LogCollection($logger, 'test');
 
         $messages = [
@@ -70,10 +78,8 @@ class LogCollectionTest extends TestCase
         $this->assertFalse($collection->push());
 
         $this->assertEquals($ent, $logger->message->env);
-        $this->assertEquals($userId, $logger->message->userId);
-        $this->assertEquals($userName, $logger->message->userName);
+        $this->assertEquals($user->getId(), $logger->message->userId);
+        $this->assertEquals($user->getName(), $logger->message->userName);
         $this->assertEquals($messages, $logger->message->data);
-
-        Yii::$container = $oldContainer;
     }
 }
