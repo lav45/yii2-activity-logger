@@ -165,9 +165,6 @@ class ActiveLogBehavior extends Behavior
 
     public function events(): array
     {
-        if (false === $this->logger->isEnabled()) {
-            return [];
-        }
         return [
             ActiveRecord::EVENT_BEFORE_INSERT => [$this, 'beforeSave'],
             ActiveRecord::EVENT_BEFORE_UPDATE => [$this, 'beforeSave'],

@@ -28,11 +28,6 @@ class FakeManager implements ManagerInterface
         return true;
     }
 
-    public function isEnabled(): bool
-    {
-        return true;
-    }
-
     public function createMessageBuilder(string $entityName): MessageBuilderInterface
     {
         $pipeline = new MiddlewarePipeline(...$this->middlewares);

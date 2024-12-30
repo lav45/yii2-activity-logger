@@ -35,6 +35,8 @@
       ],
   ];
   ```
+* Удалён `\lav45\activityLogger\DummyManager`. Вместо него добавлен `\lav45\activityLogger\storage\ArrayStorage`.
+* Удалён `\lav45\activityLogger\ManagerInterface::isEnabled()`
 
 Обновление 2.1
 ------------------

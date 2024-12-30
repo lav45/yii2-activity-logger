@@ -3,7 +3,6 @@
 namespace lav45\activityLogger\test\units;
 
 use lav45\activityLogger\ActiveLogBehavior;
-use lav45\activityLogger\DummyManager;
 use lav45\activityLogger\Manager;
 use lav45\activityLogger\ManagerInterface;
 use lav45\activityLogger\MessageEvent;
@@ -11,6 +10,7 @@ use lav45\activityLogger\middlewares\EnvironmentMiddleware;
 use lav45\activityLogger\middlewares\UserInterface;
 use lav45\activityLogger\middlewares\UserMiddleware;
 use lav45\activityLogger\modules\models\ActivityLog;
+use lav45\activityLogger\storage\ArrayStorage;
 use lav45\activityLogger\storage\DbStorage;
 use lav45\activityLogger\storage\StorageInterface;
 use lav45\activityLogger\test\models\LogUser as User;
@@ -48,7 +48,7 @@ class ActiveLogBehaviorTest extends TestCase
                 UserMiddleware::class,
                 [
                     '__class' => EnvironmentMiddleware::class,
-                    '__construct()' => [ 'env' => 'test' ],
+                    '__construct()' => ['env' => 'test'],
                 ],
             ]
         ]);
@@ -77,8 +77,12 @@ class ActiveLogBehaviorTest extends TestCase
         User::deleteAll();
         ActivityLog::deleteAll();
 
-        Yii::$app->set('activityLogger', null);
-        Yii::$app->set('activityLoggerStorage', null);
+        Yii::$app->clear('activityLogger');
+        Yii::$app->clear('activityLoggerStorage');
+
+        Yii::$container->clear(ManagerInterface::class);
+        Yii::$container->clear(StorageInterface::class);
+        Yii::$container->clear(UserInterface::class);
     }
 
     public function testCreateModelWithDefaultOptions(): void
@@ -778,8 +782,7 @@ class ActiveLogBehaviorTest extends TestCase
 
     public function testDisabledLoggerBeforeStart(): void
     {
-        $oldLogger = Yii::$app->get('activityLogger');
-        Yii::$app->set('activityLogger', new DummyManager());
+        Yii::$app->set('activityLoggerStorage', ArrayStorage::class);
 
         $model = $this->createModel();
         $model->setAttributes([
@@ -788,9 +791,6 @@ class ActiveLogBehaviorTest extends TestCase
         ]);
         $this->assertTrue($model->save());
         $this->assertNull($model->getLastActivityLog());
-
-        // Reset component settings
-        Yii::$app->set('activityLogger', $oldLogger);
     }
 
     public function testEventSaveMessage(): void

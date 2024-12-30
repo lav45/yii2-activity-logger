@@ -13,8 +13,6 @@ use lav45\activityLogger\storage\MessageData;
 
 interface ManagerInterface
 {
-    public function isEnabled(): bool;
-
     public function createMessageBuilder(string $entityName): MessageBuilderInterface;
 
     public function log(MessageData $message): bool;

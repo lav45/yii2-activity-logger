@@ -14,16 +14,10 @@ define('LOG_ENV', 'api');
 return [
     'components' => [
         /**
-         * Компонент принимает и управляет логами
+         * Компонент принимает и управляет логами, реализует `\lav45\activityLogger\ManagerInterface`
          */
         'activityLogger' => [
             '__class' => \lav45\activityLogger\Manager::class,
-
-            // Если необходимо отключить логирование, можете использовать заглушку
-            // '__class' => YII_ENV_PROD ?
-            //      \lav45\activityLogger\Manager::class :
-            //      \lav45\activityLogger\DummyManager::class,
-
             'middlewares' => [
                 [
                     '__class' => \lav45\activityLogger\middlewares\UserMiddleware::class,
@@ -31,7 +25,7 @@ return [
                 [
                     '__class' => \lav45\activityLogger\middlewares\EnvironmentMiddleware::class,
                     '__construct()' => [ 'env' => LOG_ENV ],
-                ]
+                ],
             ],
 
             // В debug режиме, все Exception будут выбрасывать исключение,
@@ -44,6 +38,11 @@ return [
          */
         'activityLoggerStorage' => [
             '__class' => \lav45\activityLogger\storage\DbStorage::class,
+
+            // Если необходимо отключить логирование, можете использовать заглушку
+            // '__class' => YII_ENV_PROD ?
+            //      \lav45\activityLogger\storage\DbStorage::class :
+            //      \lav45\activityLogger\storage\ArrayStorage::class,
 
             // Имя таблицы в которой будут храниться логи
             // 'tableName' => '{{%activity_log}}',

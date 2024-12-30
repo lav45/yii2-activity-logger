@@ -47,10 +47,7 @@ class ManagerTest extends TestCase
             ]
         ]);
 
-        $oldContainer = clone Yii::$container;
-        Yii::$container->setDefinitions([
-            UserInterface::class => static fn() => Yii::$app->getUser()->getIdentity(),
-        ]);
+        Yii::$container->set(UserInterface::class, static fn() => Yii::$app->getUser()->getIdentity());
 
         $user = new User();
         $user->login = 'buster';
@@ -88,7 +85,7 @@ class ManagerTest extends TestCase
         User::deleteAll();
 
         Yii::$app = $oldApp;
-        Yii::$container = $oldContainer;
+        Yii::$container->clear(UserInterface::class);
     }
 
     public function testLogWithOutUser(): void

@@ -68,11 +68,6 @@ class Manager extends BaseObject implements ManagerInterface
         return $pipeline->handle($builder);
     }
 
-    public function isEnabled(): bool
-    {
-        return true;
-    }
-
     public function log(MessageData $message): bool
     {
         try {

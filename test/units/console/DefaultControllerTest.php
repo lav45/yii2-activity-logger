@@ -208,11 +208,6 @@ class FakeManager implements ManagerInterface
         return $this->result;
     }
 
-    public function isEnabled(): bool
-    {
-        return true;
-    }
-
     public function createMessageBuilder(string $entityName): MessageBuilderInterface
     {
         return new MessageBuilder($entityName);
