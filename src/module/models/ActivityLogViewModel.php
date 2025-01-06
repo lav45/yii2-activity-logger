@@ -100,7 +100,7 @@ class ActivityLogViewModel extends ActivityLog
         return [];
     }
 
-    protected function getAttributeFormat(string $attribute): ?string
+    protected function getAttributeFormat(string $attribute): string|null|\Closure
     {
         $formats = $this->getEntityAttributeFormats();
         return $formats[$attribute] ?? null;
