@@ -62,10 +62,10 @@ class ManagerTest extends TestCase
         $data = ['test'];
         $time = time();
 
-        $manager->setMiddlewares([
+        $manager->middlewares = [
             new EnvironmentMiddleware($env),
             new UserMiddleware($user),
-        ]);
+        ];
 
         $message = $manager->createMessageBuilder($entityName)
             ->withData($data)
@@ -97,9 +97,9 @@ class ManagerTest extends TestCase
         $data = ['test'];
         $time = time();
 
-        $manager->setMiddlewares([
+        $manager->middlewares = [
             new EnvironmentMiddleware($env),
-        ]);
+        ];
 
         $message = $manager->createMessageBuilder($entityName)
             ->withData($data)

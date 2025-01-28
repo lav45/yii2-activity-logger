@@ -47,7 +47,7 @@ class ActiveLogBehaviorTest extends TestCase
             'middlewares' => [
                 UserMiddleware::class,
                 [
-                    '__class' => EnvironmentMiddleware::class,
+                    'class' => EnvironmentMiddleware::class,
                     '__construct()' => ['env' => 'test'],
                 ],
             ]

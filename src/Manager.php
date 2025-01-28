@@ -16,13 +16,14 @@ use lav45\activityLogger\storage\StorageInterface;
 use Throwable;
 use Yii;
 use yii\base\BaseObject;
+use yii\di\Instance;
 
 class Manager extends BaseObject implements ManagerInterface
 {
     public bool $debug = YII_DEBUG;
 
-    /** @var Middleware[] */
-    private array $middlewares = [];
+    /** @var array{string, array, Middleware} */
+    public array $middlewares = [];
 
     private StorageInterface $storage;
 
@@ -36,34 +37,21 @@ class Manager extends BaseObject implements ManagerInterface
     }
 
     /**
-     * @param array{string, array, Middleware} $middlewares
-     * @return void
+     * @return Middleware[]
      */
-    public function setMiddlewares(array $middlewares): void
+    private function createMiddlewares(): array
     {
         $result = [];
-        foreach ($middlewares as $middleware) {
-            $result[] = $this->createMiddleware($middleware);
+        foreach ($this->middlewares as $middleware) {
+            $result[] = Instance::ensure($middleware, Middleware::class);
         }
-        $this->middlewares = $result;
-    }
-
-    /**
-     * @param string|array|Middleware $middleware
-     * @return Middleware
-     */
-    protected function createMiddleware($middleware): Middleware
-    {
-        if (is_object($middleware)) {
-            return $middleware;
-        }
-        /** @var Middleware */
-        return Yii::createObject($middleware);
+        return $result;
     }
 
     public function createMessageBuilder(string $entityName): MessageBuilderInterface
     {
-        $pipeline = new MiddlewarePipeline(...$this->middlewares);
+        $middlewares = $this->createMiddlewares();
+        $pipeline = new MiddlewarePipeline(...$middlewares);
         $builder = new MessageBuilder($entityName);
         return $pipeline->handle($builder);
     }
