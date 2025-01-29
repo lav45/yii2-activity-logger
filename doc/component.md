@@ -20,10 +20,10 @@ return [
             '__class' => \lav45\activityLogger\Manager::class,
             'middlewares' => [
                 [
-                    '__class' => \lav45\activityLogger\middlewares\UserMiddleware::class,
+                    'class' => \lav45\activityLogger\middlewares\UserMiddleware::class,
                 ],
                 [
-                    '__class' => \lav45\activityLogger\middlewares\EnvironmentMiddleware::class,
+                    'class' => \lav45\activityLogger\middlewares\EnvironmentMiddleware::class,
                     '__construct()' => [ 'env' => LOG_ENV ],
                 ],
             ],
