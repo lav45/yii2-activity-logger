@@ -70,7 +70,7 @@ class ActivityLog extends ActiveRecord
     public function getData(): iterable
     {
         if ($this->data) {
-            return json_decode($this->data, true, 512, JSON_THROW_ON_ERROR);
+            return (array)json_decode($this->data, true, 512, JSON_THROW_ON_ERROR);
         }
         return [];
     }
