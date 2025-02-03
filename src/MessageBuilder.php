@@ -44,7 +44,10 @@ final class MessageBuilder implements MessageBuilderInterface
         return $new;
     }
 
-    public function withAction(string|null $action): self
+    /**
+     * @param string|null $action
+     */
+    public function withAction($action): self
     {
         $new = clone $this;
         $new->message->action = $action;
