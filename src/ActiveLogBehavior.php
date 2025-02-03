@@ -245,8 +245,9 @@ class ActiveLogBehavior extends Behavior
     /**
      * @param string|int|array|null $old_id
      * @param string|int|array|null $new_id
+     * @param string|\Closure $listName
      */
-    private function resolveListValues($old_id, $new_id, string $listName): array
+    private function resolveListValues($old_id, $new_id, $listName): array
     {
         $old = $new = [];
         $old['id'] = $old_id;

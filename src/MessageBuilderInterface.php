@@ -21,7 +21,7 @@ interface MessageBuilderInterface
 
     public function withUserName(string $name): self;
 
-    public function withAction(string $action): self;
+    public function withAction(string|null $action): self;
 
     public function withEnv(string $env): self;
 
