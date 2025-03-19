@@ -13,15 +13,19 @@ use lav45\activityLogger\MessageBuilderInterface;
 
 final class UserMiddleware implements Middleware
 {
-    private UserInterface $user;
+    private ?UserInterface $user;
 
-    public function __construct(UserInterface $user)
+    public function __construct(?UserInterface $user = null)
     {
         $this->user = $user;
     }
 
     public function handle(MessageBuilderInterface $builder, Closure $next): MessageBuilderInterface
     {
+        if ($this->user === null) {
+            return $next($builder);
+        }
+
         $builder = $builder
             ->withUserId($this->user->getId())
             ->withUserName($this->user->getName());

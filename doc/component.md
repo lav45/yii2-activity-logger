@@ -9,6 +9,7 @@ Yii::$container->setDefinitions([
     \lav45\activityLogger\middlewares\UserInterface::class => static fn() => Yii::$app->getUser()->getIdentity(),
 ]);
 
+// Добавьте в web/index.php и yii файлы для всех окружений
 define('LOG_ENV', 'api');
 
 return [

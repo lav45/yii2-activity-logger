@@ -142,6 +142,48 @@ class ActiveLogBehaviorTest extends TestCase
         $this->assertEquals('created', $activityLog->action);
     }
 
+    public function testLogUnauthorizedUser(): void
+    {
+        Yii::$app->set('activityLogger', [
+            '__class' => Manager::class,
+            'middlewares' => [
+                new UserMiddleware(),
+            ]
+        ]);
+
+        $model = new User();
+        $this->assertTrue($model->save());
+
+        $expected = [
+            'status' => [
+                'old' => [
+                    'id' => null,
+                    'value' => null,
+                ],
+                'new' => [
+                    'id' => 10,
+                    'value' => 'Active'
+                ]
+            ],
+            'is_hidden' => [
+                'old' => [
+                    'value' => null,
+                ],
+                'new' => [
+                    'value' => false
+                ]
+            ]
+        ];
+
+        $activityLog = $model->getLastActivityLog();
+
+        $this->assertEquals($expected, $activityLog->getData());
+        $this->assertEquals('created', $activityLog->action);
+        $this->assertNull($activityLog->env);
+        $this->assertNull($activityLog->user_id);
+        $this->assertNull($activityLog->user_name);
+    }
+
     public function testIsEmpty(): void
     {
         $model = new User();
