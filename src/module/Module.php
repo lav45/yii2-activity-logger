@@ -17,7 +17,7 @@ class Module extends \yii\base\Module
      * @var array Список моделей которые логировались
      * [ entityName => \namespace\to\Model\EntityClass ]
      * Эта информация используется для корректного отображения имен полей, записанных данных
-     * Если `entityName` не будет найдена в списке то имена полей будут выводится без преобразования
+     * Если `entityName` не будет найдена в списке то имена полей будут выводиться без преобразования
      * @see Model::getAttributeLabel()
      */
     public array $entityMap = [];
@@ -28,13 +28,12 @@ class Module extends \yii\base\Module
     public function init()
     {
         parent::init();
-
         $this->initTranslations();
     }
 
-    protected function initTranslations()
+    private function initTranslations(): void
     {
-        Yii::$app->i18n->translations['lav45/logger'] = [
+        Yii::$app->getI18n()->translations['lav45/logger'] = [
             '__class' => PhpMessageSource::class,
             'basePath' => __DIR__ . '/messages',
         ];

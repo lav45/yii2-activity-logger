@@ -10,7 +10,7 @@ namespace lav45\activityLogger\storage;
 
 final class MessageData
 {
-    /** Alias name target object */
+    /** Alias a name target object */
     public string $entityName;
     /** ID target object */
     public ?string $entityId = null;
@@ -18,7 +18,7 @@ final class MessageData
     public int $createdAt;
     /** ID user who performed the action */
     public ?string $userId = null;
-    /** UserName who performed the action */
+    /** UserName, who performed the action */
     public ?string $userName = null;
     /** Action performed on the object */
     public ?string $action = null;
