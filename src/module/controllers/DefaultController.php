@@ -9,9 +9,10 @@
 namespace lav45\activityLogger\module\controllers;
 
 use Yii;
+use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use lav45\activityLogger\module\models\ActivityLogSearch;
-use lav45\activityLogger\module\models\ActivityLogViewModel;
+use lav45\activityLogger\module\models\ActivityLogDecorator;
 
 /**
  * @property \lav45\activityLogger\module\Module $module
@@ -20,12 +21,18 @@ class DefaultController extends Controller
 {
     public function actionIndex()
     {
-        Yii::$container->set(ActivityLogViewModel::class, [
+        Yii::$container->set(ActivityLogDecorator::class, [
             'entityMap' => $this->module->entityMap
         ]);
 
         $searchModel = new ActivityLogSearch();
-        $dataProvider = $searchModel->search(Yii::$app->getRequest()->getQueryParams());
+        $searchModel->load(Yii::$app->getRequest()->getQueryParams());
+
+        if ($searchModel->validate()) {
+            throw new BadRequestHttpException($searchModel->getErrorSummary(false)[0]);
+        }
+
+        $dataProvider = $searchModel->search();
 
         return $this->render('index', [
             'dataProvider' => $dataProvider,

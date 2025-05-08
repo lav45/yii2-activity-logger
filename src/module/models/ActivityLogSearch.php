@@ -11,6 +11,7 @@ namespace lav45\activityLogger\module\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
+use yii\data\DataProviderInterface;
 
 class ActivityLogSearch extends Model
 {
@@ -57,28 +58,17 @@ class ActivityLogSearch extends Model
 
     /**
      * Creates data provider instance with search query applied
-     * @param array $params
-     * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search(): DataProviderInterface
     {
-        $query = ActivityLogViewModel::find()
+        $query = ActivityLog::find()
             ->orderBy(['id' => SORT_DESC]);
 
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-            'sort' => false,
-        ]);
-
-        if (!($this->load($params) && $this->validate())) {
-            return $dataProvider;
-        }
-
         if (!empty($this->date)) {
-            $time_zone = Yii::$app->getTimeZone();
-            $date_from = strtotime("{$this->date} 00:00:00 {$time_zone}");
-            $date_to = $date_from + 86399; // + 23:59:59
-            $query->andWhere(['between', 'created_at', $date_from, $date_to]);
+            $timeZone = Yii::$app->getFormatter()->timeZone;
+            $dateFrom = strtotime("{$this->date} 00:00:00 {$timeZone}");
+            $dateTo = $dateFrom + 86399; // + 23:59:59
+            $query->andWhere(['between', 'created_at', $dateFrom, $dateTo]);
         }
 
         $query->andFilterWhere([
@@ -88,6 +78,9 @@ class ActivityLogSearch extends Model
             'env' => $this->env,
         ]);
 
-        return $dataProvider;
+        return new ActiveDataProvider([
+            'query' => $query,
+            'sort' => false,
+        ]);
     }
 }

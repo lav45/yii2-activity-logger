@@ -67,11 +67,16 @@ class ActivityLog extends ActiveRecord
         ];
     }
 
-    public function getData(): iterable
+    public function getData(): array
     {
         if ($this->data) {
             return (array)json_decode($this->data, true, 512, JSON_THROW_ON_ERROR);
         }
         return [];
+    }
+
+    public function getDecorator(): ActivityLogDecorator
+    {
+        return Yii::createObject(ActivityLogDecorator::class, [$this]);
     }
 }

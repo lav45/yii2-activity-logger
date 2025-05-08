@@ -1,7 +1,7 @@
 <?php
 /**
  * @var $this yii\web\View
- * @var $model lav45\activityLogger\module\models\ActivityLogViewModel
+ * @var $model lav45\activityLogger\module\models\ActivityLog
  * @var $key string
  * @var $index integer
  * @var $widget yii\widgets\ListView
@@ -43,7 +43,7 @@ use yii\helpers\Url;
     <?php endif; ?>
 </h4>
 <ul class="details">
-    <?php foreach ($model->getData() as $attribute => $values): ?>
+    <?php foreach ($model->getDecorator()->getData() as $attribute => $values): ?>
         <?php if (is_string($values)): ?>
             <li>
                 <?php if (is_string($attribute)): ?>

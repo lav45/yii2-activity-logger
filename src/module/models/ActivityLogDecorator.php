@@ -10,7 +10,7 @@ namespace lav45\activityLogger\module\models;
 
 use Yii;
 
-class ActivityLogViewModel extends ActivityLog
+class ActivityLogDecorator
 {
     /**
      * @var DataModel|string|array
@@ -23,13 +23,11 @@ class ActivityLogViewModel extends ActivityLog
 
     private array $entityModel = [];
 
-    /**
-     * @param array $row
-     * @return ActivityLog|object|static
-     */
-    public static function instantiate($row)
+    private ActivityLog $owner;
+
+    public function __construct(ActivityLog $owner)
     {
-        return Yii::createObject(static::class);
+        $this->owner = $owner;
     }
 
     /**
@@ -37,10 +35,11 @@ class ActivityLogViewModel extends ActivityLog
      */
     protected function getEntityModel()
     {
-        if (isset($this->entityModel[$this->entity_name]) === false) {
-            $this->entityModel[$this->entity_name] = $this->getEntityObject($this->entity_name);
+        $entityName = $this->owner->entity_name;
+        if (isset($this->entityModel[$entityName]) === false) {
+            $this->entityModel[$entityName] = $this->getEntityObject($entityName);
         }
-        return $this->entityModel[$this->entity_name] ?: null;
+        return $this->entityModel[$entityName] ?: null;
     }
 
     /**
@@ -57,11 +56,11 @@ class ActivityLogViewModel extends ActivityLog
     }
 
     /**
-     * @return \Generator|DataModel[]
+     * @return DataModel[]
      */
     public function getData(): iterable
     {
-        foreach (parent::getData() as $attribute => $values) {
+        foreach ($this->owner->getData() as $attribute => $values) {
             if (is_string($values)) {
                 $label = is_string($attribute) ? $this->getEntityAttributeLabel($attribute) : $attribute;
                 yield $label => $values;
@@ -88,7 +87,7 @@ class ActivityLogViewModel extends ActivityLog
         if ($entityModel = $this->getEntityModel()) {
             return $entityModel->getAttributeLabel($attribute);
         }
-        return $this->generateAttributeLabel($attribute);
+        return $this->owner->generateAttributeLabel($attribute);
     }
 
     protected function getEntityAttributeFormats(): array
