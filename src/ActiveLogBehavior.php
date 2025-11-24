@@ -259,14 +259,14 @@ class ActiveLogBehavior extends Behavior
         }
         if (is_array($old_id)) {
             $old['value'] = array_intersect_key($list, array_flip($old_id));
-        } elseif ($old_id) {
+        } elseif ($old_id !== null) {
             $old['value'] = ArrayHelper::getValue($this->owner, [$listName, $old_id]);
         } else {
             $old['value'] = null;
         }
         if (is_array($new_id)) {
             $new['value'] = array_intersect_key($list, array_flip($new_id));
-        } elseif ($new_id) {
+        } elseif ($new_id !== null) {
             $new['value'] = ArrayHelper::getValue($this->owner, [$listName, $new_id]);
         } else {
             $new['value'] = null;
@@ -287,6 +287,7 @@ class ActiveLogBehavior extends Behavior
         $old['id'] = $old_id;
         $new['id'] = $new_id;
 
+        /** @var \yii\db\ActiveQueryInterface $relationQuery */
         $relationQuery = clone $this->owner->getRelation($relation);
         if (count($relationQuery->link) > 1) {
             throw new InvalidConfigException('Relation model can only be linked through one primary key.');
@@ -301,12 +302,12 @@ class ActiveLogBehavior extends Behavior
             ->limit(count($targetId))
             ->all();
 
-        if ($old_id) {
+        if ($old_id !== null) {
             $old['value'] = ArrayHelper::getValue($relationModels, [$old_id, $attribute]);
         } else {
             $old['value'] = null;
         }
-        if ($new_id) {
+        if ($new_id !== null) {
             $new['value'] = ArrayHelper::getValue($relationModels, [$new_id, $attribute]);
         } else {
             $new['value'] = null;
