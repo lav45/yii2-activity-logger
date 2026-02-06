@@ -215,59 +215,59 @@ class ActiveLogBehavior extends Behavior
     }
 
     /**
-     * @param string|int|null $old_id
-     * @param string|int|null $new_id
+     * @param string|int|null $oldId
+     * @param string|int|null $newId
      */
-    protected function resolveStoreValues($old_id, $new_id, array $options): array
+    protected function resolveStoreValues($oldId, $newId, array $options): array
     {
         if (isset($options['list'])) {
-            $value = $this->resolveListValues($old_id, $new_id, $options['list']);
+            $value = $this->resolveListValues($oldId, $newId, $options['list']);
         } elseif (isset($options['relation'], $options['attribute'])) {
-            $value = $this->resolveRelationValues($old_id, $new_id, $options['relation'], $options['attribute']);
+            $value = $this->resolveRelationValues($oldId, $newId, $options['relation'], $options['attribute']);
         } else {
-            $value = $this->resolveSimpleValues($old_id, $new_id);
+            $value = $this->resolveSimpleValues($oldId, $newId);
         }
         return $value;
     }
 
     /**
-     * @param string|int|null $old_id
-     * @param string|int|null $new_id
+     * @param string|int|null $oldId
+     * @param string|int|null $newId
      */
-    private function resolveSimpleValues($old_id, $new_id): array
+    private function resolveSimpleValues($oldId, $newId): array
     {
         return [
-            'old' => ['value' => $old_id],
-            'new' => ['value' => $new_id],
+            'old' => ['value' => $oldId],
+            'new' => ['value' => $newId],
         ];
     }
 
     /**
-     * @param string|int|array|null $old_id
-     * @param string|int|array|null $new_id
+     * @param string|int|array|null $oldId
+     * @param string|int|array|null $newId
      * @param string|\Closure $listName
      */
-    private function resolveListValues($old_id, $new_id, $listName): array
+    private function resolveListValues($oldId, $newId, $listName): array
     {
         $old = $new = [];
-        $old['id'] = $old_id;
-        $new['id'] = $new_id;
+        $old['id'] = $oldId;
+        $new['id'] = $newId;
         $list = [];
 
-        if (is_array($old_id) || is_array($new_id)) {
+        if (is_array($oldId) || is_array($newId)) {
             $list = ArrayHelper::getValue($this->owner, $listName);
         }
-        if (is_array($old_id)) {
-            $old['value'] = array_intersect_key($list, array_flip($old_id));
-        } elseif ($old_id !== null) {
-            $old['value'] = ArrayHelper::getValue($this->owner, [$listName, $old_id]);
+        if (is_array($oldId)) {
+            $old['value'] = array_intersect_key($list, array_flip($oldId));
+        } elseif ($oldId !== null) {
+            $old['value'] = ArrayHelper::getValue($this->owner, [$listName, $oldId]);
         } else {
             $old['value'] = null;
         }
-        if (is_array($new_id)) {
-            $new['value'] = array_intersect_key($list, array_flip($new_id));
-        } elseif ($new_id !== null) {
-            $new['value'] = ArrayHelper::getValue($this->owner, [$listName, $new_id]);
+        if (is_array($newId)) {
+            $new['value'] = array_intersect_key($list, array_flip($newId));
+        } elseif ($newId !== null) {
+            $new['value'] = ArrayHelper::getValue($this->owner, [$listName, $newId]);
         } else {
             $new['value'] = null;
         }
@@ -278,14 +278,14 @@ class ActiveLogBehavior extends Behavior
     }
 
     /**
-     * @param string|int|null $old_id
-     * @param string|int|null $new_id
+     * @param string|int|null $oldId
+     * @param string|int|null $newId
      */
-    private function resolveRelationValues($old_id, $new_id, string $relation, string $attribute): array
+    private function resolveRelationValues($oldId, $newId, string $relation, string $attribute): array
     {
         $old = $new = [];
-        $old['id'] = $old_id;
-        $new['id'] = $new_id;
+        $old['id'] = $oldId;
+        $new['id'] = $newId;
 
         /** @var \yii\db\ActiveQueryInterface $relationQuery */
         $relationQuery = clone $this->owner->getRelation($relation);
@@ -294,7 +294,7 @@ class ActiveLogBehavior extends Behavior
         }
         $relationQuery->primaryModel = null;
         $idAttribute = array_keys($relationQuery->link)[0];
-        $targetId = array_filter([$old_id, $new_id]);
+        $targetId = array_filter([$oldId, $newId]);
 
         $relationModels = $relationQuery
             ->where([$idAttribute => $targetId])
@@ -302,13 +302,13 @@ class ActiveLogBehavior extends Behavior
             ->limit(count($targetId))
             ->all();
 
-        if ($old_id !== null) {
-            $old['value'] = ArrayHelper::getValue($relationModels, [$old_id, $attribute]);
+        if ($oldId !== null) {
+            $old['value'] = ArrayHelper::getValue($relationModels, [$oldId, $attribute]);
         } else {
             $old['value'] = null;
         }
-        if ($new_id !== null) {
-            $new['value'] = ArrayHelper::getValue($relationModels, [$new_id, $attribute]);
+        if ($newId !== null) {
+            $new['value'] = ArrayHelper::getValue($relationModels, [$newId, $attribute]);
         } else {
             $new['value'] = null;
         }

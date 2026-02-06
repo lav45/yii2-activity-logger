@@ -27,6 +27,8 @@ class DbStorage extends BaseObject implements StorageInterface
 
     public function save(MessageData $message): void
     {
+        $data = json_encode($message->data, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+
         (new Query)
             ->createCommand($this->db)
             ->insert($this->tableName, [
@@ -37,17 +39,9 @@ class DbStorage extends BaseObject implements StorageInterface
                 'user_name' => $message->userName,
                 'action' => $message->action,
                 'env' => $message->env,
-                'data' => $this->encode($message->data),
+                'data' => $data,
             ])
             ->execute();
-    }
-
-    /**
-     * @param array|string $data
-     */
-    private function encode($data): string
-    {
-        return json_encode($data, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     }
 
     public function delete(DeleteCommand $command): void

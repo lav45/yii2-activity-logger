@@ -12,20 +12,23 @@ use yii\helpers\Url;
 
 ?>
 <h4>
-    [
-    <?= Html::a(Html::encode($model->entity_name), Url::current([
+    [<?php
+    $url = Url::current([
         'entityName' => $model->entity_name,
         'entityId' => null,
         'page' => null
-    ])) ?>
-    <?php if ($model->entity_id): ?>
-        <?= ':' . Html::a(Html::encode($model->entity_id), Url::current([
+    ]);
+    echo Html::a(Html::encode($model->entity_name), $url);
+    if ($model->entity_id) {
+        echo ':';
+        $url = Url::current([
             'entityName' => $model->entity_name,
             'entityId' => $model->entity_id,
             'page' => null
-        ])) ?>
-    <?php endif; ?>
-    ]
+        ]);
+        echo Html::a(Html::encode($model->entity_id), $url);
+    }
+    ?>]
 
     <?php
     $url = Url::current(['userId' => $model->user_id, 'page' => null]);

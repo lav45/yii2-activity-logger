@@ -36,7 +36,7 @@ class DataModel extends BaseObject
 
     /**
      * @param array $value
-     * @return $this
+     * @return static
      */
     public function setData(array $value)
     {
@@ -54,7 +54,7 @@ class DataModel extends BaseObject
 
     /**
      * @param string|\Closure $value
-     * @return $this
+     * @return static
      */
     public function setFormat($value)
     {
