@@ -9,6 +9,7 @@
 namespace lav45\activityLogger;
 
 use lav45\activityLogger\storage\DeleteCommand;
+use Yii;
 use yii\base\Behavior;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidValueException;
@@ -73,7 +74,7 @@ class ActiveLogBehavior extends Behavior
     public const EVENT_AFTER_SAVE_MESSAGE = 'afterSaveMessage';
 
     public bool $softDelete = false;
-    /** @since 1.6.0 */
+    /** @deprecated */
     public ?\Closure $beforeSaveMessage = null;
     /**
      * [
@@ -329,8 +330,15 @@ class ActiveLogBehavior extends Behavior
     protected function saveMessage(string $action, array $data): void
     {
         $data = $this->beforeSaveMessage($data);
-        $this->addLog($data, $action);
+
+        $event = new MessageEvent();
+        $event->logData = $data;
+        $event->action = $action;
+
+        $this->onBeforeSaveMessage($event);
+        $this->addLog($event->logData, $event->action);
         $this->afterSaveMessage();
+        $this->onAfterSaveMessage();
     }
 
     /**
@@ -349,34 +357,41 @@ class ActiveLogBehavior extends Behavior
     }
 
     /**
-     * @since 1.5.3
+     * @deprecated
      */
     public function beforeSaveMessage(array $data): array
     {
         if (null !== $this->beforeSaveMessage) {
+            Yii::warning('Property ' . self::class . '::$beforeSaveMessage is deprecated!', __METHOD__);
             return call_user_func($this->beforeSaveMessage, $data);
         }
         $name = self::EVENT_BEFORE_SAVE_MESSAGE;
         if (method_exists($this->owner, $name)) {
+            Yii::warning('Method ' . get_class($this->owner) . '::beforeSaveMessage(array $data) is deprecated! Use event ' . self::EVENT_BEFORE_SAVE_MESSAGE, __METHOD__);
             return $this->owner->$name($data);
         }
-        $event = new MessageEvent();
-        $event->logData = $data;
-        $this->owner->trigger($name, $event);
-        return $event->logData;
+        return $data;
+    }
+
+    private function onBeforeSaveMessage(MessageEvent $event): void
+    {
+        $this->owner->trigger(self::EVENT_BEFORE_SAVE_MESSAGE, $event);
     }
 
     /**
-     * @since 1.5.3
+     * @deprecated
      */
     public function afterSaveMessage(): void
     {
-        $name = self::EVENT_AFTER_SAVE_MESSAGE;
-        if (method_exists($this->owner, $name)) {
-            $this->owner->$name();
-        } else {
-            $this->owner->trigger($name);
+        if (method_exists($this->owner, 'afterSaveMessage')) {
+            Yii::warning('Method ' . get_class($this->owner) . '::afterSaveMessage() is deprecated! Use event ' . self::EVENT_AFTER_SAVE_MESSAGE, __METHOD__);
+            $this->owner->afterSaveMessage();
         }
+    }
+
+    private function onAfterSaveMessage(): void
+    {
+        $this->owner->trigger(self::EVENT_AFTER_SAVE_MESSAGE);
     }
 
     public function getEntityName(): string

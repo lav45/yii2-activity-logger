@@ -17,8 +17,7 @@ use yii\base\Event;
  */
 class MessageEvent extends Event
 {
-    /**
-     * @var array property to store data that will be recorded in the history of logs
-     */
-    public $logData = [];
+    public string $action;
+    /** Store data that will be recorded in the history of logs */
+    public array $logData;
 }

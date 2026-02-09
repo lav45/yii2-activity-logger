@@ -26,14 +26,6 @@ class News extends ActiveRecord
                 'getEntityId' => function () {
                     return $this->getPrimaryKey();
                 }
-                /** 
-                 * В случаях когда нужно для конкретного ActiveLogBehavior сделать подпись с понятным названием.
-                 * Если на странице выводится история изменений всех пользователей,  
-                 * не всегда понятно, у кого именно изменился статус, день рождения или другие данные
-                 */
-                'beforeSaveMessage' => static function ($data) {
-                    return ['attribute' => 'custom data'] + $data;
-                }
                 
                 // Список полей, за изменением которых нужно следить
                 'attributes' => [
@@ -105,38 +97,13 @@ class News extends ActiveRecord
         $this->on(ActiveLogBehavior::EVENT_BEFORE_SAVE_MESSAGE, static function (\lav45\activityLogger\MessageEvent $event) {
             // Вы можете добавить в список логов свою информацию
             $event->logData[] = 'Reset password';
+            // или заменить отображаемое значение в логах для атрибута `password_hash`
+            $event->logData['password_hash'] = 'Reset password';
         });
 
         $this->on(ActiveLogBehavior::EVENT_AFTER_SAVE_MESSAGE, static function (\yii\base\Event $event) {
             // Какие-то действия после записи логов
         });
-    }
-
-    /*
-     * Вместо регистрации события вы можете создать одноименный метод, который будет вызываться вместо события
-     */
-
-    /**
-     * Будет вызываться вместо события [[ActiveLogBehavior::EVENT_BEFORE_SAVE_MESSAGE]]
-     * @return array
-     */
-    public function beforeSaveMessage($data)
-    {
-        // Вы можете добавить в список логов свою информацию
-        $data[] = 'Reset password';
-
-        // или заменить отображаемое значение в логах для атрибута `password_hash`
-        $data['password_hash'] = 'Reset password';
-
-        return $data;
-    }
-
-    /**
-     * Будет вызываться вместо события [[ActiveLogBehavior::EVENT_AFTER_SAVE_MESSAGE]]
-     */
-    public function afterSaveMessage()
-    {
-        // Какие-то действия после записи логов
     }
 }
 ```
