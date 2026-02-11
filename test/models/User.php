@@ -97,6 +97,7 @@ class User extends ActiveRecord implements IdentityInterface, UserInterface
             'birthday' => 'Birthday',
             'status' => 'Status',
             'arrayStatus' => 'Array status',
+            'company_id' => 'Company',
         ];
     }
 

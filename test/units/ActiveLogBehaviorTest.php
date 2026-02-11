@@ -121,7 +121,8 @@ class ActiveLogBehaviorTest extends TestCase
                 'new' => [
                     'id' => 10,
                     'value' => 'Active'
-                ]
+                ],
+                'label' => 'Status',
             ],
             'is_hidden' => [
                 'old' => [
@@ -129,7 +130,8 @@ class ActiveLogBehaviorTest extends TestCase
                 ],
                 'new' => [
                     'value' => false
-                ]
+                ],
+                'label' => 'Hidden',
             ]
         ];
 
@@ -163,7 +165,8 @@ class ActiveLogBehaviorTest extends TestCase
                 'new' => [
                     'id' => 10,
                     'value' => 'Active'
-                ]
+                ],
+                'label' => 'Status',
             ],
             'is_hidden' => [
                 'old' => [
@@ -171,7 +174,8 @@ class ActiveLogBehaviorTest extends TestCase
                 ],
                 'new' => [
                     'value' => false
-                ]
+                ],
+                'label' => 'Hidden',
             ]
         ];
 
@@ -204,7 +208,8 @@ class ActiveLogBehaviorTest extends TestCase
                 'new' => [
                     'id' => 10,
                     'value' => 'Active'
-                ]
+                ],
+                'label' => 'Status',
             ],
         ];
 
@@ -230,7 +235,8 @@ class ActiveLogBehaviorTest extends TestCase
                 'new' => [
                     'id' => 10,
                     'value' => 'Active'
-                ]
+                ],
+                'label' => 'Status'
             ],
             'login' => [
                 'old' => [
@@ -238,7 +244,8 @@ class ActiveLogBehaviorTest extends TestCase
                 ],
                 'new' => [
                     'value' => 'buster'
-                ]
+                ],
+                'label' => 'Login',
             ],
             'is_hidden' => [
                 'old' => [
@@ -246,7 +253,8 @@ class ActiveLogBehaviorTest extends TestCase
                 ],
                 'new' => [
                     'value' => false
-                ]
+                ],
+                'label' => 'Hidden'
             ],
             'friend_count' => [
                 'old' => [
@@ -254,7 +262,8 @@ class ActiveLogBehaviorTest extends TestCase
                 ],
                 'new' => [
                     'value' => 5
-                ]
+                ],
+                'label' => 'Friends'
             ],
             'salary' => [
                 'old' => [
@@ -262,7 +271,8 @@ class ActiveLogBehaviorTest extends TestCase
                 ],
                 'new' => [
                     'value' => 100.5
-                ]
+                ],
+                'label' => 'Salary'
             ],
             'birthday' => [
                 'old' => [
@@ -270,7 +280,8 @@ class ActiveLogBehaviorTest extends TestCase
                 ],
                 'new' => [
                     'value' => '01.01.2005'
-                ]
+                ],
+                'label' => 'Birthday'
             ],
             'company_id' => [
                 'old' => [
@@ -280,7 +291,8 @@ class ActiveLogBehaviorTest extends TestCase
                 'new' => [
                     'value' => 'Asus',
                     'id' => 1
-                ]
+                ],
+                'label' => 'Company'
             ]
         ];
 
@@ -325,7 +337,8 @@ class ActiveLogBehaviorTest extends TestCase
                         ],
                         'new' => [
                             'value' => 'nimbus'
-                        ]
+                        ],
+                        'label' => 'Login'
                     ]
                 ]
             ],
@@ -338,7 +351,8 @@ class ActiveLogBehaviorTest extends TestCase
                         ],
                         'new' => [
                             'value' => true
-                        ]
+                        ],
+                        'label' => 'Hidden',
                     ]
                 ]
             ],
@@ -351,7 +365,8 @@ class ActiveLogBehaviorTest extends TestCase
                         ],
                         'new' => [
                             'value' => 15
-                        ]
+                        ],
+                        'label' => 'Friends'
                     ]
                 ]
             ],
@@ -364,7 +379,8 @@ class ActiveLogBehaviorTest extends TestCase
                         ],
                         'new' => [
                             'value' => 150.3
-                        ]
+                        ],
+                        'label' => 'Salary'
                     ]
                 ]
             ],
@@ -377,7 +393,8 @@ class ActiveLogBehaviorTest extends TestCase
                         ],
                         'new' => [
                             'value' => '03.03.2005'
-                        ]
+                        ],
+                        'label' => 'Birthday'
                     ]
                 ]
             ],
@@ -392,7 +409,8 @@ class ActiveLogBehaviorTest extends TestCase
                         'new' => [
                             'value' => 'Disabled',
                             'id' => User::STATUS_DISABLED
-                        ]
+                        ],
+                        'label' => 'Status'
                     ]
                 ]
             ],
@@ -407,7 +425,8 @@ class ActiveLogBehaviorTest extends TestCase
                         'new' => [
                             'value' => 'HP',
                             'id' => 2
-                        ]
+                        ],
+                        'label' => 'Company'
                     ]
                 ]
             ],
@@ -423,7 +442,8 @@ class ActiveLogBehaviorTest extends TestCase
                         ],
                         'new' => [
                             'value' => 150.3
-                        ]
+                        ],
+                        'label' => 'Salary'
                     ],
                     'company_id' => [
                         'old' => [
@@ -433,7 +453,8 @@ class ActiveLogBehaviorTest extends TestCase
                         'new' => [
                             'value' => 'HP',
                             'id' => 2
-                        ]
+                        ],
+                        'label' => 'Company'
                     ]
                 ]
             ],
@@ -464,7 +485,8 @@ class ActiveLogBehaviorTest extends TestCase
                 'new' => [
                     'id' => null,
                     'value' => null
-                ]
+                ],
+                'label' => 'Status'
             ],
             'company_id' => [
                 'old' => [
@@ -474,7 +496,8 @@ class ActiveLogBehaviorTest extends TestCase
                 'new' => [
                     'id' => null,
                     'value' => null
-                ]
+                ],
+                'label' => 'Company'
             ],
             'login' => [
                 'old' => [
@@ -482,7 +505,8 @@ class ActiveLogBehaviorTest extends TestCase
                 ],
                 'new' => [
                     'value' => null
-                ]
+                ],
+                'label' => 'Login'
             ],
             'is_hidden' => [
                 'old' => [
@@ -490,7 +514,8 @@ class ActiveLogBehaviorTest extends TestCase
                 ],
                 'new' => [
                     'value' => null
-                ]
+                ],
+                'label' => 'Hidden'
             ],
             'friend_count' => [
                 'old' => [
@@ -498,7 +523,8 @@ class ActiveLogBehaviorTest extends TestCase
                 ],
                 'new' => [
                     'value' => null
-                ]
+                ],
+                'label' => 'Friends'
             ],
             'salary' => [
                 'old' => [
@@ -506,7 +532,8 @@ class ActiveLogBehaviorTest extends TestCase
                 ],
                 'new' => [
                     'value' => null
-                ]
+                ],
+                'label' => 'Salary'
             ],
             'birthday' => [
                 'old' => [
@@ -514,7 +541,8 @@ class ActiveLogBehaviorTest extends TestCase
                 ],
                 'new' => [
                     'value' => null
-                ]
+                ],
+                'label' => 'Birthday'
             ]
         ];
         $this->assertEquals($expected, $logModels[0]->getData());
@@ -550,7 +578,8 @@ class ActiveLogBehaviorTest extends TestCase
                 'new' => [
                     'id' => 10,
                     'value' => 'Active'
-                ]
+                ],
+                'label' => 'Status'
             ],
             'company_id' => [
                 'old' => [
@@ -560,7 +589,8 @@ class ActiveLogBehaviorTest extends TestCase
                 'new' => [
                     'id' => 1,
                     'value' => 'Asus'
-                ]
+                ],
+                'label' => 'Company'
             ],
             'login' => [
                 'old' => [
@@ -568,7 +598,8 @@ class ActiveLogBehaviorTest extends TestCase
                 ],
                 'new' => [
                     'value' => 'buster'
-                ]
+                ],
+                'label' => 'Login',
             ],
             'is_hidden' => [
                 'old' => [
@@ -576,7 +607,8 @@ class ActiveLogBehaviorTest extends TestCase
                 ],
                 'new' => [
                     'value' => false
-                ]
+                ],
+                'label' => 'Hidden'
             ],
             'friend_count' => [
                 'old' => [
@@ -584,7 +616,8 @@ class ActiveLogBehaviorTest extends TestCase
                 ],
                 'new' => [
                     'value' => 5
-                ]
+                ],
+                'label' => 'Friends'
             ],
             'salary' => [
                 'old' => [
@@ -592,7 +625,8 @@ class ActiveLogBehaviorTest extends TestCase
                 ],
                 'new' => [
                     'value' => 100.5
-                ]
+                ],
+                'label' => 'Salary'
             ],
             'birthday' => [
                 'old' => [
@@ -600,7 +634,8 @@ class ActiveLogBehaviorTest extends TestCase
                 ],
                 'new' => [
                     'value' => '01.01.2005'
-                ]
+                ],
+                'label' => 'Birthday'
             ]
         ];
         $this->assertEquals($expected, $logModels[0]->getData());
@@ -615,7 +650,8 @@ class ActiveLogBehaviorTest extends TestCase
                 'new' => [
                     'id' => null,
                     'value' => null
-                ]
+                ],
+                'label' => 'Status'
             ],
             'company_id' => [
                 'old' => [
@@ -625,7 +661,8 @@ class ActiveLogBehaviorTest extends TestCase
                 'new' => [
                     'id' => null,
                     'value' => null
-                ]
+                ],
+                'label' => 'Company'
             ],
             'login' => [
                 'old' => [
@@ -633,7 +670,8 @@ class ActiveLogBehaviorTest extends TestCase
                 ],
                 'new' => [
                     'value' => null
-                ]
+                ],
+                'label' => 'Login',
             ],
             'is_hidden' => [
                 'old' => [
@@ -641,7 +679,8 @@ class ActiveLogBehaviorTest extends TestCase
                 ],
                 'new' => [
                     'value' => null
-                ]
+                ],
+                'label' => 'Hidden'
             ],
             'friend_count' => [
                 'old' => [
@@ -649,7 +688,8 @@ class ActiveLogBehaviorTest extends TestCase
                 ],
                 'new' => [
                     'value' => null
-                ]
+                ],
+                'label' => 'Friends'
             ],
             'salary' => [
                 'old' => [
@@ -657,7 +697,8 @@ class ActiveLogBehaviorTest extends TestCase
                 ],
                 'new' => [
                     'value' => null
-                ]
+                ],
+                'label' => 'Salary'
             ],
             'birthday' => [
                 'old' => [
@@ -665,7 +706,8 @@ class ActiveLogBehaviorTest extends TestCase
                 ],
                 'new' => [
                     'value' => null
-                ]
+                ],
+                'label' => 'Birthday'
             ]
         ];
         $this->assertEquals($expected, $logModels[1]->getData());
@@ -685,7 +727,8 @@ class ActiveLogBehaviorTest extends TestCase
                 ],
                 'new' => [
                     'value' => '01.01.2005'
-                ]
+                ],
+                'label' => 'Birthday'
             ],
             'status' => [
                 'old' => [
@@ -695,7 +738,8 @@ class ActiveLogBehaviorTest extends TestCase
                 'new' => [
                     'id' => 10,
                     'value' => 'Active'
-                ]
+                ],
+                'label' => 'Status'
             ],
             'is_hidden' => [
                 'old' => [
@@ -703,7 +747,8 @@ class ActiveLogBehaviorTest extends TestCase
                 ],
                 'new' => [
                     'value' => false
-                ]
+                ],
+                'label' => 'Hidden'
             ],
         ];
 
@@ -726,7 +771,8 @@ class ActiveLogBehaviorTest extends TestCase
                 ],
                 'new' => [
                     'value' => null
-                ]
+                ],
+                'label' => 'Birthday'
             ],
             'status' => [
                 'old' => [
@@ -736,7 +782,8 @@ class ActiveLogBehaviorTest extends TestCase
                 'new' => [
                     'id' => null,
                     'value' => null
-                ]
+                ],
+                'label' => 'Status'
             ],
             'is_hidden' => [
                 'old' => [
@@ -744,7 +791,8 @@ class ActiveLogBehaviorTest extends TestCase
                 ],
                 'new' => [
                     'value' => null
-                ]
+                ],
+                'label' => 'Hidden'
             ],
         ];
 
@@ -870,7 +918,8 @@ class ActiveLogBehaviorTest extends TestCase
                 'new' => [
                     'id' => 10,
                     'value' => 'Active'
-                ]
+                ],
+                'label' => 'Status'
             ],
             'is_hidden' => [
                 'old' => [
@@ -878,7 +927,8 @@ class ActiveLogBehaviorTest extends TestCase
                 ],
                 'new' => [
                     'value' => false
-                ]
+                ],
+                'label' => 'Hidden'
             ],
             'login' => [
                 'old' => [
@@ -886,7 +936,8 @@ class ActiveLogBehaviorTest extends TestCase
                 ],
                 'new' => [
                     'value' => 'buster'
-                ]
+                ],
+                'label' => 'Login'
             ],
             'action' => 'Custom action',
         ];
@@ -912,6 +963,7 @@ class ActiveLogBehaviorTest extends TestCase
                 'new' => [
                     'value' => 'buster2'
                 ],
+                'label' => 'Login'
             ],
             'action' => 'Custom action',
         ];
@@ -951,7 +1003,8 @@ class ActiveLogBehaviorTest extends TestCase
                 'new' => [
                     'id' => 10,
                     'value' => 'Active'
-                ]
+                ],
+                'label' => 'Status'
             ],
             'is_hidden' => [
                 'old' => [
@@ -959,7 +1012,8 @@ class ActiveLogBehaviorTest extends TestCase
                 ],
                 'new' => [
                     'value' => false
-                ]
+                ],
+                'label' => 'Hidden'
             ],
             'login' => [
                 'old' => [
@@ -967,7 +1021,8 @@ class ActiveLogBehaviorTest extends TestCase
                 ],
                 'new' => [
                     'value' => 'buster'
-                ]
+                ],
+                'label' => 'Login'
             ],
             'event' => 'save message',
         ];
@@ -994,6 +1049,7 @@ class ActiveLogBehaviorTest extends TestCase
                 'new' => [
                     'value' => 'buster2'
                 ],
+                'label' => 'Login'
             ],
             'event' => 'save message',
         ];
@@ -1025,6 +1081,7 @@ class ActiveLogBehaviorTest extends TestCase
                     'id' => 10,
                     'value' => 'Active',
                 ],
+                'label' => 'Status'
             ],
             'login' => [
                 'old' => [
@@ -1033,6 +1090,7 @@ class ActiveLogBehaviorTest extends TestCase
                 'new' => [
                     'value' => 'John',
                 ],
+                'label' => 'Login'
             ],
             'is_hidden' => [
                 'old' => [
@@ -1041,6 +1099,7 @@ class ActiveLogBehaviorTest extends TestCase
                 'new' => [
                     'value' => false,
                 ],
+                'label' => 'Hidden'
             ],
         ];
 
@@ -1074,6 +1133,7 @@ class ActiveLogBehaviorTest extends TestCase
                 'new' => [
                     'value' => 'buster2'
                 ],
+                'label' => 'Login'
             ],
             'action' => 'Custom action',
         ];
@@ -1112,7 +1172,8 @@ class ActiveLogBehaviorTest extends TestCase
                         User::STATUS_ACTIVE => $statusList[User::STATUS_ACTIVE],
                         User::STATUS_DRAFT => $statusList[User::STATUS_DRAFT],
                     ]
-                ]
+                ],
+                'label' => 'Status list'
             ]
         ];
 
@@ -1144,7 +1205,8 @@ class ActiveLogBehaviorTest extends TestCase
                     'value' => [
                         User::STATUS_ACTIVE => $statusList[User::STATUS_ACTIVE],
                     ]
-                ]
+                ],
+                'label' => 'Status list',
             ]
         ];
 
@@ -1172,7 +1234,8 @@ class ActiveLogBehaviorTest extends TestCase
                 'new' => [
                     'id' => null,
                     'value' => null
-                ]
+                ],
+                'label' => 'Status list',
             ]
         ];
 

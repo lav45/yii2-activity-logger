@@ -69,7 +69,9 @@ class ActivityLogDecorator
                     ->setFormat($this->getAttributeFormat($attribute))
                     ->setData($values);
 
-                yield $this->getEntityAttributeLabel($attribute) => $dataModel;
+                $label = $values['label'] ?? $this->getEntityAttributeLabel($attribute);
+
+                yield $label => $dataModel;
             }
         }
     }

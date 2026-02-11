@@ -29,6 +29,7 @@ class LogUser extends User
                     ],
                     'arrayStatus' => [
                         'list' => 'statusList',
+                        'label' => 'Status list',
                     ],
                     'company_id' => [
                         'relation' => 'company',

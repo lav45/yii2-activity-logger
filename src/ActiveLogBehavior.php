@@ -96,8 +96,9 @@ class ActiveLogBehavior extends Behavior
      *      'attribute' => 'username'
      *  ]
      * ]
+     * @see setAttributes()
      */
-    public array $attributes = [];
+    private array $attributes = [];
 
     public bool $identicalAttributes = false;
     /**
@@ -149,19 +150,29 @@ class ActiveLogBehavior extends Behavior
         parent::__construct($config);
     }
 
-    public function init(): void
+    public function setAttributes(array $data): void
     {
-        $this->initAttributes();
+        $this->attributes = $data;
     }
 
-    private function initAttributes(): void
+    private function prepareAttributes(array $attributes): array
     {
-        foreach ($this->attributes as $key => $value) {
-            if (is_int($key)) {
-                unset($this->attributes[$key]);
-                $this->attributes[$value] = [];
+        $result = [];
+        foreach ($attributes as $attribute => $options) {
+            if (is_int($attribute)) {
+                $attribute = $options;
+                $options = [];
             }
+            $options['label'] ??= $this->owner->getAttributeLabel($attribute);
+            $result[$attribute] = $options;
         }
+        return $result;
+    }
+
+    public function attach($owner): void
+    {
+        parent::attach($owner);
+        $this->attributes = $this->prepareAttributes($this->attributes);
     }
 
     public function events(): array
@@ -216,30 +227,31 @@ class ActiveLogBehavior extends Behavior
     }
 
     /**
-     * @param string|int|null $oldId
-     * @param string|int|null $newId
+     * @param string|int|null $old
+     * @param string|int|null $new
      */
-    protected function resolveStoreValues($oldId, $newId, array $options): array
+    protected function resolveStoreValues($old, $new, array $options): array
     {
         if (isset($options['list'])) {
-            $value = $this->resolveListValues($oldId, $newId, $options['list']);
+            $value = $this->resolveListValues($old, $new, $options['list']);
         } elseif (isset($options['relation'], $options['attribute'])) {
-            $value = $this->resolveRelationValues($oldId, $newId, $options['relation'], $options['attribute']);
+            $value = $this->resolveRelationValues($old, $new, $options['relation'], $options['attribute']);
         } else {
-            $value = $this->resolveSimpleValues($oldId, $newId);
+            $value = $this->resolveSimpleValues($old, $new);
         }
+        $value['label'] = $options['label'];
         return $value;
     }
 
     /**
-     * @param string|int|null $oldId
-     * @param string|int|null $newId
+     * @param string|int|null $oldValue
+     * @param string|int|null $newValue
      */
-    private function resolveSimpleValues($oldId, $newId): array
+    private function resolveSimpleValues($oldValue, $newValue): array
     {
         return [
-            'old' => ['value' => $oldId],
-            'new' => ['value' => $newId],
+            'old' => ['value' => $oldValue],
+            'new' => ['value' => $newValue],
         ];
     }
 
