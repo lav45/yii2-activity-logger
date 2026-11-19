@@ -12,6 +12,9 @@ use lav45\activityLogger\ActiveLogBehavior;
  */
 class TestEntityName extends ActiveRecord
 {
+    /**
+     * @return array<string, array{__class: class-string, ...}>
+     */
     public function behaviors()
     {
         return [

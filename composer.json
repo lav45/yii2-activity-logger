@@ -28,10 +28,13 @@
         "phpunit/phpunit": "9.*",
         "ext-sqlite3": "*",
         "ext-pdo": "*",
-        "ext-pdo_sqlite": "*"
+        "ext-pdo_sqlite": "*",
+        "phpstan/phpstan": "^2.2",
+        "mspirkov/yii2-phpstan": "^0.18"
     },
     "scripts": {
         "phpunit": "vendor/bin/phpunit --verbose",
+        "phpstan": "vendor/bin/phpstan",
         "coverage": "XDEBUG_MODE=coverage php -d zend_extension=xdebug.so vendor/bin/phpunit --verbose --coverage-html test/coverage"
     },
     "autoload": {

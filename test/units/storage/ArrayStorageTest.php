@@ -21,7 +21,7 @@ final class ArrayStorageTest extends TestCase
 
         $message = new MessageData();
         $message->entityName = 'test';
-        $message->entityId = 1;
+        $message->entityId = '1';
 
         $storage->save($message);
 
@@ -34,7 +34,7 @@ final class ArrayStorageTest extends TestCase
 
         $command = new DeleteCommand();
         $command->entityName = 'test';
-        $command->entityId = 1;
+        $command->entityId = '1';
 
         $storage->delete($command);
 

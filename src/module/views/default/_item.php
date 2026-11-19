@@ -1,10 +1,10 @@
 <?php
 /**
- * @var $this yii\web\View
- * @var $model lav45\activityLogger\module\models\ActivityLog
- * @var $key string
- * @var $index integer
- * @var $widget yii\widgets\ListView
+ * @var yii\web\View $this
+ * @var lav45\activityLogger\module\models\ActivityLog $model
+ * @var string $key
+ * @var integer $index
+ * @var yii\widgets\ListView $widget
  */
 
 use yii\helpers\Html;

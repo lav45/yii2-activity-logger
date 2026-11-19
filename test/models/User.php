@@ -12,11 +12,11 @@ use yii\web\IdentityInterface;
  * @property int $id
  * @property string $login
  * @property boolean $is_hidden
- * @property int $friend_count
- * @property float $salary
+ * @property int|string $friend_count
+ * @property float|string $salary
  * @property string $birthday
  * @property int $status
- * @property int $company_id
+ * @property int|string $company_id
  * @property string $_array_status internal json data
  * @property int $fail_relation
  * @property int $fail_link
@@ -24,7 +24,7 @@ use yii\web\IdentityInterface;
  * @property array $arrayStatus
  *
  * @property ActivityLog[] $activityLogs
- * @property Company $company
+ * @property Company|null $company
  *
  * @mixin ActiveLogBehavior
  */
@@ -158,7 +158,7 @@ class User extends ActiveRecord implements IdentityInterface, UserInterface
 
     public function getId(): string
     {
-        return $this->id;
+        return (string) $this->id;
     }
 
     public function getAuthKey()

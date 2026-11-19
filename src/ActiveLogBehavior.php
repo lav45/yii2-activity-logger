@@ -112,7 +112,7 @@ class ActiveLogBehavior extends Behavior
      */
     public $getEntityName;
     /**
-     * @var \Closure|array|string custom method to getEntityId
+     * @var \Closure|array|string|int custom method to getEntityId
      * the callback function can return a string or array
      */
     public $getEntityId;
@@ -300,7 +300,7 @@ class ActiveLogBehavior extends Behavior
         $old['id'] = $oldId;
         $new['id'] = $newId;
 
-        /** @var \yii\db\ActiveQueryInterface $relationQuery */
+        /** @var \yii\db\ActiveQuery $relationQuery */
         $relationQuery = clone $this->owner->getRelation($relation);
         if (count($relationQuery->link) > 1) {
             throw new InvalidConfigException('Relation model can only be linked through one primary key.');

@@ -82,7 +82,7 @@ class DataModel extends BaseObject
 
     /**
      * @param mixed $value
-     * @return string
+     * @return mixed
      */
     protected function formattedValue($value)
     {
