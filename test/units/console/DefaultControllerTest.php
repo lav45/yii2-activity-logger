@@ -183,11 +183,13 @@ class DefaultController extends \lav45\activityLogger\console\DefaultController
     public function stderr($string)
     {
         $this->stderr = $string;
+        return 0;
     }
 
     public function stdout($string)
     {
         $this->stdout = $string;
+        return 0;
     }
 }
 

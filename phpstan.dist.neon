@@ -1,0 +1,39 @@
+includes:
+    - vendor/mspirkov/yii2-phpstan/extension.neon
+
+parameters:
+    level: 5
+    paths:
+        - src
+        - migrations
+        - test
+    excludePaths:
+        - test/coverage
+    bootstrapFiles:
+        - vendor/yiisoft/yii2/Yii.php
+    ignoreErrors:
+        # TODO: remove after upgrading yiisoft/yii2 to 2.0.56, where ActiveRelationTrait::$primaryModel is nullable
+        -
+            message: '#^Property yii\\db\\ActiveQuery<.+>::\$primaryModel \(yii\\db\\ActiveRecord\) does not accept null\.$#'
+            identifier: assign.propertyType
+            path: src/ActiveLogBehavior.php
+    mspirkovYii2:
+        enableAllRules: false
+        enableValidationRules: true
+        yiiAppTypes:
+            -
+                paths:
+                    - src
+                    - migrations
+                    - test
+                nullable: false
+            -
+                paths:
+                    - src/console
+                type: yii\console\Application
+                nullable: false
+            -
+                paths:
+                    - src/module
+                type: yii\web\Application
+                nullable: false

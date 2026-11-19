@@ -1,7 +1,7 @@
 <?php
 /**
- * @var $this yii\web\View
- * @var $dataProvider yii\data\ActiveDataProvider
+ * @var yii\web\View $this
+ * @var yii\data\ActiveDataProvider $dataProvider
  */
 
 use yii\helpers\Html;
