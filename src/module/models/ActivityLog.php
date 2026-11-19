@@ -17,11 +17,11 @@ use yii\db\Connection;
  * @property int $id
  * @property string $entity_name
  * @property string $entity_id
- * @property string $user_id
- * @property string $user_name
+ * @property string|null $user_id
+ * @property string|null $user_name
  * @property integer $created_at
  * @property string $action
- * @property string $env
+ * @property string|null $env
  * @property string $data
  */
 class ActivityLog extends ActiveRecord

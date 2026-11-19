@@ -48,7 +48,7 @@ class DataModel extends BaseObject
     }
 
     /**
-     * @param string|\Closure $value
+     * @param string|array|\Closure $value
      * @return static
      */
     public function setFormat($value)
@@ -76,7 +76,7 @@ class DataModel extends BaseObject
     }
 
     /**
-     * @return string
+     * @return mixed
      */
     protected function formattedValue(mixed $value)
     {

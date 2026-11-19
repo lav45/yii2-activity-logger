@@ -12,6 +12,9 @@ use yii\db\ActiveQuery;
  */
 class LogUser extends User
 {
+    /**
+     * @return array<string, array{__class: class-string, ...}>
+     */
     public function behaviors(): array
     {
         return [

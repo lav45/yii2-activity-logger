@@ -53,7 +53,7 @@ class ActivityLogDecorator
     }
 
     /**
-     * @return DataModel[]
+     * @return iterable<DataModel|string>
      */
     public function getData(): iterable
     {

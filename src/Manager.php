@@ -22,7 +22,7 @@ class Manager extends BaseObject implements ManagerInterface
 {
     public bool $debug = YII_DEBUG;
 
-    /** @var array{string, array, Middleware} */
+    /** @var array<string|array|Middleware> */
     public array $middlewares = [];
 
     public function __construct(

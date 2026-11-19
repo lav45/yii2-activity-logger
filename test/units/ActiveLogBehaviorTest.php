@@ -902,7 +902,9 @@ class ActiveLogBehaviorTest extends TestCase
                 $afterSaveFlag = true;
             });
 
+        /** @var bool $beforeSaveFlag */
         $beforeSaveFlag = false;
+        /** @var bool $afterSaveFlag */
         $afterSaveFlag = false;
         $this->assertTrue($model->save());
         $this->assertTrue($afterSaveFlag);
@@ -948,7 +950,9 @@ class ActiveLogBehaviorTest extends TestCase
         // Update
         $model->login = 'buster2';
 
+        /** @var bool $beforeSaveFlag */
         $beforeSaveFlag = false;
+        /** @var bool $afterSaveFlag */
         $afterSaveFlag = false;
         $this->assertTrue($model->save());
         $this->assertTrue($afterSaveFlag);
@@ -971,7 +975,9 @@ class ActiveLogBehaviorTest extends TestCase
         $this->assertEquals($expected, $model->getLastActivityLog()->getData());
 
         // Save without change
+        /** @var bool $beforeSaveFlag */
         $beforeSaveFlag = false;
+        /** @var bool $afterSaveFlag */
         $afterSaveFlag = false;
         $this->assertTrue($model->save());
         $this->assertFalse($afterSaveFlag);

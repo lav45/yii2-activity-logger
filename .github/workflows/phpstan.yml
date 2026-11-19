@@ -1,0 +1,47 @@
+name: phpstan
+
+on:
+  push:
+    branches:
+      - '**'
+    paths:
+      - 'src/**'
+      - 'test/**'
+      - 'migrations/**'
+      - '.github/workflows/phpstan.yml'
+      - 'composer.json'
+      - 'phpstan.dist.neon'
+
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'test/**'
+      - 'migrations/**'
+      - '.github/workflows/phpstan.yml'
+      - 'composer.json'
+      - 'phpstan.dist.neon'
+
+jobs:
+  phpstan:
+    name: PHPStan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Install PHP with extensions
+        uses: shivammathur/setup-php@v2
+        with:
+          extensions: intl, pdo, pdo_sqlite, sqlite3
+          php-version: 8.5
+          coverage: none
+          tools: composer:v2
+
+      - name: Install composer with dev dependencies
+        run: composer update --optimize-autoloader --classmap-authoritative --prefer-dist --no-progress --no-interaction --ansi
+
+      - name: Run PHPStan
+        run: composer phpstan -- --no-progress --error-format=github

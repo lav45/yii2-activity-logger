@@ -131,7 +131,7 @@ class ManagerTest extends TestCase
         $this->assertNull($storage->command->oldThan);
 
         $command = new DeleteCommand([
-            'oldThan' => time(),
+            'oldThan' => (string)time(),
         ]);
         $manager->delete($command);
         $this->assertEquals($storage->command, $command);
