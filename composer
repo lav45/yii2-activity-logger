@@ -11,9 +11,16 @@ else
   user_args=(-u "$(id -u):$(id -g)")
 fi
 
+IMAGE=yii2-activity-logger-dev:latest
+
+if ! docker image inspect "$IMAGE" >/dev/null 2>&1; then
+  echo "Docker image $IMAGE not found. Build it first: ./build.sh" >&2
+  exit 1
+fi
+
 docker run --rm $DOCKER_ARG \
   "${user_args[@]}" \
   -v $(pwd):/app \
   -w /app \
   -e COMPOSER_HOME=/app/.composer \
-  yii2-activity-logger-dev:latest /usr/local/bin/composer $@
+  "$IMAGE" /usr/local/bin/composer $@
