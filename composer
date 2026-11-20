@@ -1,7 +1,18 @@
 #!/usr/bin/env bash
 
-docker run --rm -it \
-  -u $(id -u):$(id -g) \
+DOCKER_ARG='-i'
+if [ -t 0 ] && [ -t 1 ]; then
+  DOCKER_ARG='-it'
+fi
+
+if docker info --format '{{.SecurityOptions}}' | grep -q rootless; then
+  user_args=(-u "0:0")
+else
+  user_args=(-u "$(id -u):$(id -g)")
+fi
+
+docker run --rm $DOCKER_ARG \
+  "${user_args[@]}" \
   -v $(pwd):/app \
   -w /app \
   -e COMPOSER_HOME=/app/.composer \
