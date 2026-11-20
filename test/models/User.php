@@ -12,11 +12,11 @@ use yii\web\IdentityInterface;
  * @property int $id
  * @property string $login
  * @property boolean $is_hidden
- * @property int|string $friend_count
- * @property float|string $salary
+ * @property int $friend_count
+ * @property float $salary
  * @property string $birthday
  * @property int $status
- * @property int|string $company_id
+ * @property int $company_id
  * @property string $_array_status internal json data
  * @property int $fail_relation
  * @property int $fail_link

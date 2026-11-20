@@ -64,10 +64,10 @@ class ActiveLogBehaviorTest extends TestCase
     {
         $model = new User();
         $model->login = 'buster';
-        $model->friend_count = '5';
-        $model->salary = '100.500';
+        $model->friend_count = 5;
+        $model->salary = 100.500;
         $model->birthday = '01.01.2005';
-        $model->company_id = '1';
+        $model->company_id = 1;
         $model->save();
         return $model;
     }
