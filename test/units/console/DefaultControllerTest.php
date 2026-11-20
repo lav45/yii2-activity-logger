@@ -1,6 +1,6 @@
 <?php
 
-namespace lav45\activityLogger\test\console;
+namespace lav45\activityLogger\test\units\console;
 
 use lav45\activityLogger\Manager;
 use lav45\activityLogger\ManagerInterface;

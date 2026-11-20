@@ -1,5 +1,7 @@
 <?php
 
+namespace lav45\activityLogger\test\units;
+
 use lav45\activityLogger\Manager;
 use lav45\activityLogger\middlewares\EnvironmentMiddleware;
 use lav45\activityLogger\middlewares\UserInterface;
@@ -10,6 +12,7 @@ use lav45\activityLogger\test\components\ExceptionStorage;
 use lav45\activityLogger\test\components\FakeStorage;
 use lav45\activityLogger\test\models\User;
 use PHPUnit\Framework\TestCase;
+use Yii;
 use yii\web\Application;
 use yii\web\User as WebUser;
 
