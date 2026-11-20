@@ -357,7 +357,7 @@ class ActiveLogBehavior extends Behavior
      * @param string|array $data
      * @since 1.7.0
      */
-    public function addLog($data, string $action = null): bool
+    public function addLog($data, ?string $action = null): bool
     {
         $message = $this->logger->createMessageBuilder($this->getEntityName())
             ->withEntityId($this->getEntityId())
