@@ -27,4 +27,4 @@ Thumbs.db
 /.draft
 
 # PHPStan
-phpstan.neon
+/phpstan.neon
