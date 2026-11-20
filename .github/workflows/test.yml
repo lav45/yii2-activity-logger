@@ -23,16 +23,22 @@ on:
 
 jobs:
   test:
-    name: PHP ${{ matrix.php }}
+    name: PHP ${{ matrix.php }}${{ matrix.nightly && ' (nightly)' || '' }}
     runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.nightly == true }}
     strategy:
       fail-fast: false
       matrix:
-        php: [8.2, 8.3, 8.4, 8.5, 8.6]
+        php:
+          - 8.2
+          - 8.3
+          - 8.4
+          - 8.5
+          - 8.6
         include:
-          # TODO: remove after ezyang/htmlpurifier releases support for PHP 8.6
+          # TODO: remove after shivammathur/setup-php and ezyang/htmlpurifier release PHP 8.6 support
           - php: 8.6
-            composer-flags: --ignore-platform-req=php+
+            nightly: true
 
     steps:
       - name: Checkout
@@ -48,7 +54,7 @@ jobs:
           tools: composer:v2
 
       - name: Install composer with dev dependencies
-        run: composer update --optimize-autoloader --classmap-authoritative --prefer-dist --no-progress --no-interaction --ansi ${{ matrix.composer-flags }}
+        run: composer update --optimize-autoloader --classmap-authoritative --prefer-dist --no-progress --no-interaction --ansi
 
       - name: phpunit test
         run: composer phpunit
