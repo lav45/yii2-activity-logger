@@ -139,14 +139,11 @@ class ActiveLogBehavior extends Behavior
 
     private string $action;
 
-    private ManagerInterface $logger;
-
     public function __construct(
-        ManagerInterface $logger,
-        array            $config = []
+        private readonly ManagerInterface $logger,
+        array                             $config = []
     )
     {
-        $this->logger = $logger;
         parent::__construct($config);
     }
 
@@ -226,11 +223,7 @@ class ActiveLogBehavior extends Behavior
         return $result;
     }
 
-    /**
-     * @param string|int|null $old
-     * @param string|int|null $new
-     */
-    protected function resolveStoreValues($old, $new, array $options): array
+    protected function resolveStoreValues(mixed $old, mixed $new, array $options): array
     {
         if (isset($options['list'])) {
             $value = $this->resolveListValues($old, $new, $options['list']);
@@ -243,11 +236,7 @@ class ActiveLogBehavior extends Behavior
         return $value;
     }
 
-    /**
-     * @param string|int|null $oldValue
-     * @param string|int|null $newValue
-     */
-    private function resolveSimpleValues($oldValue, $newValue): array
+    private function resolveSimpleValues(mixed $oldValue, mixed $newValue): array
     {
         return [
             'old' => ['value' => $oldValue],
@@ -255,12 +244,7 @@ class ActiveLogBehavior extends Behavior
         ];
     }
 
-    /**
-     * @param string|int|array|null $oldId
-     * @param string|int|array|null $newId
-     * @param string|\Closure $listName
-     */
-    private function resolveListValues($oldId, $newId, $listName): array
+    private function resolveListValues(mixed $oldId, mixed $newId, string|\Closure $listName): array
     {
         $old = $new = [];
         $old['id'] = $oldId;
@@ -290,11 +274,7 @@ class ActiveLogBehavior extends Behavior
         ];
     }
 
-    /**
-     * @param string|int|null $oldId
-     * @param string|int|null $newId
-     */
-    private function resolveRelationValues($oldId, $newId, string $relation, string $attribute): array
+    private function resolveRelationValues(mixed $oldId, mixed $newId, string $relation, string $attribute): array
     {
         $old = $new = [];
         $old['id'] = $oldId;
@@ -354,10 +334,9 @@ class ActiveLogBehavior extends Behavior
     }
 
     /**
-     * @param string|array $data
      * @since 1.7.0
      */
-    public function addLog($data, ?string $action = null): bool
+    public function addLog(array|string $data, ?string $action = null): bool
     {
         $message = $this->logger->createMessageBuilder($this->getEntityName())
             ->withEntityId($this->getEntityId())
@@ -375,11 +354,11 @@ class ActiveLogBehavior extends Behavior
     {
         if (null !== $this->beforeSaveMessage) {
             Yii::warning('Property ' . self::class . '::$beforeSaveMessage is deprecated!', __METHOD__);
-            return call_user_func($this->beforeSaveMessage, $data);
+            return ($this->beforeSaveMessage)($data);
         }
         $name = self::EVENT_BEFORE_SAVE_MESSAGE;
         if (method_exists($this->owner, $name)) {
-            Yii::warning('Method ' . get_class($this->owner) . '::beforeSaveMessage(array $data) is deprecated! Use event ' . self::EVENT_BEFORE_SAVE_MESSAGE, __METHOD__);
+            Yii::warning('Method ' . $this->owner::class . '::beforeSaveMessage(array $data) is deprecated! Use event ' . self::EVENT_BEFORE_SAVE_MESSAGE, __METHOD__);
             return $this->owner->$name($data);
         }
         return $data;
@@ -396,7 +375,7 @@ class ActiveLogBehavior extends Behavior
     public function afterSaveMessage(): void
     {
         if (method_exists($this->owner, 'afterSaveMessage')) {
-            Yii::warning('Method ' . get_class($this->owner) . '::afterSaveMessage() is deprecated! Use event ' . self::EVENT_AFTER_SAVE_MESSAGE, __METHOD__);
+            Yii::warning('Method ' . $this->owner::class . '::afterSaveMessage() is deprecated! Use event ' . self::EVENT_AFTER_SAVE_MESSAGE, __METHOD__);
             $this->owner->afterSaveMessage();
         }
     }
@@ -412,10 +391,9 @@ class ActiveLogBehavior extends Behavior
             return $this->getEntityName;
         }
         if (is_callable($this->getEntityName)) {
-            return call_user_func($this->getEntityName);
+            return ($this->getEntityName)();
         }
-        $class = get_class($this->owner);
-        $class = StringHelper::basename($class);
+        $class = StringHelper::basename($this->owner::class);
         $this->getEntityName = Inflector::camel2id($class, '_');
         return $this->getEntityName;
     }
@@ -425,7 +403,7 @@ class ActiveLogBehavior extends Behavior
         if (null === $this->getEntityId) {
             $result = $this->owner->getPrimaryKey();
         } elseif (is_callable($this->getEntityId)) {
-            $result = call_user_func($this->getEntityId);
+            $result = ($this->getEntityId)();
         } else {
             $result = $this->getEntityId;
         }
@@ -447,10 +425,10 @@ class ActiveLogBehavior extends Behavior
      * @return bool whether the value is empty
      * @since 1.5.2
      */
-    public function isEmpty($value): bool
+    public function isEmpty(mixed $value): bool
     {
         if (null !== $this->isEmpty) {
-            return call_user_func($this->isEmpty, $value);
+            return ($this->isEmpty)($value);
         }
         return null === $value || '' === $value || [] === $value;
     }

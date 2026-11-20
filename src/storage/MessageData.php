@@ -24,6 +24,6 @@ final class MessageData
     public ?string $action = null;
     /** Environment, which produced the effect */
     public ?string $env = null;
-    /** @var array|string|null */
-    public $data;
+
+    public array|string|null $data = null;
 }

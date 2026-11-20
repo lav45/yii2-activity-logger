@@ -73,11 +73,9 @@ class LogInfoBehavior extends Behavior
             return null;
         }
         if (is_callable($this->template)) {
-            return call_user_func($this->template);
+            return ($this->template)();
         }
-        $callback = function ($matches) {
-            return ArrayHelper::getValue($this->owner, $matches[1]);
-        };
+        $callback = fn(array $matches) => ArrayHelper::getValue($this->owner, $matches[1]);
         return preg_replace_callback('/\\{([\w\._]+)\\}/', $callback, $this->template);
     }
 }

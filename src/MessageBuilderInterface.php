@@ -12,23 +12,17 @@ use lav45\activityLogger\storage\MessageData;
 
 interface MessageBuilderInterface
 {
-    /**
-     * @param string|int $id
-     */
-    public function withEntityId($id): self;
+    public function withEntityId(string|int $id): self;
 
     public function withUserId(string $id): self;
 
     public function withUserName(string $name): self;
 
-    public function withAction($action): self;
+    public function withAction(?string $action): self;
 
     public function withEnv(string $env): self;
 
-    /**
-     * @param array|string $data
-     */
-    public function withData($data): self;
+    public function withData(array|string $data): self;
 
     public function build(int $now): MessageData;
 }

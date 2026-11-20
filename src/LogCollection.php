@@ -10,22 +10,19 @@ namespace lav45\activityLogger;
 
 class LogCollection
 {
-    private ManagerInterface $logger;
-
     private MessageBuilderInterface $builder;
     /** @var string[] */
     private array $data = [];
 
-    public function __construct(ManagerInterface $logger, string $entityName)
+    public function __construct(
+        private readonly ManagerInterface $logger,
+        string                            $entityName
+    )
     {
-        $this->logger = $logger;
         $this->builder = $logger->createMessageBuilder($entityName);
     }
 
-    /**
-     * @param string|int $value
-     */
-    public function setEntityId($value): self
+    public function setEntityId(string|int $value): self
     {
         $this->builder = $this->builder->withEntityId($value);
         return $this;

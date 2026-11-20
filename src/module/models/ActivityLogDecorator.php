@@ -9,6 +9,7 @@
 namespace lav45\activityLogger\module\models;
 
 use Yii;
+use yii\base\Model;
 
 class ActivityLogDecorator
 {
@@ -23,15 +24,14 @@ class ActivityLogDecorator
 
     private array $entityModel = [];
 
-    private ActivityLog $owner;
-
-    public function __construct(ActivityLog $owner)
+    public function __construct(
+        private readonly ActivityLog $owner
+    )
     {
-        $this->owner = $owner;
     }
 
     /**
-     * @return \yii\base\Model|null
+     * @return Model|null
      */
     protected function getEntityModel()
     {
@@ -42,15 +42,12 @@ class ActivityLogDecorator
         return $this->entityModel[$entityName] ?: null;
     }
 
-    /**
-     * @return false|\yii\base\Model
-     */
-    private function getEntityObject(string $id)
+    private function getEntityObject(string $id): Model|false
     {
         if (isset($this->entityMap[$id]) === false) {
             return false;
         }
-        /** @var \yii\base\Model $class */
+        /** @var Model $class */
         $class = $this->entityMap[$id];
         return $class::instance();
     }

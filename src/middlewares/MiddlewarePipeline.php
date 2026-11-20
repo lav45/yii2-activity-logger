@@ -7,7 +7,8 @@ use lav45\activityLogger\MessageBuilderInterface;
 
 final class MiddlewarePipeline
 {
-    private array $middlewares;
+    /** @var Middleware[] */
+    private readonly array $middlewares;
 
     public function __construct(Middleware ...$middleware)
     {
@@ -18,12 +19,9 @@ final class MiddlewarePipeline
     {
         $middlewareChain = array_reduce(
             array_reverse($this->middlewares),
-            static function (Closure $next, Middleware $middleware) {
-                return static fn (MessageBuilderInterface $builder): MessageBuilderInterface => $middleware->handle($builder, $next);
-            },
-            static function(MessageBuilderInterface $builder): MessageBuilderInterface {
-                return $builder;
-            }
+            static fn (Closure $next, Middleware $middleware): Closure =>
+                static fn (MessageBuilderInterface $builder): MessageBuilderInterface => $middleware->handle($builder, $next),
+            static fn (MessageBuilderInterface $builder): MessageBuilderInterface => $builder
         );
         return $middlewareChain($builder);
     }

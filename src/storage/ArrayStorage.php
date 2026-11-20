@@ -25,16 +25,16 @@ final class ArrayStorage implements StorageInterface
         $this->commands[] = $command;
     }
 
-    public function __get(string $name)
+    public function __get(string $name): mixed
     {
         return null;
     }
 
-    public function __set(string $name, $value): void
+    public function __set(string $name, mixed $value): void
     {
     }
 
-    public function __isset(string $name)
+    public function __isset(string $name): bool
     {
         return false;
     }

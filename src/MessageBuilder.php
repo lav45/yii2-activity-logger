@@ -20,10 +20,7 @@ final class MessageBuilder implements MessageBuilderInterface
         $this->message->entityName = $entityName;
     }
 
-    /**
-     * @param string|int $id
-     */
-    public function withEntityId($id): self
+    public function withEntityId(string|int $id): self
     {
         $new = clone $this;
         $new->message->entityId = (string)$id;
@@ -44,10 +41,7 @@ final class MessageBuilder implements MessageBuilderInterface
         return $new;
     }
 
-    /**
-     * @param string|null $action
-     */
-    public function withAction($action): self
+    public function withAction(?string $action): self
     {
         $new = clone $this;
         $new->message->action = $action;
@@ -61,10 +55,7 @@ final class MessageBuilder implements MessageBuilderInterface
         return $new;
     }
 
-    /**
-     * @param array|string $data
-     */
-    public function withData($data): self
+    public function withData(array|string $data): self
     {
         $new = clone $this;
         $new->message->data = $data;

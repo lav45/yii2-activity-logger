@@ -35,17 +35,14 @@ class DefaultController extends Controller
      */
     public ?string $oldThan = null;
 
-    private ManagerInterface $logger;
-
     public function __construct(
-        string           $id,
-        Module           $module,
-        ManagerInterface $logger,
-        array            $config = []
+        string                            $id,
+        Module                            $module,
+        private readonly ManagerInterface $logger,
+        array                             $config = []
     )
     {
         parent::__construct($id, $module, $config);
-        $this->logger = $logger;
     }
 
     public function options($actionID): array
@@ -100,7 +97,7 @@ class DefaultController extends Controller
             return null;
         }
         if (preg_match("/^(\d+)([hdmy]+)$/", $str, $matches)) {
-            [$_, $count, $alias] = $matches;
+            [, $count, $alias] = $matches;
             $aliases = [
                 'h' => 'hour',
                 'd' => 'day',

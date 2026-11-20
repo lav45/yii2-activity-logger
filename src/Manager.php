@@ -25,15 +25,12 @@ class Manager extends BaseObject implements ManagerInterface
     /** @var array{string, array, Middleware} */
     public array $middlewares = [];
 
-    private StorageInterface $storage;
-
     public function __construct(
-        StorageInterface $storage,
-        array            $config = []
+        private readonly StorageInterface $storage,
+        array                             $config = []
     )
     {
         parent::__construct($config);
-        $this->storage = $storage;
     }
 
     /**

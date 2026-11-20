@@ -29,7 +29,7 @@ class DbStorage extends BaseObject implements StorageInterface
     {
         $data = json_encode($message->data, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 
-        (new Query)
+        (new Query())
             ->createCommand($this->db)
             ->insert($this->tableName, [
                 'entity_name' => $message->entityName,
@@ -61,7 +61,7 @@ class DbStorage extends BaseObject implements StorageInterface
             $condition = ['and', $condition, ['<=', 'created_at', $command->oldThan]];
         }
 
-        (new Query)
+        (new Query())
             ->createCommand($this->db)
             ->delete($this->tableName, $condition)
             ->execute();

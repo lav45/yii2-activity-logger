@@ -13,11 +13,10 @@ use lav45\activityLogger\MessageBuilderInterface;
 
 final class EnvironmentMiddleware implements Middleware
 {
-    private string $env;
-
-    public function __construct(string $env)
+    public function __construct(
+        private readonly string $env
+    )
     {
-        $this->env = $env;
     }
 
     public function handle(MessageBuilderInterface $builder, Closure $next): MessageBuilderInterface

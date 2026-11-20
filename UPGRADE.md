@@ -3,6 +3,14 @@
 
 Файл содержит примечания которые необходимо учесть при обновлении компонента на следующую версии.
 
+Обновление 3.0
+------------------
+
+* php >= 8.2
+* `\lav45\activityLogger\MessageBuilderInterface`: у параметров появились нативные типы —
+  `withEntityId(string|int $id)`, `withAction(?string $action)`, `withData(array|string $data)`
+* `\lav45\activityLogger\ActiveLogBehavior::addLog(array|string $data, ?string $action = null)`
+
 Обновление 2.2
 ------------------
 
@@ -14,7 +22,8 @@
       \lav45\activityLogger\middlewares\UserInterface::class => static fn() => Yii::$app->getUser()->getIdentity(),
   ]);
   ```
-* Добавлен `\lav45\activityLogger\Manager::$middlewares` которые будут заполнять данные для `\lav45\activityLogger\MessageData`
+* Добавлен `\lav45\activityLogger\Manager::$middlewares` которые будут заполнять данные для
+  `\lav45\activityLogger\MessageData`
   ```php
   return [
       'components' => [
@@ -97,16 +106,15 @@
 ------------------
 
 * Доработан метод `\lav45\activityLogger\ActiveLogBehavior::beforeSaveMessage()` и событие
-  `\lav45\activityLogger\ActiveLogBehavior::EVENT_BEFORE_SAVE_MESSAGE`
-  Все данные которые будут сохранены, передаются всем кто подписан на событие чтобы пользователь мог добавить или
-  изменить некоторые данные по своему усмотрению
+  `\lav45\activityLogger\ActiveLogBehavior::EVENT_BEFORE_SAVE_MESSAGE` Все данные которые будут сохранены, передаются
+  всем кто подписан на событие чтобы пользователь мог добавить или изменить некоторые данные по своему усмотрению
 
 Обновление 1.5
 ------------------
 
-* Класс `\lav45\activityLogger\ActiveRecordBehavior` был переименован в `\lav45\activityLogger\ActiveLogBehavior`
-  Для поддержки обратной совместимости был добавлен пустой класс `\lav45\activityLogger\ActiveRecordBehavior` который
-  будет удален с 1.6 версии
+* Класс `\lav45\activityLogger\ActiveRecordBehavior` был переименован в `\lav45\activityLogger\ActiveLogBehavior` Для
+  поддержки обратной совместимости был добавлен пустой класс `\lav45\activityLogger\ActiveRecordBehavior` который будет
+  удален с 1.6 версии
 * Немного доработано представление `src/modules/views/default/_item.php`
 * При записи в лог пустой строки она будет отображаться как `Yii::$app->formatter->nullDisplay`
 * Значение по умолчанию для `\lav45\activityLogger\ActiveRecordBehavior::$identicalAttributes` теперь `false`
@@ -198,8 +206,8 @@
   используя метод `Url::current()`
 * Изменилась фраза `The setting <strong>{attribute}</strong> has ben changed` на
   `<strong>{attribute}</strong> has ben changed`
-* В файле представления `src/modules/views/default/_item.php` добавлено отображение ссылки для фильтрации по
-  конкретному пользователю `$model->getEntityName()`
+* В файле представления `src/modules/views/default/_item.php` добавлено отображение ссылки для фильтрации по конкретному
+  пользователю `$model->getEntityName()`
 * Была переименована папка `migrates` в `migrations`
 * Метод `\lav45\activityLogger\modules\models\ActivityLog::getData()` теперь всегда будет возвращать массив
 * `\lav45\activityLogger\modules\Module::$createUserUrl` был удален. Вместо него будет использоваться ссылка выполняющая

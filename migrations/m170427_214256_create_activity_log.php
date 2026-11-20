@@ -4,7 +4,7 @@ use yii\db\Migration;
 
 class m170427_214256_create_activity_log extends Migration
 {
-    private $tableOptions;
+    private ?string $tableOptions = null;
 
     public function init()
     {

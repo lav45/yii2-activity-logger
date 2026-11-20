@@ -16,14 +16,9 @@ use yii\i18n\Formatter;
 
 class DataModel extends BaseObject
 {
-    /**
-     * @var array
-     */
-    private $data;
-    /**
-     * @var string|\Closure
-     */
-    private $format;
+    private array $data = [];
+
+    private string|array|\Closure|null $format = null;
     /**
      * @var string|array|Formatter
      */
@@ -81,10 +76,9 @@ class DataModel extends BaseObject
     }
 
     /**
-     * @param mixed $value
      * @return string
      */
-    protected function formattedValue($value)
+    protected function formattedValue(mixed $value)
     {
         if ($this->format && is_string($this->format)) {
             return $this->formatter->format($value, $this->format);
