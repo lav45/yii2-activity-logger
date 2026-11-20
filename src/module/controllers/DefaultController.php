@@ -28,7 +28,7 @@ class DefaultController extends Controller
         $searchModel = new ActivityLogSearch();
         $searchModel->load(Yii::$app->getRequest()->getQueryParams());
 
-        if ($searchModel->validate()) {
+        if ($searchModel->validate() === false) {
             throw new BadRequestHttpException($searchModel->getErrorSummary(false)[0]);
         }
 
